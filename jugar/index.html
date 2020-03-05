@@ -1,0 +1,102 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Open trivial</title>
+  <link href='http://fonts.googleapis.com/css?family=Roboto+Condensed' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" type="text/css" href="../dist/jquery.quiz-min.css" />
+  <style>
+  body { min-height: 100vh;background-image: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%); font-family: 'Roboto Condensed';}
+  .container {margin: 150px auto 30px auto; max-width: 640px;}
+  h1 { text-align: center; }
+</style>
+<link href="https://www.jqueryscript.net/css/jquerysctipttop.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+  <div class="container">
+  <h1>¿Estás preparado para jugar?</h1>
+<div id="quiz">
+  <div id="quiz-header">
+    <h1>Comenzar el juevo</h1>
+    <p><a id="quiz-home-btn" href="https://elmaslisto.com">Inicio</a></p>
+  </div>
+  <div id="quiz-start-screen">
+    <p><a href="#" id="quiz-start-btn" class="quiz-button">Comenzar a jugar</a></p>
+  </div>
+</div>
+</div>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
+<script src="../dist/jquery.quiz-min.js"></script>
+<!-- https://www.jqueryscript.net/other/Dynamic-Quiz.html -->
+<script>
+  $('#quiz').quiz({
+    //resultsScreen: '#results-screen',
+    //counter: false,
+    //homeButton: '#custom-home',
+    counterFormat: 'Pregunta %current de %total',
+	nextButtonText:'Siguiente',
+	finishButtonText:'Terminar',
+	restartButtonText:'Reiniciar',
+    questions: [
+      {
+        'q': '¿Cuándo surgió el coronavirus?',
+        'options': [
+          '2019',
+          '2020',
+          '2018'
+        ],
+        'correctIndex': 1,
+        'correctResponse': 'Custom correct response.',
+        'incorrectResponse': 'Custom incorrect response.'
+      },
+      {
+        'q': 'A smaple question?',
+        'options': [
+          'Answer 1',
+          'Answer 2'
+        ],
+        'correctIndex': 1,
+        'correctResponse': 'Custom correct response.',
+        'incorrectResponse': 'Custom incorrect response.'
+      },
+      {
+        'q': 'A smaple question?',
+        'options': [
+          'Answer 1',
+          'Answer 2',
+          'Answer 3',
+          'Answer 4'
+        ],
+        'correctIndex': 2,
+        'correctResponse': 'Custom correct response.',
+        'incorrectResponse': 'Custom incorrect response.'
+      },
+      {
+        'q': 'A smaple question?',
+        'options': [
+          'Answer 1',
+          'Answer 2'
+        ],
+        'correctIndex': 1,
+        'correctResponse': 'Custom correct response.',
+        'incorrectResponse': 'Custom incorrect response.'
+      },
+      {
+        'q': 'A smaple question?',
+        'options': [
+          'Answer 1',
+          'Answer 2',
+          'Answer 3',
+          'Answer 4'
+        ],
+        'correctIndex': 3,
+        'correctResponse': 'Custom correct response.',
+        'incorrectResponse': 'Custom incorrect response.'
+      }
+    ]
+  });
+</script>
+</body>
+</html>
