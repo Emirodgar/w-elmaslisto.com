@@ -134,7 +134,7 @@
           score++;
         } else {
           $answerEl.addClass('incorrect');
-          response = questions[currentQuestionIndex].incorrectResponse;
+          response = questions[currentQuestionIndex].correctResponse;
           if (!base.options.allowIncorrect) {
             base.methods.gameOver(response);
             return;
@@ -253,7 +253,7 @@
     startButton: '#quiz-start-btn',
     homeButton: '#quiz-home-btn',
     resultsScreen: '#quiz-results-screen',
-    resultsFormat: 'You got %score out of %total correct!',
+    resultsFormat: 'Has acertado %score de %total preguntas',
     gameOverScreen: '#quiz-gameover-screen',
     nextButtonText: 'Next',
     finishButtonText: 'Finish',
