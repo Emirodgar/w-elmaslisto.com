@@ -16,7 +16,6 @@
   <h1>¿Estás preparado para jugar?</h1>
 <div id="quiz">
   <div id="quiz-header">
-    <h1>Comenzar el juego</h1>
     <p><a href="https://elmaslisto.com">Inicio</a></p>
     <p>Por cada pregunta aparecerán dos posibles respuestas: una correcta y una errónea. Al seleccionar una se indicará si has acertado o no y aparecerá un pequeño contenido explicativo.</p>
   </div>
@@ -26,22 +25,7 @@
 </div>
 </div>
 <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
-<!--<script src="../dist/jquery.quiz-min.js"></script>-->
 <script src="../src/jquery.quiz.js"></script>
-<script>
-
-const myQuiz = [{'q':'¿En qué año surgió el coronavirus?', 'options': ['2018', '2019' ], 'correctIndex': 1, 'correctResponse':'El primer caso de coronavirus (COVID-19) se reportó el 1 de diciembre de 2019 en la ciudad de Wuhan, en China central, cuando se identificó a un grupo de personas con neumonía de causa desconocida' },{'q':'¿En qué país se detectó el primer caso de coronavirus?', 'options': ['Pakistán', 'China' ], 'correctIndex': 1, 'correctResponse':'El primer caso de coronavirus (COVID-19) se reportó el 1 de diciembre de 2019 en la ciudad de Wuhan, en China central, cuando se identificó a un grupo de personas con neumonía de causa desconocida' }];
-
-  $('#quiz').quiz({
-    //resultsScreen: '#results-screen',
-    //counter: false,
-    //homeButton: '#custom-home',
-    counterFormat: 'Pregunta %current de %total',
-    nextButtonText:'Siguiente',
-    finishButtonText:'Terminar',
-    restartButtonText:'Reiniciar',
-    questions: myQuiz
-  });
-</script>
+<script src="../int/qs.js"></script>
 </body>
 </html>
