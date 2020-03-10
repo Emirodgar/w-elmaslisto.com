@@ -2,6 +2,8 @@
 cd C:\wamp\www\w-elmaslisto.com\int
 py getquestions.py
 
+TIMEOUT 10
+
 echo Commit on GitHub
 echo.
 
