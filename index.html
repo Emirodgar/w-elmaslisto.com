@@ -3,56 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Colección de Juegos mentales</title>
-	<link rel="icon" href="img/favicon.png">
+    <title>Colección de Juegos Mentales</title>
+    <link rel="icon" href="img/favicon.png">
     <style>
         /* --- Estilos Generales --- */
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             background-color: #f0f2f5;
             margin: 0;
-            padding: 40px 20px;
-            display: flex;
-            justify-content: center;
+            padding: 20px; 
         }
-
         .container {
             width: 100%;
             max-width: 900px;
             text-align: center;
         }
-
-        /* --- Título Principal --- */
         h1 {
-            font-size: 3em;
+            font-size: 2.5em; 
             color: #1c1e21;
             margin-bottom: 30px;
         }
-
-        /* --- Barra de Búsqueda --- */
         .search-bar {
             position: relative;
+            width: 100%; 
             max-width: 600px;
             margin: 0 auto 40px;
         }
-
         #search-input {
             width: 100%;
             padding: 15px 50px 15px 20px;
-            font-size: 1.1em;
+            font-size: 1em;
             border-radius: 50px;
             border: 1px solid #ddd;
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
             outline: none;
+            box-sizing: border-box; 
         }
-
         .search-icon {
             position: absolute;
-            right: 10px;
+            right: 5px;
             top: 50%;
             transform: translateY(-50%);
-            width: 40px;
-            height: 40px;
+            width: 38px;
+            height: 38px;
             background-color: #007bff;
             border-radius: 50%;
             display: flex;
@@ -60,18 +53,15 @@
             align-items: center;
             color: white;
         }
-
-        /* --- Cuadrícula de Juegos --- */
         .game-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 25px;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); 
+            gap: 15px;
         }
-
         .game-card {
             background-color: white;
             border-radius: 15px;
-            padding: 20px;
+            padding: 15px;
             text-decoration: none;
             color: white;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
@@ -80,129 +70,76 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: 150px;
+            min-height: 120px;
         }
-
         .game-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 8px 15px rgba(0,0,0,0.15);
         }
-
         .game-card .icon {
-            width: 60px;
-            height: 60px;
-            margin-bottom: 15px;
+            width: 45px;
+            height: 45px;
+            margin-bottom: 10px;
         }
-
         .game-card .title {
-            font-size: 1.2em;
+            font-size: 1em;
             font-weight: bold;
         }
-        
-        /* --- Colores de las Tarjetas --- */
-        .game-card[data-game="mates"] { background-color: #e74c3c; } /* Rojo */
-        .game-card[data-game="simon"] { background-color: #3498db; } /* Azul */
-        .game-card[data-game="pares"] { background-color: #2ecc71; } /* Verde */
-        .game-card[data-game="diferencia"] { background-color: #9b59b6; } /* Morado */
-        .game-card[data-game="mates-pro"] { background-color: #f39c12; } /* Naranja */
-        .game-card[data-game="trivial"] { background-color: #1abc9c; } /* Turquesa */
+        .game-card[data-game="mates"] { background-color: #e74c3c; }
+        .game-card[data-game="simon"] { background-color: #3498db; }
+        .game-card[data-game="pares"] { background-color: #2ecc71; }
+        .game-card[data-game="diferencia"] { background-color: #9b59b6; }
+        .game-card[data-game="mates-pro"] { background-color: #f39c12; }
+        .game-card[data-game="trivial"] { background-color: #1abc9c; }
+        .hidden { display: none; }
 
-        /* Clase para ocultar tarjetas en la búsqueda */
-        .hidden {
-            display: none;
+        @media (min-width: 768px) {
+            body { padding: 40px 20px; }
+            h1 { font-size: 3em; }
+            #search-input { font-size: 1.1em; }
+            .search-icon { width: 40px; height: 40px; right: 10px; }
+            .game-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 25px; }
+            .game-card { min-height: 150px; padding: 20px; }
+            .game-card .icon { width: 60px; height: 60px; margin-bottom: 15px; }
+            .game-card .title { font-size: 1.2em; }
         }
-
     </style>
 </head>
 <body>
-
     <div class="container">
         <h1>Colección de Juegos Mentales</h1>
-
+        
         <div class="search-bar">
             <input type="text" id="search-input" placeholder="Buscar un juego...">
             <div class="search-icon">
-                <!-- Icono de Lupa (SVG) -->
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
-                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/></svg>
             </div>
         </div>
 
         <div class="game-grid" id="game-grid">
-            <!-- Tarjeta 1: Mates en Cadena -->
-            <a href="/juego-mates-cadena" class="game-card" data-game="mates" data-keywords="matemáticas cálculo suma resta">
-                <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16"><path d="M12 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h8zM4 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H4z"/><path d="M4 2.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5v-2zm0 4a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm3-6a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm3-6a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-4z"/></svg>
-                <div class="title">Mates en cadena</div>
-            </a>
-
-            <!-- Tarjeta 2: Simón Dice -->
-            <a href="/juego-simon" class="game-card" data-game="simon" data-keywords="simón dice memoria colores secuencia">
-                <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16"><path d="M5.5.5A.5.5 0 0 1 6 0h4a.5.5 0 0 1 .5.5v.625c.468.12.9.29 1.29.523.41.25.76.58 1.03.97l.002.003c.27.41.45.88.54 1.382.09.51.1 1.05.04 1.59-.05.45-.16.9-.32 1.31a4.48 4.48 0 0 1-.48.97c-.29.42-.66.78-1.08.02A4.49 4.49 0 0 1 11 8.5c0-.45.08-.88.23-1.29.15-.41.38-.78.68-1.1C12.21 5.79 12.5 5.5 13 5.5c.5 0 .79.29.92.62.13.33.12.71.06 1.11-.07.4-.18.78-.33 1.14a5.42 5.42 0 0 1-1.03 1.5c-.49.44-1.06.75-1.69.91-1.03.27-2.2.1-3.2-.5l-.003-.002C7.03 9.34 6.2 8.5 6.2 7.5c0-.45.08-.88.23-1.29.15-.41.38-.78.68-1.1.3-.32.59-.61.92-.88.13-.11.27-.2.42-.28.15-.09.3-.16.46-.21v-.625a.5.5 0 0 1-.5-.5h-4a.5.5 0 0 1-.5.5v.625c.16.05.31.12.46.21.15.08.29.17.42.28.33.27.62.56.92.88.3.32.53.69.68 1.1.15.41.23.84.23 1.29 0 1-.83 1.84-1.87 2.4l-.003.002c-1 .5-2.17.77-3.2.5-.63-.16-1.2-.47-1.69-.91a5.42 5.42 0 0 1-1.03-1.5c-.15-.36-.26-.74-.33-1.14-.06-.4.01-.78.12-1.11.13-.33.42-.62.92-.62.5 0 .79.29 1.12.62.3.32.53.69.68 1.1.15.41.23.84.23 1.29 0 .21-.02.41-.06.61-.04.2-.1.39-.17.57a3.48 3.48 0 0 0-.14.5c0 .02.01.03.02.03.01 0 .03-.01.04-.02.1-.2.19-.42.25-.64.07-.22.1-.45.1-.68 0-.56-.1-1.1-.29-1.61-.1-.27-.24-.52-.4-.75a2.48 2.48 0 0 0-1.03-.97A3.48 3.48 0 0 0 1.5 4.11c-.09-.5-.05-1.08.04-1.59.09-.5.27-.97.54-1.38l.002-.003c.27-.39.62-.72 1.03-.97.39-.23.82-.4 1.29-.52V.5z"/></svg>
-                <div class="title">Simón dice</div>
-            </a>
-
-            <!-- Tarjeta 3: Encuentra el Par -->
-            <a href="/juego-encuentra-par" class="game-card" data-game="pares" data-keywords="memoria pares cartas parejas">
-                <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16"><path d="M14.5 3a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h13zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-13z"/><path d="M5 6.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5z"/></svg>
-                <div class="title">Encuentra el par</div>
-            </a>
-
-            <!-- Tarjeta 4: Encuentra la Diferencia -->
-            <a href="/juego-colores" class="game-card" data-game="diferencia" data-keywords="diferencia visual formas colores">
-                <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16"><path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/><path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/></svg>
-                <div class="title">Busca el color</div>
-            </a>
-			
-			<!-- Tarjeta 4: Encuentra la Diferencia -->
-            <a href="/juego-diferente" class="game-card" data-game="diferencia" data-keywords="diferencia visual formas colores">
-                <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16"><path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/><path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/></svg>
-                <div class="title">Encuentra lo diferente</div>
-            </a>
-
-            <!-- NUEVA Tarjeta 5: Mates Complejas -->
-            <a href="/juegos-sumas" class="game-card" data-game="mates-pro" data-keywords="matemáticas pro multiplicación división">
-                <!-- Icono de Raíz Cuadrada (SVG ) -->
-                <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
-                    <path d="M1 12.5a.5.5 0 0 1 .5-.5h1.348c.312 0 .61-.064.888-.193l1.414-1.414a1.5 1.5 0 0 1 1.061-.439h.018c.284 0 .56.08.812.23l1.414 1.414c.278.129.576.193.888.193H14.5a.5.5 0 0 1 0 1H1.5a.5.5 0 0 1-.5-.5zM2.293 8.293a.5.5 0 0 1 .043-.707l2-2a.5.5 0 0 1 .707 0l2 2a.5.5 0 0 1-.707.707L4.5 6.707V11.5a.5.5 0 0 1-1 0V6.707L2.25 8.25a.5.5 0 0 1-.707-.707z"/>
-                </svg>
-                <div class="title">Mates complejas</div>
-            </a>
-
-            <!-- NUEVA Tarjeta 6: Trivial -->
-            <a href="/juego-trivial" class="game-card" data-game="trivial" data-keywords="trivial preguntas respuestas cultura general">
-                <!-- Icono de Bombilla (SVG ) -->
-                <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
-                    <path d="M2 6a6 6 0 1 1 10.174 4.31c-.203.196-.359.4-.453.619l-.762 1.769A.5.5 0 0 1 10.5 13h-5a.5.5 0 0 1-.46-.302l-.761-1.77a1.964 1.964 0 0 0-.453-.618A5.984 5.984 0 0 1 2 6zm6-5a5 5 0 0 0-3.479 8.592c.263.254.514.564.676.941L5.83 12h4.342l.632-1.467c.162-.377.413-.687.676-.941A5 5 0 0 0 8 1z"/>
-                    <path d="M5 14a1 1 0 0 1 1-1h4a1 1 0 1 1 0 2H6a1 1 0 0 1-1-1z"/>
-                </svg>
-                <div class="title">Trivial</div>
-            </a>
+            <a href="/juego-mates-cadena" class="game-card" data-game="mates" data-keywords="matemáticas cálculo suma resta"><svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16"><path d="M12 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h8zM4 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H4z"/><path d="M4 2.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5v-2zm0 4a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm3-6a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm3-6a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-4z"/></svg><div class="title">Mates en cadena</div></a>
+            <a href="/juego-simon" class="game-card" data-game="simon" data-keywords="simón dice memoria colores secuencia"><svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16"><path d="M5.5.5A.5.5 0 0 1 6 0h4a.5.5 0 0 1 .5.5v.625c.468.12.9.29 1.29.523.41.25.76.58 1.03.97l.002.003c.27.41.45.88.54 1.382.09.51.1 1.05.04 1.59-.05.45-.16.9-.32 1.31a4.48 4.48 0 0 1-.48.97c-.29.42-.66.78-1.08.02A4.49 4.49 0 0 1 11 8.5c0-.45.08-.88.23-1.29.15-.41.38-.78.68-1.1C12.21 5.79 12.5 5.5 13 5.5c.5 0 .79.29.92.62.13.33.12.71.06 1.11-.07.4-.18.78-.33 1.14a5.42 5.42 0 0 1-1.03 1.5c-.49.44-1.06.75-1.69.91-1.03.27-2.2.1-3.2-.5l-.003-.002C7.03 9.34 6.2 8.5 6.2 7.5c0-.45.08-.88.23-1.29.15-.41.38-.78.68-1.1.3-.32.59-.61.92-.88.13-.11.27-.2.42-.28.15-.09.3-.16.46-.21v-.625a.5.5 0 0 1-.5-.5h-4a.5.5 0 0 1-.5.5v.625c.16.05.31.12.46.21.15.08.29.17.42.28.33.27.62.56.92.88.3.32.53.69.68 1.1.15.41.23.84.23 1.29 0 1-.83 1.84-1.87 2.4l-.003.002c-1 .5-2.17.77-3.2.5-.63-.16-1.2-.47-1.69-.91a5.42 5.42 0 0 1-1.03-1.5c-.15-.36-.26-.74-.33-1.14-.06-.4.01-.78.12-1.11.13-.33.42-.62.92-.62.5 0 .79.29 1.12.62.3.32.53.69.68 1.1.15.41.23.84.23 1.29 0 .21-.02.41-.06.61-.04.2-.1.39-.17.57a3.48 3.48 0 0 0-.14.5c0 .02.01.03.02.03.01 0 .03-.01.04-.02.1-.2.19-.42.25-.64.07-.22.1-.45.1-.68 0-.56-.1-1.1-.29-1.61-.1-.27-.24-.52-.4-.75a2.48 2.48 0 0 0-1.03-.97A3.48 3.48 0 0 0 1.5 4.11c-.09-.5-.05-1.08.04-1.59.09-.5.27-.97.54-1.38l.002-.003c.27-.39.62-.72 1.03-.97.39-.23.82-.4 1.29-.52V.5z"/></svg><div class="title">Simón dice</div></a>
+            <a href="/juego-encuentra-par" class="game-card" data-game="pares" data-keywords="memoria pares cartas parejas"><svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16"><path d="M14.5 3a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h13zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-13z"/><path d="M5 6.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5z"/></svg><div class="title">Encuentra el par</div></a>
+            <a href="/juego-colores" class="game-card" data-game="diferencia" data-keywords="diferencia visual formas colores"><svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16"><path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/><path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/></svg><div class="title">Busca el color</div></a>
+            <a href="/juego-diferente" class="game-card" data-game="diferencia" data-keywords="diferencia visual formas colores"><svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16"><path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/><path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/></svg><div class="title">Encuentra lo diferente</div></a>
+            <a href="/juego-sumas" class="game-card" data-game="mates-pro" data-keywords="matemáticas pro multiplicación división"><svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16"><path d="M1 12.5a.5.5 0 0 1 .5-.5h1.348c.312 0 .61-.064.888-.193l1.414-1.414a1.5 1.5 0 0 1 1.061-.439h.018c.284 0 .56.08.812.23l1.414 1.414c.278.129.576.193.888.193H14.5a.5.5 0 0 1 0 1H1.5a.5.5 0 0 1-.5-.5zM2.293 8.293a.5.5 0 0 1 .043-.707l2-2a.5.5 0 0 1 .707 0l2 2a.5.5 0 0 1-.707.707L4.5 6.707V11.5a.5.5 0 0 1-1 0V6.707L2.25 8.25a.5.5 0 0 1-.707-.707z"/></svg><div class="title">Mates complejas</div></a>
+            <a href="/juego-trivial" class="game-card" data-game="trivial" data-keywords="trivial preguntas respuestas cultura general"><svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16"><path d="M2 6a6 6 0 1 1 10.174 4.31c-.203.196-.359.4-.453.619l-.762 1.769A.5.5 0 0 1 10.5 13h-5a.5.5 0 0 1-.46-.302l-.761-1.77a1.964 1.964 0 0 0-.453-.618A5.984 5.984 0 0 1 2 6zm6-5a5 5 0 0 0-3.479 8.592c.263.254.514.564.676.941L5.83 12h4.342l.632-1.467c.162-.377.413-.687.676-.941A5 5 0 0 0 8 1z"/><path d="M5 14a1 1 0 0 1 1-1h4a1 1 0 1 1 0 2H6a1 1 0 0 1-1-1z"/></svg><div class="title">Trivial</div></a>
         </div>
     </div>
-
     <script>
-        // Lógica para la barra de búsqueda
         const searchInput = document.getElementById('search-input' );
-        const gameGrid = document.getElementById('game-grid');
-        const gameCards = gameGrid.getElementsByClassName('game-card');
-
-        searchInput.addEventListener('keyup', function() {
-            const searchTerm = searchInput.value.toLowerCase();
-
-            for (let i = 0; i < gameCards.length; i++) {
-                const card = gameCards[i];
-                const title = card.querySelector('.title').textContent.toLowerCase();
-                const keywords = card.dataset.keywords.toLowerCase();
-                
-                if (title.includes(searchTerm) || keywords.includes(searchTerm)) {
+        const gameCards = document.querySelectorAll('.game-card');
+        searchInput.addEventListener('keyup', e => {
+            const searchTerm = e.target.value.toLowerCase();
+            gameCards.forEach(card => {
+                const keywords = (card.dataset.keywords + ' ' + card.querySelector('.title').textContent).toLowerCase();
+                if (keywords.includes(searchTerm)) {
                     card.classList.remove('hidden');
                 } else {
                     card.classList.add('hidden');
                 }
-            }
+            });
         });
     </script>
-
 </body>
 </html>
