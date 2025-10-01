@@ -4,9 +4,63 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simón Dice</title>
-	<link rel="icon" href="img/favicon.png">
+    <link rel="icon" href="img/favicon.png">
     <style>
-        body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;display:flex;justify-content:center;align-items:center;height:100vh;background-color:#3498db;margin:0;padding:15px;box-sizing:border-box}.game-container{text-align:center;width:100%}#status{color:#fff;font-size:1.3em;margin-bottom:20px;height:30px;font-weight:700}.simon-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px;max-width:400px;margin:0 auto}.simon-button{width:100%;aspect-ratio:1/1;border-radius:20px;cursor:pointer;border:5px solid #000;opacity:.6;transition:opacity .2s}.simon-button.active{opacity:1;transform:scale(1.05)}.simon-button.red{background-color:#c0392b}.simon-button.green{background-color:#27ae60}.simon-button.blue{background-color:#2980b9}.simon-button.yellow{background-color:#f1c40f}#start-button{margin-top:30px;padding:15px 30px;font-size:1.2em;border-radius:10px;border:none;background-color:#ecf0f1;cursor:pointer}
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #3498db;
+            margin: 0;
+            padding: 15px;
+            box-sizing: border-box;
+        }
+        .game-container {
+            text-align: center;
+            width: 100%;
+        }
+        #status {
+            color: #fff;
+            font-size: 1.3em;
+            margin-bottom: 20px;
+            height: 30px;
+            font-weight: bold;
+        }
+        .simon-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        .simon-button {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            border-radius: 20px;
+            cursor: pointer;
+            border: 5px solid #2c3e50;
+            opacity: 0.6;
+            transition: opacity 0.2s, transform 0.2s;
+        }
+        .simon-button.active {
+            opacity: 1;
+            transform: scale(1.05);
+        }
+        .simon-button.red { background-color: #e74c3c; }
+        .simon-button.green { background-color: #2ecc71; }
+        .simon-button.blue { background-color: #2980b9; }
+        .simon-button.yellow { background-color: #f1c40f; }
+        #start-button {
+            margin-top: 30px;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            border-radius: 10px;
+            border: none;
+            background-color: #ecf0f1;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -22,42 +76,55 @@
     </div>
 
     <script>
-        const colors = ['red', 'green', 'blue', 'yellow'];
         const statusEl = document.getElementById('status');
         const startButton = document.getElementById('start-button');
         const colorButtons = document.querySelectorAll('.simon-button');
+        const colors = ['red', 'green', 'blue', 'yellow'];
 
-        let sequence = [];
+        let gameSequence = [];
         let playerSequence = [];
         let level = 0;
         let isPlayerTurn = false;
 
-        function nextLevel() {
-            level++;
-            playerSequence = [];
-            isPlayerTurn = false;
-            statusEl.textContent = `Nivel ${level}`;
-            startButton.style.display = 'none';
+        // --- Lógica del Juego (Corregida y Mejorada) ---
 
-            // Añadir un nuevo color a la secuencia
+        function startGame() {
+            level = 0;
+            gameSequence = [];
+            startButton.style.display = 'none';
+            nextLevel();
+        }
+
+        function nextLevel() {
+            isPlayerTurn = false;
+            playerSequence = [];
+            level++;
+            statusEl.textContent = `Nivel ${level}`;
+
+            // Añadir un nuevo color a la secuencia del juego
             const nextColor = colors[Math.floor(Math.random() * colors.length)];
-            sequence.push(nextColor);
+            gameSequence.push(nextColor);
 
             playSequence();
         }
 
         function playSequence() {
+            // Deshabilitar clics mientras se muestra la secuencia
+            document.querySelector('.simon-grid').style.pointerEvents = 'none';
+            
             let i = 0;
             const interval = setInterval(() => {
-                if (i >= sequence.length) {
+                if (i >= gameSequence.length) {
                     clearInterval(interval);
+                    // Habilitar clics para el turno del jugador
+                    document.querySelector('.simon-grid').style.pointerEvents = 'auto';
+                    statusEl.textContent = 'Tu turno...';
                     isPlayerTurn = true;
-                    statusEl.textContent = 'Tu turno';
                     return;
                 }
-                lightUpButton(sequence[i]);
+                lightUpButton(gameSequence[i]);
                 i++;
-            }, 800); // Tiempo entre colores
+            }, 800); // Tiempo entre cada luz
         }
 
         function lightUpButton(color) {
@@ -65,42 +132,43 @@
             button.classList.add('active');
             setTimeout(() => {
                 button.classList.remove('active');
-            }, 400); // Duración del brillo
+            }, 400); // Duración de la luz
         }
 
         function handlePlayerClick(e) {
-            if (!isPlayerTurn) return;
+            if (!isPlayerTurn) return; // No hacer nada si no es el turno del jugador
 
             const clickedColor = e.target.dataset.color;
             lightUpButton(clickedColor);
             playerSequence.push(clickedColor);
 
-            // Comprobar si el clic es correcto
-            const lastIndex = playerSequence.length - 1;
-            if (playerSequence[lastIndex] !== sequence[lastIndex]) {
+            const currentIndex = playerSequence.length - 1;
+
+            // Comprobar si el último clic es correcto
+            if (playerSequence[currentIndex] !== gameSequence[currentIndex]) {
                 gameOver();
                 return;
             }
 
-            // Comprobar si la secuencia del jugador está completa
-            if (playerSequence.length === sequence.length) {
-                isPlayerTurn = false;
+            // Si el jugador ha completado la secuencia del nivel actual
+            if (playerSequence.length === gameSequence.length) {
                 statusEl.textContent = '¡Bien hecho!';
-                setTimeout(nextLevel, 1000);
+                isPlayerTurn = false;
+                setTimeout(nextLevel, 1000); // Pausa antes del siguiente nivel
             }
         }
 
         function gameOver() {
-            statusEl.textContent = `¡Fin del juego! Has llegado al nivel ${level}.`;
-            startButton.textContent = 'Volver a jugar';
+            statusEl.textContent = `¡Fin! Has llegado al nivel ${level}. Pulsa para jugar de nuevo.`;
             startButton.style.display = 'block';
-            sequence = [];
-            level = 0;
             isPlayerTurn = false;
         }
 
-        startButton.addEventListener('click', nextLevel);
-        colorButtons.forEach(button => button.addEventListener('click', handlePlayerClick));
+        // --- Event Listeners ---
+        startButton.addEventListener('click', startGame);
+        colorButtons.forEach(button => {
+            button.addEventListener('click', handlePlayerClick);
+        });
     </script>
 </body>
 </html>
