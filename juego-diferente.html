@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encuentra la Diferencia</title>
+	<link rel="icon" href="img/favicon.png">
+    <style>
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            background-color: #9b59b6; 
+            margin: 0; 
+        }
+        .game-container { 
+            width: 90%; 
+            max-width: 500px; 
+            background: white; 
+            padding: 20px; 
+            border-radius: 15px; 
+            text-align: center; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .header { 
+            font-size: 1.5em; 
+            margin-bottom: 15px; 
+            font-weight: bold;
+            color: #333;
+        }
+        #grid { 
+            display: grid; 
+            gap: 10px; 
+            margin-bottom: 15px; 
+        }
+        .shape { 
+            /* CORRECCIÓN: aspect-ratio asegura que el alto sea igual al ancho, creando un cuadrado. */
+            aspect-ratio: 1 / 1; 
+            background-color: #3498db; 
+            cursor: pointer; 
+            transition: transform 0.2s, background-color 0.2s; 
+            border-radius: 10%;
+        }
+        .shape:hover { 
+            transform: scale(1.1); 
+        }
+        #progress-bar { 
+            width: 100%; 
+            height: 10px; 
+            background-color: #ecf0f1; 
+            border-radius: 5px; 
+            overflow: hidden; 
+        }
+        #progress { 
+            width: 100%; 
+            height: 100%; 
+            background-color: #2ecc71; 
+            transition: width 0.1s linear; 
+        }
+        /* Estilos para la pantalla de fin de juego */
+        #grid h1 {
+            font-size: 2em;
+            color: #c0392b;
+        }
+        #grid p {
+            font-size: 1.2em;
+        }
+        #grid button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 1em;
+            border: none;
+            border-radius: 8px;
+            background-color: #3498db;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        #grid button:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="header">Nivel: <span id="level">1</span></div>
+        <div id="grid"></div>
+        <div id="progress-bar"><div id="progress"></div></div>
+    </div>
+
+    <script>
+        const grid = document.getElementById('grid');
+        const levelEl = document.getElementById('level');
+        const progressEl = document.getElementById('progress');
+
+        let level = 1;
+        let timer;
+        const baseTime = 5000; // 5 segundos de tiempo base
+
+        function nextLevel() {
+            levelEl.textContent = level;
+            grid.innerHTML = '';
+            clearInterval(timer);
+
+            // La cuadrícula crece con el nivel, hasta un máximo de 7x7
+            const gridSize = Math.min(Math.floor(level / 3) + 2, 7);
+            grid.style.gridTemplateColumns = `repeat(${gridSize}, 1fr)`;
+            
+            // La diferencia de color se hace más sutil a medida que avanza el nivel
+            const baseHue = Math.random() * 360;
+            const hueDifference = 180 / (level + 2); // La diferencia de tono disminuye
+            const baseColor = `hsl(${baseHue}, 80%, 50%)`;
+            const diffColor = `hsl(${baseHue + hueDifference}, 80%, 50%)`;
+            
+            // Se elige una posición aleatoria para la forma diferente
+            const diffIndex = Math.floor(Math.random() * gridSize * gridSize);
+
+            for (let i = 0; i < gridSize * gridSize; i++) {
+                const shape = document.createElement('div');
+                shape.classList.add('shape');
+                
+                if (i === diffIndex) {
+                    // Esta es la forma diferente
+                    shape.style.backgroundColor = diffColor;
+                    shape.addEventListener('click', () => {
+                        level++;
+                        nextLevel(); // Acierto: pasa al siguiente nivel
+                    });
+                } else {
+                    // Estas son las formas normales
+                    shape.style.backgroundColor = baseColor;
+                    shape.addEventListener('click', gameOver); // Fallo: termina el juego
+                }
+                
+                // A partir del nivel 5, pueden aparecer círculos para añadir dificultad
+                if (level > 5 && Math.random() > 0.9) {
+                    shape.style.borderRadius = '50%';
+                }
+
+                grid.appendChild(shape);
+            }
+            
+            startTimer();
+        }
+
+        function startTimer() {
+            // El tiempo se reduce con cada nivel, con un mínimo de 1.5 segundos
+            const timeForLevel = Math.max(baseTime - (level * 100), 1500);
+            
+            // Reiniciar la barra de progreso
+            progressEl.style.transition = 'none'; // Quitar transición para el reinicio instantáneo
+            progressEl.style.width = '100%';
+            
+            // Forzar un "reflow" para que el navegador aplique el cambio de estilo antes de la transición
+            void progressEl.offsetWidth; 
+
+            // Aplicar la transición de la cuenta atrás
+            progressEl.style.transition = `width ${timeForLevel / 1000}s linear`;
+            progressEl.style.width = '0%';
+
+            // Si el tiempo se agota, termina el juego
+            timer = setTimeout(gameOver, timeForLevel);
+        }
+
+        function gameOver() {
+            clearInterval(timer);
+            grid.innerHTML = `<h1>¡Fin del juego!</h1><p>Llegaste al nivel ${level}</p><button id="restart">Jugar de nuevo</button>`;
+            document.getElementById('restart').addEventListener('click', () => {
+                level = 1;
+                nextLevel();
+            });
+        }
+
+        // Iniciar el juego por primera vez
+        nextLevel();
+    </script>
+</body>
+</html>

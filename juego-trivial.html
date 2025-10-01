@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego de Trivial</title>
+	<link rel="icon" href="img/favicon.png">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #1abc9c; /* Color turquesa del menú */
+            margin: 0;
+            color: #333;
+        }
+
+        .contenedor {
+            width: 90%;
+            max-width: 600px;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            text-align: center;
+        }
+
+        .header-juego {
+            display: flex;
+            justify-content: space-between;
+            font-size: 1.3em;
+            color: #555;
+            margin-bottom: 25px;
+            font-weight: bold;
+        }
+
+        #pregunta {
+            font-size: 1.8em;
+            font-weight: 500;
+            min-height: 100px; /* Espacio para que no salte el diseño */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 30px 0;
+            color: #2c3e50;
+        }
+
+        .respuestas {
+            display: grid;
+            grid-template-columns: 1fr; /* Una columna para las respuestas */
+            gap: 15px;
+        }
+
+        .boton-respuesta {
+            padding: 20px;
+            font-size: 1.3em;
+            border: 2px solid #3498db;
+            background-color: #fff;
+            color: #3498db;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.2s, color 0.2s, transform 0.1s;
+        }
+
+        .boton-respuesta:hover {
+            background-color: #3498db;
+            color: #fff;
+            transform: translateY(-2px);
+        }
+        
+        .boton-respuesta:active {
+            transform: translateY(1px);
+        }
+
+        #fin-juego h1 {
+            color: #e74c3c;
+            font-size: 2.5em;
+        }
+
+        .puntuacion-grande {
+            font-size: 4.5em;
+            font-weight: bold;
+            color: #2ecc71;
+            margin: 20px 0;
+        }
+
+        #reiniciar {
+            padding: 15px 30px;
+            font-size: 1.2em;
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        #reiniciar:hover {
+            background-color: #27ae60;
+        }
+
+        .oculto {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Pantalla de juego principal -->
+    <div id="juego-activo" class="contenedor">
+        <div class="header-juego">
+            <p>Puntuación: <span id="puntuacion">0</span></p>
+            <p>Tiempo: <span id="tiempo">15</span>s</p>
+        </div>
+        <div id="pregunta"></div>
+        <div class="respuestas">
+            <button id="respuesta1" class="boton-respuesta"></button>
+            <button id="respuesta2" class="boton-respuesta"></button>
+        </div>
+    </div>
+
+    <!-- Pantalla de fin de juego (inicialmente oculta) -->
+    <div id="fin-juego" class="contenedor oculto">
+        <h1>¡Fin del juego!</h1>
+        <p>Tu puntuación final es:</p>
+        <p id="puntuacion-final" class="puntuacion-grande">0</p>
+        <button id="reiniciar">Volver a jugar</button>
+    </div>
+
+    <script>
+        // --- BANCO DE PREGUNTAS ---
+        // Puedes añadir más preguntas aquí fácilmente.
+        const bancoPreguntas = [
+            { pregunta: "¿Cuál es el río más largo del mundo?", respuestaCorrecta: "Amazonas", respuestaFalsa: "Nilo" },
+            { pregunta: "¿En qué año llegó el hombre a la Luna?", respuestaCorrecta: "1969", respuestaFalsa: "1965" },
+            { pregunta: "¿Quién escribió 'Cien años de soledad'?", respuestaCorrecta: "Gabriel García Márquez", respuestaFalsa: "Mario Vargas Llosa" },
+            { pregunta: "¿Cuál es el océano más grande del mundo?", respuestaCorrecta: "Océano Pacífico", respuestaFalsa: "Océano Atlántico" },
+            { pregunta: "¿Qué país tiene más habitantes?", respuestaCorrecta: "India", respuestaFalsa: "China" },
+            { pregunta: "¿Cuál es la capital de Australia?", respuestaCorrecta: "Canberra", respuestaFalsa: "Sídney" },
+            { pregunta: "¿Quién pintó la Mona Lisa?", respuestaCorrecta: "Leonardo da Vinci", respuestaFalsa: "Vincent van Gogh" },
+            { pregunta: "¿Cuál es el metal más ligero?", respuestaCorrecta: "Litio", respuestaFalsa: "Aluminio" },
+            { pregunta: "¿Cuántos continentes hay?", respuestaCorrecta: "Siete", respuestaFalsa: "Seis" }
+        ];
+
+        // Elementos del DOM
+        const juegoActivoEl = document.getElementById('juego-activo');
+        const finJuegoEl = document.getElementById('fin-juego');
+        const puntuacionEl = document.getElementById('puntuacion');
+        const tiempoEl = document.getElementById('tiempo');
+        const preguntaEl = document.getElementById('pregunta');
+        const respuesta1Btn = document.getElementById('respuesta1');
+        const respuesta2Btn = document.getElementById('respuesta2');
+        const puntuacionFinalEl = document.getElementById('puntuacion-final');
+        const reiniciarBtn = document.getElementById('reiniciar');
+
+        // Variables del estado del juego
+        let puntuacion;
+        let tiempoRestante;
+        let temporizador;
+        let preguntaActual;
+        let preguntasDisponibles = [];
+
+        function iniciarJuego() {
+            puntuacion = 0;
+            juegoActivoEl.classList.remove('oculto');
+            finJuegoEl.classList.add('oculto');
+            // Copiamos el banco de preguntas para poder manipularlo
+            preguntasDisponibles = [...bancoPreguntas];
+            siguienteRonda();
+        }
+
+        function siguienteRonda() {
+            puntuacionEl.textContent = puntuacion;
+            reiniciarTemporizador();
+            mostrarPregunta();
+        }
+
+        function mostrarPregunta() {
+            // Si no quedan preguntas, se reinicia el banco
+            if (preguntasDisponibles.length === 0) {
+                preguntasDisponibles = [...bancoPreguntas];
+            }
+
+            // Seleccionar y eliminar una pregunta al azar del array
+            const indicePregunta = Math.floor(Math.random() * preguntasDisponibles.length);
+            preguntaActual = preguntasDisponibles.splice(indicePregunta, 1)[0];
+
+            preguntaEl.textContent = preguntaActual.pregunta;
+
+            // Asignar respuestas a los botones de forma aleatoria
+            if (Math.random() > 0.5) {
+                respuesta1Btn.textContent = preguntaActual.respuestaCorrecta;
+                respuesta2Btn.textContent = preguntaActual.respuestaFalsa;
+            } else {
+                respuesta1Btn.textContent = preguntaActual.respuestaFalsa;
+                respuesta2Btn.textContent = preguntaActual.respuestaCorrecta;
+            }
+        }
+
+        function reiniciarTemporizador() {
+            clearInterval(temporizador);
+            tiempoRestante = 15;
+            tiempoEl.textContent = tiempoRestante;
+            temporizador = setInterval(() => {
+                tiempoRestante--;
+                tiempoEl.textContent = tiempoRestante;
+                if (tiempoRestante <= 0) {
+                    terminarJuego();
+                }
+            }, 1000);
+        }
+
+        function comprobarRespuesta(e) {
+            const respuestaSeleccionada = e.target.textContent;
+            
+            if (respuestaSeleccionada === preguntaActual.respuestaCorrecta) {
+                puntuacion++;
+                siguienteRonda();
+            } else {
+                terminarJuego();
+            }
+        }
+
+        function terminarJuego() {
+            clearInterval(temporizador);
+            juegoActivoEl.classList.add('oculto');
+            finJuegoEl.classList.remove('oculto');
+            puntuacionFinalEl.textContent = puntuacion;
+        }
+
+        // Event Listeners
+        respuesta1Btn.addEventListener('click', comprobarRespuesta);
+        respuesta2Btn.addEventListener('click', comprobarRespuesta);
+        reiniciarBtn.addEventListener('click', iniciarJuego);
+
+        // ¡Que comience el juego!
+        iniciarJuego();
+    </script>
+
+</body>
+</html>

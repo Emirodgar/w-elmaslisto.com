@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Efecto Stroop</title>
+	<link rel="icon" href="img/favicon.png">
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #bdc3c7; margin: 0; }
+        .game-container { width: 90%; max-width: 500px; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); text-align: center; }
+        .header { display: flex; justify-content: space-between; font-size: 1.5em; font-weight: bold; }
+        #word-display { font-size: 4em; font-weight: bold; margin: 50px 0; }
+        .options { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .option-btn { padding: 20px; font-size: 1.5em; border: none; border-radius: 10px; cursor: pointer; transition: transform 0.1s; }
+        .option-btn:active { transform: scale(0.95); }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="header">
+            <span>Puntuación: <span id="score">0</span></span>
+            <span>Tiempo: <span id="time">5</span></span>
+        </div>
+        <div id="word-display"></div>
+        <div class="options" id="options"></div>
+    </div>
+
+    <script>
+        const colors = {
+            'rojo': '#e74c3c',
+            'azul': '#3498db',
+            'verde': '#2ecc71',
+            'amarillo': '#f1c40f'
+        };
+        const colorNames = Object.keys(colors);
+
+        const scoreEl = document.getElementById('score');
+        const timeEl = document.getElementById('time');
+        const wordDisplay = document.getElementById('word-display');
+        const optionsContainer = document.getElementById('options');
+
+        let score = 0;
+        let timeLeft = 5;
+        let timer;
+        let correctColorName;
+
+        function nextRound() {
+            clearInterval(timer);
+            timeLeft = 5;
+            updateDisplay();
+
+            // 1. Elegir un texto y un color de tinta (que no coincidan)
+            let wordText = colorNames[Math.floor(Math.random() * colorNames.length)];
+            let wordColor;
+            do {
+                wordColor = colorNames[Math.floor(Math.random() * colorNames.length)];
+            } while (wordText === wordColor);
+            
+            correctColorName = wordColor; // La respuesta correcta es el color de la tinta
+
+            // 2. Mostrar la palabra
+            wordDisplay.textContent = wordText.toUpperCase();
+            wordDisplay.style.color = colors[wordColor];
+
+            // 3. Crear opciones de respuesta
+            const shuffledOptions = [...colorNames].sort(() => Math.random() - 0.5);
+            optionsContainer.innerHTML = '';
+            shuffledOptions.forEach(name => {
+                const button = document.createElement('button');
+                button.textContent = name.charAt(0).toUpperCase() + name.slice(1);
+                button.classList.add('option-btn');
+                button.style.backgroundColor = colors[name];
+                button.style.color = 'white';
+                button.addEventListener('click', () => checkAnswer(name));
+                optionsContainer.appendChild(button);
+            });
+
+            timer = setInterval(() => {
+                timeLeft--;
+                updateDisplay();
+                if (timeLeft <= 0) {
+                    gameOver();
+                }
+            }, 1000);
+        }
+
+        function checkAnswer(selectedColorName) {
+            if (selectedColorName === correctColorName) {
+                score++;
+                nextRound();
+            } else {
+                gameOver();
+            }
+        }
+
+        function gameOver() {
+            clearInterval(timer);
+            wordDisplay.style.color = '#000';
+            wordDisplay.textContent = `¡Fin! Puntuación: ${score}`;
+            optionsContainer.innerHTML = '<button id="restart">Jugar de nuevo</button>';
+            document.getElementById('restart').addEventListener('click', startGame);
+        }
+
+        function updateDisplay() {
+            scoreEl.textContent = score;
+            timeEl.textContent = timeLeft;
+        }
+
+        function startGame() {
+            score = 0;
+            nextRound();
+        }
+
+        startGame();
+    </script>
+</body>
+</html>

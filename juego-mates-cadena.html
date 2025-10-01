@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego de Mates en Cadena</title>
+	<link rel="icon" href="img/favicon.png">
+    
+    <style>
+        /* Estilos CSS (similares a la versión anterior para mantener la estética) */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #eef7ff;
+            margin: 0;
+            color: #333;
+        }
+
+        .contenedor {
+            width: 90%;
+            max-width: 420px;
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .header-juego {
+            display: flex;
+            justify-content: space-between;
+            font-size: 1.2em;
+            color: #555;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        #operacion {
+            font-size: 3.5em;
+            font-weight: bold;
+            margin: 40px 0;
+            color: #0056b3;
+        }
+
+        .respuestas {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .boton-respuesta {
+            padding: 20px;
+            font-size: 1.8em;
+            border: 2px solid #007bff;
+            background-color: #fff;
+            color: #007bff;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.2s, color 0.2s, transform 0.1s;
+        }
+
+        .boton-respuesta:hover {
+            background-color: #007bff;
+            color: #fff;
+            transform: translateY(-2px);
+        }
+        
+        .boton-respuesta:active {
+            transform: translateY(1px);
+        }
+
+        #fin-juego h1 {
+            color: #dc3545;
+            font-size: 2.5em;
+        }
+
+        .puntuacion-grande {
+            font-size: 4.5em;
+            font-weight: bold;
+            color: #28a745;
+            margin: 20px 0;
+        }
+
+        #reiniciar {
+            padding: 15px 30px;
+            font-size: 1.2em;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        #reiniciar:hover {
+            background-color: #218838;
+        }
+
+        .oculto {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Pantalla de juego principal -->
+    <div id="juego-activo" class="contenedor">
+        <div class="header-juego">
+            <p>Puntuación: <span id="puntuacion">0</span></p>
+            <p>Tiempo: <span id="tiempo">10</span>s</p>
+        </div>
+        <div id="operacion"></div>
+        <div class="respuestas">
+            <button id="respuesta1" class="boton-respuesta"></button>
+            <button id="respuesta2" class="boton-respuesta"></button>
+        </div>
+    </div>
+
+    <!-- Pantalla de fin de juego (inicialmente oculta) -->
+    <div id="fin-juego" class="contenedor oculto">
+        <h1>¡Fin del juego!</h1>
+        <p>Tu puntuación final es:</p>
+        <p id="puntuacion-final" class="puntuacion-grande">0</p>
+        <button id="reiniciar">Volver a jugar</button>
+    </div>
+
+    <script>
+        // Lógica del Juego en JavaScript (Versión 2)
+
+        // Elementos del DOM
+        const juegoActivoEl = document.getElementById('juego-activo');
+        const finJuegoEl = document.getElementById('fin-juego');
+        const puntuacionEl = document.getElementById('puntuacion');
+        const tiempoEl = document.getElementById('tiempo');
+        const operacionEl = document.getElementById('operacion');
+        const respuesta1Btn = document.getElementById('respuesta1');
+        const respuesta2Btn = document.getElementById('respuesta2');
+        const puntuacionFinalEl = document.getElementById('puntuacion-final');
+        const reiniciarBtn = document.getElementById('reiniciar');
+
+        // Variables del estado del juego
+        let puntuacion;
+        let tiempoRestante;
+        let temporizador;
+        let respuestaCorrecta;
+        let numeroActual; // Almacena el resultado para la siguiente operación
+
+        // Inicia el juego o lo reinicia
+        function iniciarJuego() {
+            puntuacion = 0;
+            // Empezamos con una operación simple para generar el primer 'numeroActual'
+            const num1 = Math.floor(Math.random() * 10) + 1;
+            const num2 = Math.floor(Math.random() * 10) + 1;
+            numeroActual = num1 + num2; // El primer resultado
+            
+            juegoActivoEl.classList.remove('oculto');
+            finJuegoEl.classList.add('oculto');
+            
+            // Mostramos la primera operación
+            puntuacionEl.textContent = puntuacion;
+            operacionEl.textContent = `${num1} + ${num2}`;
+            respuestaCorrecta = numeroActual;
+            generarRespuestas();
+            reiniciarTemporizador();
+        }
+
+        // Configura la siguiente ronda del juego
+        function siguienteRonda() {
+            puntuacion++;
+            puntuacionEl.textContent = puntuacion;
+            generarOperacion();
+            generarRespuestas();
+            reiniciarTemporizador();
+        }
+
+        // Genera la siguiente operación usando el resultado anterior
+        function generarOperacion() {
+            const num2 = Math.floor(Math.random() * 10) + 1; // El número a sumar/restar
+            const esSuma = Math.random() > 0.5;
+
+            if (esSuma) {
+                respuestaCorrecta = numeroActual + num2;
+                operacionEl.textContent = `${numeroActual} + ${num2}`;
+            } else {
+                // Si el número a restar es mayor, invertimos la operación para evitar negativos
+                if (num2 > numeroActual) {
+                    respuestaCorrecta = num2 - numeroActual;
+                    operacionEl.textContent = `${num2} - ${numeroActual}`;
+                } else {
+                    respuestaCorrecta = numeroActual - num2;
+                    operacionEl.textContent = `${numeroActual} - ${num2}`;
+                }
+            }
+        }
+        
+        // Genera y asigna las respuestas a los botones
+        function generarRespuestas() {
+            let respuestaIncorrecta;
+            do {
+                const desviacion = (Math.floor(Math.random() * 5) + 1) * (Math.random() > 0.5 ? 1 : -1);
+                respuestaIncorrecta = respuestaCorrecta + desviacion;
+            } while (respuestaIncorrecta === respuestaCorrecta || respuestaIncorrecta < 0);
+
+            if (Math.random() > 0.5) {
+                respuesta1Btn.textContent = respuestaCorrecta;
+                respuesta2Btn.textContent = respuestaIncorrecta;
+            } else {
+                respuesta1Btn.textContent = respuestaIncorrecta;
+                respuesta2Btn.textContent = respuestaCorrecta;
+            }
+        }
+
+        // Controla la cuenta atrás
+        function reiniciarTemporizador() {
+            clearInterval(temporizador);
+            tiempoRestante = 10;
+            tiempoEl.textContent = tiempoRestante;
+            temporizador = setInterval(() => {
+                tiempoRestante--;
+                tiempoEl.textContent = tiempoRestante;
+                if (tiempoRestante <= 0) {
+                    terminarJuego();
+                }
+            }, 1000);
+        }
+
+        // Procesa la respuesta del usuario
+        function comprobarRespuesta(e) {
+            const respuestaSeleccionada = parseInt(e.target.textContent);
+            
+            if (respuestaSeleccionada === respuestaCorrecta) {
+                numeroActual = respuestaCorrecta; // Actualizamos el número base para la siguiente ronda
+                siguienteRonda();
+            } else {
+                terminarJuego();
+            }
+        }
+
+        // Muestra la pantalla de fin de juego
+        function terminarJuego() {
+            clearInterval(temporizador);
+            juegoActivoEl.classList.add('oculto');
+            finJuegoEl.classList.remove('oculto');
+            puntuacionFinalEl.textContent = puntuacion;
+        }
+
+        // Añadimos los 'listeners' para los eventos de click
+        respuesta1Btn.addEventListener('click', comprobarRespuesta);
+        respuesta2Btn.addEventListener('click', comprobarRespuesta);
+        reiniciarBtn.addEventListener('click', iniciarJuego);
+
+        // ¡Que comience el juego!
+        iniciarJuego();
+    </script>
+
+</body>
+</html>

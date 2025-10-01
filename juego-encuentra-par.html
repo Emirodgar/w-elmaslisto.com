@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encuentra el Par</title>
+	<link rel="icon" href="img/favicon.png">
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f39c12; margin: 0; }
+        .game-board { display: grid; grid-template-columns: repeat(4, 100px); gap: 10px; perspective: 1000px; }
+        .card { width: 100px; height: 100px; position: relative; transform-style: preserve-3d; transition: transform 0.6s; cursor: pointer; }
+        .card.flipped, .card.matched { transform: rotateY(180deg); }
+        .card-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; justify-content: center; align-items: center; font-size: 40px; border-radius: 10px; }
+        .card-front { background-color: #3498db; color: white; }
+        .card-back { background-color: #ecf0f1; transform: rotateY(180deg); }
+        #info { position: absolute; top: 20px; font-size: 1.5em; color: white; background: rgba(0,0,0,0.2); padding: 10px 20px; border-radius: 10px; }
+    </style>
+</head>
+<body>
+    <div id="info">Tiempo: 0s | Intentos: 0</div>
+    <div class="game-board" id="game-board"></div>
+
+    <script>
+        const gameBoard = document.getElementById('game-board');
+        const infoEl = document.getElementById('info');
+        const emojis = ['🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼'];
+        const cardsArray = [...emojis, ...emojis];
+
+        let flippedCards = [];
+        let matchedPairs = 0;
+        let attempts = 0;
+        let timer = 0;
+        let timerInterval;
+
+        function shuffle(array) {
+            array.sort(() => Math.random() - 0.5);
+        }
+
+        function startGame() {
+            shuffle(cardsArray);
+            gameBoard.innerHTML = '';
+            flippedCards = [];
+            matchedPairs = 0;
+            attempts = 0;
+            timer = 0;
+            updateInfo();
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                timer++;
+                updateInfo();
+            }, 1000);
+
+            cardsArray.forEach(emoji => {
+                const card = document.createElement('div');
+                card.classList.add('card');
+                card.dataset.emoji = emoji;
+                card.innerHTML = `
+                    <div class="card-face card-front">?</div>
+                    <div class="card-face card-back">${emoji}</div>
+                `;
+                card.addEventListener('click', handleCardClick);
+                gameBoard.appendChild(card);
+            });
+        }
+
+        function handleCardClick(e) {
+            const clickedCard = e.currentTarget;
+            if (flippedCards.length < 2 && !clickedCard.classList.contains('flipped')) {
+                clickedCard.classList.add('flipped');
+                flippedCards.push(clickedCard);
+
+                if (flippedCards.length === 2) {
+                    attempts++;
+                    updateInfo();
+                    checkForMatch();
+                }
+            }
+        }
+
+        function checkForMatch() {
+            const [card1, card2] = flippedCards;
+            if (card1.dataset.emoji === card2.dataset.emoji) {
+                // Es un par
+                card1.classList.add('matched');
+                card2.classList.add('matched');
+                matchedPairs++;
+                flippedCards = [];
+                if (matchedPairs === emojis.length) {
+                    clearInterval(timerInterval);
+                    infoEl.textContent = `¡Ganaste en ${timer}s con ${attempts} intentos!`;
+                }
+            } else {
+                // No es un par
+                setTimeout(() => {
+                    card1.classList.remove('flipped');
+                    card2.classList.remove('flipped');
+                    flippedCards = [];
+                }, 1000);
+            }
+        }
+        
+        function updateInfo() {
+            infoEl.textContent = `Tiempo: ${timer}s | Intentos: ${attempts}`;
+        }
+
+        startGame();
+    </script>
+</body>
+</html>
