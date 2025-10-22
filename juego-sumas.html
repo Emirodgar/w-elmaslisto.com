@@ -7,44 +7,66 @@
 	<link rel="icon" href="img/favicon.png">
     
     <style>
-        body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;display:flex;justify-content:center;align-items:center;height:100vh;background-color:#e74c3c;margin:0;padding:15px;box-sizing:border-box}.contenedor{width:100%;max-width:600px;background:white;padding:20px;border-radius:15px;box-shadow:0 6px 12px rgba(0,0,0,.15);text-align:center}.header-juego{display:flex;justify-content:space-between;font-size:1.1em;color:#555;margin-bottom:20px;font-weight:700}#operacion{font-size:2.5em;font-weight:700;min-height:80px;display:flex;align-items:center;justify-content:center;margin:20px 0;color:#2c3e50}.respuestas{display:grid;grid-template-columns:1fr 1fr;gap:10px}.boton-respuesta{padding:15px;font-size:1.5em;border:2px solid #3498db;background-color:#fff;color:#3498db;border-radius:10px;cursor:pointer;transition:background-color .2s,color .2s,transform .1s}.boton-respuesta:hover{background-color:#3498db;color:#fff;transform:translateY(-2px)}.boton-respuesta:active{transform:translateY(1px)}#fin-juego h1{font-size:2em;color:#c0392b}.puntuacion-grande{font-size:4em;font-weight:700;color:#2ecc71;margin:20px 0}#reiniciar{padding:15px 25px;font-size:1.1em;background-color:#2ecc71;color:white;border:none;border-radius:8px;cursor:pointer}.oculto{display:none}@media (min-width:768px){.contenedor{padding:30px}.header-juego{font-size:1.3em}#operacion{font-size:3.5em}#fin-juego h1{font-size:2.5em}.puntuacion-grande{font-size:4.5em}}
+        /* El padding: 15px del body crea el espacio lateral que necesitas */
+        body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;display:flex;justify-content:center;align-items:center;min-height:100vh;background-color:#e74c3c;margin:0;padding:15px;box-sizing:border-box}
+
+        /* --- CAMBIO AQUÍ: Añadimos estilos para el .wrapper --- */
+        .wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 600px; /* El max-width se mueve aquí */
+        }
+
+        /* --- CAMBIO AQUÍ: El contenedor ahora solo ocupa el 100% de su padre (el wrapper) --- */
+        .contenedor{width:100%;background:white;padding:20px;border-radius:15px;box-shadow:0 6px 12px rgba(0,0,0,.15);text-align:center;box-sizing:border-box;}
+
+        .header-juego{display:flex;justify-content:space-between;font-size:1.1em;color:#555;margin-bottom:20px;font-weight:700}#operacion{font-size:2.5em;font-weight:700;min-height:80px;display:flex;align-items:center;justify-content:center;margin:20px 0;color:#2c3e50}.respuestas{display:grid;grid-template-columns:1fr 1fr;gap:10px}.boton-respuesta{padding:15px;font-size:1.5em;border:2px solid #3498db;background-color:#fff;color:#3498db;border-radius:10px;cursor:pointer;transition:background-color .2s,color .2s,transform .1s}.boton-respuesta:hover{background-color:#3498db;color:#fff;transform:translateY(-2px)}.boton-respuesta:active{transform:translateY(1px)}#fin-juego h1{font-size:2em;color:#c0392b}.puntuacion-grande{font-size:4em;font-weight:700;color:#2ecc71;margin:20px 0}#reiniciar{padding:15px 25px;font-size:1.1em;background-color:#2ecc71;color:white;border:none;border-radius:8px;cursor:pointer}.oculto{display:none}@media (min-width:768px){.contenedor{padding:30px}.header-juego{font-size:1.3em}#operacion{font-size:3.5em}#fin-juego h1{font-size:2.5em}.puntuacion-grande{font-size:4.5em}}
 		.home-link {
-    display: block;
-    text-align: center;
-    margin-top: 25px;
-    font-weight: bold;
-    color: rgba(255, 255, 255, 0.8);
-    text-decoration: none;
-    transition: color 0.2s;
-}
+            display: block;
+            text-align: center;
+            margin-top: 25px;
+            font-weight: bold;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: color 0.2s, transform 0.2s;
+        }
+        .home-link:hover {
+            color: #fff;
+            transform: scale(1.05);
+        }
     </style>
 </head>
 <body>
-    <!-- Pantalla de juego principal -->
-    <div id="juego-activo" class="contenedor">
-        <div class="header-juego">
-            <p>Puntuación: <span id="puntuacion">0</span></p>
-            <p>Tiempo: <span id="tiempo">10</span>s</p>
+    <!-- --- CAMBIO AQUÍ: Envolvemos todo en el .wrapper --- -->
+    <div class="wrapper">
+        <!-- Pantalla de juego principal -->
+        <div id="juego-activo" class="contenedor">
+            <div class="header-juego">
+                <p>Puntuación: <span id="puntuacion">0</span></p>
+                <p>Tiempo: <span id="tiempo">10</span>s</p>
+            </div>
+            <div id="operacion">8 + 15</div>
+            <div class="respuestas">
+                <button id="respuesta1" class="boton-respuesta">23</button>
+                <button id="respuesta2" class="boton-respuesta">21</button>
+            </div>
         </div>
-        <div id="operacion">8 + 15</div>
-        <div class="respuestas">
-            <button id="respuesta1" class="boton-respuesta">23</button>
-            <button id="respuesta2" class="boton-respuesta">21</button>
+
+        <!-- Pantalla de fin de juego (inicialmente oculta) -->
+        <div id="fin-juego" class="contenedor oculto">
+            <h1>¡Fin del juego!</h1>
+            <p>Tu puntuación final es:</p>
+            <p id="puntuacion-final" class="puntuacion-grande">0</p>
+            <button id="reiniciar">Volver a jugar</button>
         </div>
-    </div>
-    <a href="index.html" class="home-link">Volver al menú</a>
-    <!-- Pantalla de fin de juego (inicialmente oculta) -->
-    <div id="fin-juego" class="contenedor oculto">
-        <h1>¡Fin del juego!</h1>
-        <p>Tu puntuación final es:</p>
-        <p id="puntuacion-final" class="puntuacion-grande">0</p>
-        <button id="reiniciar">Volver a jugar</button>
+
+        <a href="index.html" class="home-link">Volver al menú</a>
     </div>
 
     <script>
-        // Lógica del Juego en JavaScript
-
-        // Elementos del DOM
+        // El JavaScript no necesita cambios
         const juegoActivoEl = document.getElementById('juego-activo');
         const finJuegoEl = document.getElementById('fin-juego');
         const puntuacionEl = document.getElementById('puntuacion');
@@ -54,14 +76,8 @@
         const respuesta2Btn = document.getElementById('respuesta2');
         const puntuacionFinalEl = document.getElementById('puntuacion-final');
         const reiniciarBtn = document.getElementById('reiniciar');
+        let puntuacion, tiempoRestante, temporizador, respuestaCorrecta;
 
-        // Variables del estado del juego
-        let puntuacion;
-        let tiempoRestante;
-        let temporizador;
-        let respuestaCorrecta;
-
-        // Inicia el juego o lo reinicia
         function iniciarJuego() {
             puntuacion = 0;
             juegoActivoEl.classList.remove('oculto');
@@ -69,38 +85,30 @@
             siguienteRonda();
         }
 
-        // Configura la siguiente ronda del juego
         function siguienteRonda() {
             puntuacionEl.textContent = puntuacion;
             reiniciarTemporizador();
             generarOperacion();
         }
 
-        // Genera una nueva operación matemática (suma o resta)
         function generarOperacion() {
             const num1 = Math.floor(Math.random() * 99) + 1;
             const num2 = Math.floor(Math.random() * 99) + 1;
             const esSuma = Math.random() > 0.5;
-
             if (esSuma) {
                 respuestaCorrecta = num1 + num2;
                 operacionEl.textContent = `${num1} + ${num2}`;
             } else {
-                // Para evitar resultados negativos, siempre restamos el menor del mayor
                 const mayor = Math.max(num1, num2);
                 const menor = Math.min(num1, num2);
                 respuestaCorrecta = mayor - menor;
                 operacionEl.textContent = `${mayor} - ${menor}`;
             }
-
-            // Generamos una respuesta incorrecta cercana a la correcta
             let respuestaIncorrecta;
             do {
                 const desviacion = (Math.floor(Math.random() * 10) + 1) * (Math.random() > 0.5 ? 1 : -1);
                 respuestaIncorrecta = respuestaCorrecta + desviacion;
-            } while (respuestaIncorrecta === respuestaCorrecta || respuestaIncorrecta < 0); // Evita que la incorrecta sea igual o negativa
-
-            // Asignamos las respuestas a los botones de forma aleatoria
+            } while (respuestaIncorrecta === respuestaCorrecta || respuestaIncorrecta < 0);
             if (Math.random() > 0.5) {
                 respuesta1Btn.textContent = respuestaCorrecta;
                 respuesta2Btn.textContent = respuestaIncorrecta;
@@ -110,9 +118,8 @@
             }
         }
 
-        // Controla la cuenta atrás de 10 segundos
         function reiniciarTemporizador() {
-            clearInterval(temporizador); // Limpiamos cualquier temporizador anterior
+            clearInterval(temporizador);
             tiempoRestante = 10;
             tiempoEl.textContent = tiempoRestante;
             temporizador = setInterval(() => {
@@ -124,11 +131,8 @@
             }, 1000);
         }
 
-        // Procesa la respuesta del usuario
         function comprobarRespuesta(e) {
-            // Usamos parseInt para convertir el texto del botón a número
             const respuestaSeleccionada = parseInt(e.target.textContent);
-            
             if (respuestaSeleccionada === respuestaCorrecta) {
                 puntuacion++;
                 siguienteRonda();
@@ -137,7 +141,6 @@
             }
         }
 
-        // Muestra la pantalla de fin de juego
         function terminarJuego() {
             clearInterval(temporizador);
             juegoActivoEl.classList.add('oculto');
@@ -145,14 +148,10 @@
             puntuacionFinalEl.textContent = puntuacion;
         }
 
-        // Añadimos los 'listeners' para los eventos de click
         respuesta1Btn.addEventListener('click', comprobarRespuesta);
         respuesta2Btn.addEventListener('click', comprobarRespuesta);
         reiniciarBtn.addEventListener('click', iniciarJuego);
-
-        // ¡Que comience el juego!
         iniciarJuego();
     </script>
-
 </body>
 </html>

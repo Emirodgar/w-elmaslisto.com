@@ -6,17 +6,28 @@
     <title>Simón Dice</title>
     <link rel="icon" href="img/favicon.png">
     <style>
+        /* El padding: 15px del body crea el espacio lateral que necesitas */
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
             background-color: #2c3e50;
             margin: 0;
             padding: 15px;
             box-sizing: border-box;
         }
+
+        /* --- CAMBIO AQUÍ: Añadimos estilos para el .wrapper --- */
+        .wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            /* El max-width lo controla el .simon-grid, así que el wrapper se adapta */
+        }
+
         .game-container {
             text-align: center;
             width: 100%;
@@ -28,7 +39,7 @@
         #status {
             color: #fff;
             font-size: 1.3em;
-            margin-bottom: 25px; /* Aumentado para más espacio */
+            margin-bottom: 25px;
             height: 30px;
             font-weight: bold;
         }
@@ -37,8 +48,6 @@
             grid-template-columns: 1fr 1fr;
             gap: 15px;
             width: 100%;
-            /* --- AJUSTE PRINCIPAL AQUÍ --- */
-            /* Reducimos el tamaño máximo de la cuadrícula */
             max-width: 260px; 
             margin: 0 auto;
         }
@@ -73,31 +82,39 @@
             font-weight: bold;
         }
 		.home-link {
-    display: block;
-    text-align: center;
-    margin-top: 25px;
-    font-weight: bold;
-    color: rgba(255, 255, 255, 0.8);
-    text-decoration: none;
-    transition: color 0.2s;
-}
+            display: block;
+            text-align: center;
+            margin-top: 25px;
+            font-weight: bold;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: color 0.2s, transform 0.2s;
+        }
+        .home-link:hover {
+            color: #fff;
+            transform: scale(1.05);
+        }
     </style>
 </head>
 <body>
 
-    <div class="game-container">
-        <div id="status">Pulsa "Empezar" para jugar</div>
-        <div class="simon-grid">
-            <div class="simon-button red" data-color="red"></div>
-            <div class="simon-button green" data-color="green"></div>
-            <div class="simon-button blue" data-color="blue"></div>
-            <div class="simon-button yellow" data-color="yellow"></div>
+    <!-- --- CAMBIO AQUÍ: Envolvemos todo en el .wrapper --- -->
+    <div class="wrapper">
+        <div class="game-container">
+            <div id="status">Pulsa "Empezar" para jugar</div>
+            <div class="simon-grid">
+                <div class="simon-button red" data-color="red"></div>
+                <div class="simon-button green" data-color="green"></div>
+                <div class="simon-button blue" data-color="blue"></div>
+                <div class="simon-button yellow" data-color="yellow"></div>
+            </div>
+            <button id="start-button">Empezar</button>
         </div>
-        <button id="start-button">Empezar</button>
+        <a href="index.html" class="home-link">Volver al menú</a>
     </div>
-    <a href="index.html" class="home-link">Volver al menú</a>
+    
     <script>
-        // El JavaScript funcional no ha cambiado.
+        // El JavaScript no necesita cambios
         const statusEl = document.getElementById('status');
         const startButton = document.getElementById('start-button');
         const colorButtons = document.querySelectorAll('.simon-button');
@@ -169,6 +186,7 @@
         function gameOver() {
             statusEl.textContent = `¡Fin! Nivel ${level}. Pulsa para jugar de nuevo.`;
             startButton.style.display = 'block';
+            startButton.textContent = 'Jugar de nuevo';
             isPlayerTurn = false;
         }
 
