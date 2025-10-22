@@ -31,10 +31,68 @@
 
     <script>
         const words = [
-            { word: "CAT", image: "https://img.icons8.com/plasticine/200/cat.png" },
-            { word: "SUN", image: "https://img.icons8.com/plasticine/200/sun.png" },
-            { word: "BALL", image: "https://img.icons8.com/plasticine/200/football2.png" }
-        ];
+    // Animales
+    { word: "CAT", image: "https://img.icons8.com/plasticine/200/cat.png" },
+    { word: "DOG", image: "https://img.icons8.com/plasticine/200/dog.png" },
+    { word: "PIG", image: "https://img.icons8.com/plasticine/200/pig.png" },
+    { word: "BEE", image: "https://img.icons8.com/plasticine/200/bee.png" },
+    { word: "LION", image: "https://img.icons8.com/plasticine/200/lion.png" },
+    { word: "FISH", image: "https://img.icons8.com/plasticine/200/fish.png" },
+    { word: "BIRD", image: "https://img.icons8.com/plasticine/200/bird.png" },
+    { word: "FROG", image: "https://img.icons8.com/plasticine/200/frog.png" },
+    { word: "COW", image: "https://img.icons8.com/plasticine/200/cow.png" },
+    { word: "FOX", image: "https://img.icons8.com/plasticine/200/fox.png" },
+    { word: "BEAR", image: "https://img.icons8.com/plasticine/200/bear.png" },
+    { word: "DUCK", image: "https://img.icons8.com/plasticine/200/duck.png" },
+    
+    // Comida
+    { word: "EGG", image: "https://img.icons8.com/plasticine/200/egg.png" },
+    { word: "CAKE", image: "https://img.icons8.com/plasticine/200/cake.png" },
+    { word: "APPLE", image: "https://img.icons8.com/plasticine/200/apple.png" },
+    { word: "BREAD", image: "https://img.icons8.com/plasticine/200/bread.png" },
+    { word: "MILK", image: "https://img.icons8.com/plasticine/200/milk-bottle.png" },
+    { word: "CHEESE", image: "https://img.icons8.com/plasticine/200/cheese.png" },
+    { word: "ORANGE", image: "https://img.icons8.com/plasticine/200/orange.png" },
+    { word: "LEMON", image: "https://img.icons8.com/plasticine/200/lemon.png" },
+    { word: "GRAPE", image: "https://img.icons8.com/plasticine/200/grapes.png" },
+    { word: "PEAR", image: "https://img.icons8.com/plasticine/200/pear.png" },
+
+    // Naturaleza
+    { word: "SUN", image: "https://img.icons8.com/plasticine/200/sun.png" },
+    { word: "MOON", image: "https://img.icons8.com/plasticine/200/moon.png" },
+    { word: "STAR", image: "https://img.icons8.com/plasticine/200/star.png" },
+    { word: "TREE", image: "https://img.icons8.com/plasticine/200/tree.png" },
+    { word: "FLOWER", image: "https://img.icons8.com/plasticine/200/flower.png" },
+    { word: "CLOUD", image: "https://img.icons8.com/plasticine/200/cloud.png" },
+    { word: "WATER", image: "https://img.icons8.com/plasticine/200/water.png" },
+    { word: "FIRE", image: "https://img.icons8.com/plasticine/200/fire.png" },
+
+    // Objetos y Lugares
+    { word: "BALL", image: "https://img.icons8.com/plasticine/200/football2.png" },
+    { word: "CAR", image: "https://img.icons8.com/plasticine/200/car.png" },
+    { word: "HOUSE", image: "https://img.icons8.com/plasticine/200/home.png" },
+    { word: "BOOK", image: "https://img.icons8.com/plasticine/200/book.png" },
+    { word: "KEY", image: "https://img.icons8.com/plasticine/200/key.png" },
+    { word: "DOOR", image: "https://img.icons8.com/plasticine/200/door.png" },
+    { word: "BED", image: "https://img.icons8.com/plasticine/200/bed.png" },
+    { word: "CHAIR", image: "https://img.icons8.com/plasticine/200/chair.png" },
+    { word: "TABLE", image: "https://img.icons8.com/plasticine/200/table.png" },
+    { word: "CLOCK", image: "https://img.icons8.com/plasticine/200/clock.png" },
+    { word: "GIFT", image: "https://img.icons8.com/plasticine/200/gift.png" },
+    { word: "BOAT", image: "https://img.icons8.com/plasticine/200/boat.png" },
+    
+    // Colores y Formas
+    { word: "RED", image: "https://img.icons8.com/plasticine/200/paint-palette.png" }, // Imagen genérica
+    { word: "BLUE", image: "https://img.icons8.com/plasticine/200/paint-palette.png" }, // Imagen genérica
+    { word: "GREEN", image: "https://img.icons8.com/plasticine/200/paint-palette.png" }, // Imagen genérica
+    { word: "BOX", image: "https://img.icons8.com/plasticine/200/box.png" },
+    
+    // Partes del cuerpo
+    { word: "EYE", image: "https://img.icons8.com/plasticine/200/eye.png" },
+    { word: "HAND", image: "https://img.icons8.com/plasticine/200/hand.png" },
+    { word: "FOOT", image: "https://img.icons8.com/plasticine/200/foot.png" }
+];
+
         let currentWord;
         const imageEl = document.getElementById('main-image' );
         const slotsEl = document.getElementById('slots');
