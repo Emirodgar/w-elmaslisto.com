@@ -6,38 +6,101 @@
     <title>¿Qué es esto?</title>
     <link rel="icon" href="img/favicon.png">
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #78c8ff; margin: 0; padding: 15px; box-sizing: border-box; }
-        .game-container { width: 100%; max-width: 450px; background: #fff; padding: 25px; border-radius: 20px; box-shadow: 0 8px 0 #4a90e2; text-align: center; }
-        #main-image { max-width: 70%; height: auto; margin: 20px 0; border-radius: 15px; border: 5px solid #eee; }
-        .options { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
-        .option-btn { padding: 20px; font-size: 1.5em; font-weight: bold; border: 2px solid #ddd; background-color: #f9f9f9; border-radius: 15px; cursor: pointer; box-shadow: 0 4px 0 #ddd; transition: all 0.1s; }
-        .option-btn:active { transform: translateY(4px); box-shadow: 0 0 0 #ddd; }
-        .correct { background-color: #d7ffb8; border-color: #8ac926; box-shadow: 0 4px 0 #8ac926; }
-        .incorrect { background-color: #ffdfe0; border-color: #ff5c5c; box-shadow: 0 4px 0 #ff5c5c; }
+        /* --- CAMBIO EN EL CSS --- */
+        /* Ahora el body centra a su único hijo, .wrapper */
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            flex-direction: column; /* Asegura el apilamiento vertical */
+            height: 100vh; 
+            background-color: #78c8ff; 
+            margin: 0; 
+            padding: 15px; 
+            box-sizing: border-box; 
+        }
+        .game-container { 
+            width: 100%; 
+            max-width: 450px; 
+            background: #fff; 
+            padding: 25px; 
+            border-radius: 20px; 
+            box-shadow: 0 8px 0 #4a90e2; 
+            text-align: center; 
+        }
+        #main-image { 
+            max-width: 70%; 
+            height: auto; 
+            margin: 20px 0; 
+            border-radius: 15px; 
+            border: 5px solid #eee; 
+        }
+        .options { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 15px; 
+            margin-top: 20px; 
+        }
+        .option-btn { 
+            padding: 20px; 
+            font-size: 1.5em; 
+            font-weight: bold; 
+            border: 2px solid #ddd; 
+            background-color: #f9f9f9; 
+            border-radius: 15px; 
+            cursor: pointer; 
+            box-shadow: 0 4px 0 #ddd; 
+            transition: all 0.1s; 
+        }
+        .option-btn:active { 
+            transform: translateY(4px); 
+            box-shadow: 0 0 0 #ddd; 
+        }
+        .correct { 
+            background-color: #d7ffb8; 
+            border-color: #8ac926; 
+            box-shadow: 0 4px 0 #8ac926; 
+        }
+        .incorrect { 
+            background-color: #ffdfe0; 
+            border-color: #ff5c5c; 
+            box-shadow: 0 4px 0 #ff5c5c; 
+        }
 		.home-link {
-    display: block;
-    text-align: center;
-    margin-top: 25px;
-    font-weight: bold;
-    color: rgba(255, 255, 255, 0.8);
-    text-decoration: none;
-    transition: color 0.2s;
-}
+            display: block;
+            text-align: center;
+            margin-top: 25px;
+            padding: 10px;
+            font-weight: bold;
+            font-size: 1.1em;
+            color: rgba(255, 255, 255, 0.85);
+            text-decoration: none;
+            transition: color 0.2s, transform 0.2s;
+        }
+        .home-link:hover {
+            color: #fff;
+            transform: scale(1.05);
+        }
     </style>
 </head>
 <body>
 
-    <div class="game-container">
-        <img id="main-image" src="" alt="Imagen del objeto a adivinar">
-        <div class="options" id="options"></div>
+    <!-- --- CAMBIO 1 EN HTML: Añadimos un div "wrapper" --- -->
+    <div class="wrapper">
+        <div class="game-container">
+            <img id="main-image" src="" alt="Imagen del objeto a adivinar">
+            <div class="options" id="options"></div>
+        </div>
+        <a href="index.html" class="home-link">Volver al menú</a>
     </div>
-	    <a href="index.html" class="home-link">Volver al menú</a>
+    <!-- --- FIN DEL CAMBIO EN HTML --- -->
+
     <script>
+        // El JavaScript no necesita cambios, pero lo incluyo para que el código esté completo.
+        // (He añadido el array de 100 palabras que me pediste antes)
         const vocabulary = [
-            { word: "Apple", image: "https://img.icons8.com/plasticine/200/apple.png", options: ["Apple", "Banana"] },
-            { word: "Dog", image: "https://img.icons8.com/plasticine/200/dog.png", options: ["Dog", "Cat"] },
-            { word: "Sun", image: "https://img.icons8.com/plasticine/200/sun.png", options: ["Moon", "Sun"] },
-            { word: "Car", image: "https://img.icons8.com/plasticine/200/car.png", options: ["Car", "Bus"] }
+            { word: "Dog", image: "https://img.icons8.com/plasticine/200/dog.png", options: ["Dog", "Cat"] },{ word: "Cat", image: "https://img.icons8.com/plasticine/200/cat.png", options: ["Cat", "Rat"] },{ word: "Fish", image: "https://img.icons8.com/plasticine/200/fish.png", options: ["Fish", "Bird"] },{ word: "Bird", image: "https://img.icons8.com/plasticine/200/bird.png", options: ["Bird", "Bee"] },{ word: "Lion", image: "https://img.icons8.com/plasticine/200/lion.png", options: ["Lion", "Tiger"] },{ word: "Bear", image: "https://img.icons8.com/plasticine/200/bear.png", options: ["Bear", "Deer"] },{ word: "Cow", image: "https://img.icons8.com/plasticine/200/cow.png", options: ["Cow", "Pig"] },{ word: "Pig", image: "https://img.icons8.com/plasticine/200/pig.png", options: ["Pig", "Goat"] },{ word: "Frog", image: "https://img.icons8.com/plasticine/200/frog.png", options: ["Frog", "Snake"] },{ word: "Bee", image: "https://img.icons8.com/plasticine/200/bee.png", options: ["Bee", "Fly"] },{ word: "Duck", image: "https://img.icons8.com/plasticine/200/duck.png", options: ["Duck", "Hen"] },{ word: "Fox", image: "https://img.icons8.com/plasticine/200/fox.png", options: ["Fox", "Wolf"] },{ word: "Horse", image: "https://img.icons8.com/plasticine/200/horse.png", options: ["Horse", "Zebra"] },{ word: "Mouse", image: "https://img.icons8.com/plasticine/200/mouse.png", options: ["Mouse", "Hamster"] },{ word: "Monkey", image: "https://img.icons8.com/plasticine/200/monkey.png", options: ["Monkey", "Gorilla"] },{ word: "Sheep", image: "https://img.icons8.com/plasticine/200/sheep.png", options: ["Sheep", "Lamb"] },{ word: "Snake", image: "https://img.icons8.com/plasticine/200/snake.png", options: ["Snake", "Worm"] },{ word: "Spider", image: "https://img.icons8.com/plasticine/200/spider.png", options: ["Spider", "Scorpion"] },{ word: "Tiger", image: "https://img.icons8.com/plasticine/200/tiger.png", options: ["Tiger", "Leopard"] },{ word: "Wolf", image: "https://img.icons8.com/plasticine/200/wolf.png", options: ["Wolf", "Coyote"] },{ word: "Zebra", image: "https://img.icons8.com/plasticine/200/zebra.png", options: ["Zebra", "Donkey"] },{ word: "Owl", image: "https://img.icons8.com/plasticine/200/owl.png", options: ["Owl", "Eagle"] },{ word: "Bat", image: "https://img.icons8.com/plasticine/200/bat.png", options: ["Bat", "Rat"] },{ word: "Crab", image: "https://img.icons8.com/plasticine/200/crab.png", options: ["Crab", "Lobster"] },{ word: "Snail", image: "https://img.icons8.com/plasticine/200/snail.png", options: ["Snail", "Slug"] },{ word: "Apple", image: "https://img.icons8.com/plasticine/200/apple.png", options: ["Apple", "Peach"] },{ word: "Banana", image: "https://img.icons8.com/plasticine/200/banana.png", options: ["Banana", "Cucumber"] },{ word: "Bread", image: "https://img.icons8.com/plasticine/200/bread.png", options: ["Bread", "Toast"] },{ word: "Cake", image: "https://img.icons8.com/plasticine/200/cake.png", options: ["Cake", "Pie"] },{ word: "Cheese", image: "https://img.icons8.com/plasticine/200/cheese.png", options: ["Cheese", "Butter"] },{ word: "Egg", image: "https://img.icons8.com/plasticine/200/egg.png", options: ["Egg", "Onion"] },{ word: "Orange", image: "https://img.icons8.com/plasticine/200/orange.png", options: ["Orange", "Grapefruit"] },{ word: "Milk", image: "https://img.icons8.com/plasticine/200/milk-bottle.png", options: ["Milk", "Water"] },{ word: "Pizza", image: "https://img.icons8.com/plasticine/200/pizza.png", options: ["Pizza", "Burger"] },{ word: "Lemon", image: "https://img.icons8.com/plasticine/200/lemon.png", options: ["Lemon", "Lime"] },{ word: "Grape", image: "https://img.icons8.com/plasticine/200/grapes.png", options: ["Grape", "Cherry"] },{ word: "Pear", image: "https://img.icons8.com/plasticine/200/pear.png", options: ["Pear", "Plum"] },{ word: "Carrot", image: "https://img.icons8.com/plasticine/200/carrot.png", options: ["Carrot", "Potato"] },{ word: "Cookie", image: "https://img.icons8.com/plasticine/200/cookie.png", options: ["Cookie", "Cracker"] },{ word: "Donut", image: "https://img.icons8.com/plasticine/200/doughnut.png", options: ["Donut", "Bagel"] },{ word: "Fries", image: "https://img.icons8.com/plasticine/200/french-fries.png", options: ["Fries", "Chips"] },{ word: "Juice", image: "https://img.icons8.com/plasticine/200/juice.png", options: ["Juice", "Soda"] },{ word: "Meat", image: "https://img.icons8.com/plasticine/200/steak.png", options: ["Meat", "Bacon"] },{ word: "Salad", image: "https://img.icons8.com/plasticine/200/salad.png", options: ["Salad", "Soup"] },{ word: "Rice", image: "https://img.icons8.com/plasticine/200/rice-bowl.png", options: ["Rice", "Pasta"] },{ word: "Tomato", image: "https://img.icons8.com/plasticine/200/tomato.png", options: ["Tomato", "Pepper"] },{ word: "Mushroom", image: "https://img.icons8.com/plasticine/200/mushroom.png", options: ["Mushroom", "Broccoli"] },{ word: "Corn", image: "https://img.icons8.com/plasticine/200/corn.png", options: ["Corn", "Peas"] },{ word: "Honey", image: "https://img.icons8.com/plasticine/200/honey.png", options: ["Honey", "Jam"] },{ word: "Watermelon", image: "https://img.icons8.com/plasticine/200/watermelon.png", options: ["Watermelon", "Melon"] },{ word: "Sun", image: "https://img.icons8.com/plasticine/200/sun.png", options: ["Sun", "Star"] },{ word: "Moon", image: "https://img.icons8.com/plasticine/200/moon.png", options: ["Moon", "Planet"] },{ word: "Star", image: "https://img.icons8.com/plasticine/200/star.png", options: ["Star", "Comet"] },{ word: "Cloud", image: "https://img.icons8.com/plasticine/200/cloud.png", options: ["Cloud", "Fog"] },{ word: "Rain", image: "https://img.icons8.com/plasticine/200/rain.png", options: ["Rain", "Snow"] },{ word: "Snow", image: "https://img.icons8.com/plasticine/200/snow.png", options: ["Snow", "Ice"] },{ word: "Tree", image: "https://img.icons8.com/plasticine/200/tree.png", options: ["Tree", "Bush"] },{ word: "Flower", image: "https://img.icons8.com/plasticine/200/flower.png", options: ["Flower", "Leaf"] },{ word: "Water", image: "https://img.icons8.com/plasticine/200/water.png", options: ["Water", "River"] },{ word: "Fire", image: "https://img.icons8.com/plasticine/200/fire.png", options: ["Fire", "Smoke"] },{ word: "Mountain", image: "https://img.icons8.com/plasticine/200/mountain.png", options: ["Mountain", "Hill"] },{ word: "Beach", image: "https://img.icons8.com/plasticine/200/beach.png", options: ["Beach", "Desert"] },{ word: "Island", image: "https://img.icons8.com/plasticine/200/island.png", options: ["Island", "Volcano"] },{ word: "Rainbow", image: "https://img.icons8.com/plasticine/200/rainbow.png", options: ["Rainbow", "Tornado"] },{ word: "Leaf", image: "https://img.icons8.com/plasticine/200/leaf.png", options: ["Leaf", "Branch"] },{ word: "Car", image: "https://img.icons8.com/plasticine/200/car.png", options: ["Car", "Bike"] },{ word: "House", image: "https://img.icons8.com/plasticine/200/home.png", options: ["House", "School"] },{ word: "Book", image: "https://img.icons8.com/plasticine/200/book.png", options: ["Book", "Paper"] },{ word: "Key", image: "https://img.icons8.com/plasticine/200/key.png", options: ["Key", "Lock"] },{ word: "Ball", image: "https://img.icons8.com/plasticine/200/football2.png", options: ["Ball", "Balloon"] },{ word: "Bed", image: "https://img.icons8.com/plasticine/200/bed.png", options: ["Bed", "Sofa"] },{ word: "Chair", image: "https://img.icons8.com/plasticine/200/chair.png", options: ["Chair", "Table"] },{ word: "Table", image: "https://img.icons8.com/plasticine/200/table.png", options: ["Table", "Desk"] },{ word: "Clock", image: "https://img.icons8.com/plasticine/200/clock.png", options: ["Clock", "Watch"] },{ word: "Door", image: "https://img.icons8.com/plasticine/200/door.png", options: ["Door", "Window"] },{ word: "Gift", image: "https://img.icons8.com/plasticine/200/gift.png", options: ["Gift", "Box"] },{ word: "Boat", image: "https://img.icons8.com/plasticine/200/boat.png", options: ["Boat", "Ship"] },{ word: "Box", image: "https://img.icons8.com/plasticine/200/box.png", options: ["Box", "Bag"] },{ word: "Bus", image: "https://img.icons8.com/plasticine/200/bus.png", options: ["Bus", "Train"] },{ word: "Cup", image: "https://img.icons8.com/plasticine/200/cup.png", options: ["Cup", "Glass"] },{ word: "Hat", image: "https://img.icons8.com/plasticine/200/hat.png", options: ["Hat", "Cap"] },{ word: "Phone", image: "https://img.icons8.com/plasticine/200/phone.png", options: ["Phone", "Tablet"] },{ word: "Shoe", image: "https://img.icons8.com/plasticine/200/shoe.png", options: ["Shoe", "Boot"] },{ word: "Socks", image: "https://img.icons8.com/plasticine/200/socks.png", options: ["Socks", "Gloves"] },{ word: "Train", image: "https://img.icons8.com/plasticine/200/train.png", options: ["Train", "Plane"] },{ word: "Pencil", image: "https://img.icons8.com/plasticine/200/pencil.png", options: ["Pencil", "Pen"] },{ word: "School", image: "https://img.icons8.com/plasticine/200/school.png", options: ["School", "Hospital"] },{ word: "Shop", image: "https://img.icons8.com/plasticine/200/shop.png", options: ["Shop", "Bank"] },{ word: "TV", image: "https://img.icons8.com/plasticine/200/tv.png", options: ["TV", "Radio"] },{ word: "Window", image: "https://img.icons8.com/plasticine/200/window.png", options: ["Window", "Mirror"] },{ word: "Eye", image: "https://img.icons8.com/plasticine/200/eye.png", options: ["Eye", "Ear"] },{ word: "Hand", image: "https://img.icons8.com/plasticine/200/hand.png", options: ["Hand", "Arm"] },{ word: "Foot", image: "https://img.icons8.com/plasticine/200/foot.png", options: ["Foot", "Leg"] },{ word: "Nose", image: "https://img.icons8.com/plasticine/200/nose.png", options: ["Nose", "Mouth"] },{ word: "Hair", image: "https://img.icons8.com/plasticine/200/long-hair.png", options: ["Hair", "Head"] },{ word: "Shirt", image: "https://img.icons8.com/plasticine/200/shirt.png", options: ["Shirt", "Jacket"] },{ word: "Pants", image: "https://img.icons8.com/plasticine/200/jeans.png", options: ["Pants", "Shorts"] },{ word: "Dress", image: "https://img.icons8.com/plasticine/200/dress.png", options: ["Dress", "Skirt"] },{ word: "Ring", image: "https://img.icons8.com/plasticine/200/ring.png", options: ["Ring", "Watch"] },{ word: "Coat", image: "https://img.icons8.com/plasticine/200/coat.png", options: ["Coat", "Scarf"] }
         ];
         let currentItem;
         const imageEl = document.getElementById('main-image' );
@@ -60,18 +123,16 @@
         }
 
         function checkAnswer(selectedWord, button) {
-            document.querySelectorAll('.option-btn').forEach(btn => btn.disabled = true); // Deshabilitar botones
+            document.querySelectorAll('.option-btn').forEach(btn => btn.disabled = true);
             if (selectedWord === currentItem.word) {
                 button.classList.add('correct');
-                // Aquí iría el sonido de acierto
-                setTimeout(nextRound, 1500); // Esperar y pasar a la siguiente
+                setTimeout(nextRound, 1500);
             } else {
                 button.classList.add('incorrect');
-                // Aquí iría el sonido de error
                 setTimeout(() => {
                     document.querySelectorAll('.option-btn').forEach(btn => btn.disabled = false);
                     button.classList.remove('incorrect');
-                }, 1500); // Permitir intentarlo de nuevo
+                }, 1500);
             }
         }
         nextRound();
