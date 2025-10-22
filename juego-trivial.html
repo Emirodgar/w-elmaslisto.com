@@ -41,16 +41,1507 @@
         // --- BANCO DE PREGUNTAS ---
         // Puedes añadir más preguntas aquí fácilmente.
         const bancoPreguntas = [
-            { pregunta: "¿Cuál es el río más largo del mundo?", respuestaCorrecta: "Amazonas", respuestaFalsa: "Nilo" },
-            { pregunta: "¿En qué año llegó el hombre a la Luna?", respuestaCorrecta: "1969", respuestaFalsa: "1965" },
-            { pregunta: "¿Quién escribió 'Cien años de soledad'?", respuestaCorrecta: "Gabriel García Márquez", respuestaFalsa: "Mario Vargas Llosa" },
-            { pregunta: "¿Cuál es el océano más grande del mundo?", respuestaCorrecta: "Océano Pacífico", respuestaFalsa: "Océano Atlántico" },
-            { pregunta: "¿Qué país tiene más habitantes?", respuestaCorrecta: "India", respuestaFalsa: "China" },
-            { pregunta: "¿Cuál es la capital de Australia?", respuestaCorrecta: "Canberra", respuestaFalsa: "Sídney" },
-            { pregunta: "¿Quién pintó la Mona Lisa?", respuestaCorrecta: "Leonardo da Vinci", respuestaFalsa: "Vincent van Gogh" },
-            { pregunta: "¿Cuál es el metal más ligero?", respuestaCorrecta: "Litio", respuestaFalsa: "Aluminio" },
-            { pregunta: "¿Cuántos continentes hay?", respuestaCorrecta: "Siete", respuestaFalsa: "Seis" }
-        ];
+    {
+        "pregunta": "¿Cuál es el río más largo del mundo?",
+        "respuestaCorrecta": "Amazonas",
+        "respuestaFalsa": "Nilo"
+    },
+    {
+        "pregunta": "¿En qué año llegó el hombre a la Luna?",
+        "respuestaCorrecta": "1969",
+        "respuestaFalsa": "1965"
+    },
+    {
+        "pregunta": "¿Quién escribió 'Cien años de soledad'?",
+        "respuestaCorrecta": "Gabriel García Márquez",
+        "respuestaFalsa": "Mario Vargas Llosa"
+    },
+    {
+        "pregunta": "¿Cuál es el océano más grande del mundo?",
+        "respuestaCorrecta": "Océano Pacífico",
+        "respuestaFalsa": "Océano Atlántico"
+    },
+    {
+        "pregunta": "¿Qué país tiene más habitantes?",
+        "respuestaCorrecta": "India",
+        "respuestaFalsa": "China"
+    },
+    {
+        "pregunta": "¿Cuál es la capital de Australia?",
+        "respuestaCorrecta": "Canberra",
+        "respuestaFalsa": "Sídney"
+    },
+    {
+        "pregunta": "¿Quién pintó la Mona Lisa?",
+        "respuestaCorrecta": "Leonardo da Vinci",
+        "respuestaFalsa": "Vincent van Gogh"
+    },
+    {
+        "pregunta": "¿Cuál es el metal más ligero?",
+        "respuestaCorrecta": "Litio",
+        "respuestaFalsa": "Aluminio"
+    },
+    {
+        "pregunta": "¿Cuántos continentes hay?",
+        "respuestaCorrecta": "Siete",
+        "respuestaFalsa": "Seis"
+    },
+    {
+        "pregunta": "¿Cuál es la capital de Francia?",
+        "respuestaCorrecta": "París",
+        "respuestaFalsa": "Marsella"
+    },
+    {
+        "pregunta": "¿Cuál es la planeta más cercano al Sol?",
+        "respuestaCorrecta": "Mercurio",
+        "respuestaFalsa": "Venus"
+    },
+    {
+        "pregunta": "¿Cuál es la animal más grande del mundo?",
+        "respuestaCorrecta": "Ballena azul",
+        "respuestaFalsa": "Elefante africano"
+    },
+    {
+        "pregunta": "¿Cuál es la inventor del teléfono?",
+        "respuestaCorrecta": "Alexander Graham Bell",
+        "respuestaFalsa": "Thomas Edison"
+    },
+    {
+        "pregunta": "¿Cuál es la moneda de Japón?",
+        "respuestaCorrecta": "Yen",
+        "respuestaFalsa": "Won"
+    },
+    {
+        "pregunta": "¿Cuál es la idioma más hablado del mundo?",
+        "respuestaCorrecta": "Inglés",
+        "respuestaFalsa": "Español"
+    },
+    {
+        "pregunta": "¿Cuál es la continente donde está Egipto?",
+        "respuestaCorrecta": "África",
+        "respuestaFalsa": "Asia"
+    },
+    {
+        "pregunta": "¿Cuál es la gas necesario para respirar?",
+        "respuestaCorrecta": "Oxígeno",
+        "respuestaFalsa": "Hidrógeno"
+    },
+    {
+        "pregunta": "¿Cuál es la capital de Canadá?",
+        "respuestaCorrecta": "Ottawa",
+        "respuestaFalsa": "Toronto"
+    },
+    {
+        "pregunta": "¿Cuál es la país famoso por el tango?",
+        "respuestaCorrecta": "Argentina",
+        "respuestaFalsa": "Uruguay"
+    },
+    {
+        "pregunta": "¿Cuál es la capital de Francia?",
+        "respuestaCorrecta": "París",
+        "respuestaFalsa": "Marsella"
+    },
+    {
+        "pregunta": "¿Cuál es la planeta más cercano al Sol?",
+        "respuestaCorrecta": "Mercurio",
+        "respuestaFalsa": "Venus"
+    },
+    {
+        "pregunta": "¿Cuál es la animal más grande del mundo?",
+        "respuestaCorrecta": "Ballena azul",
+        "respuestaFalsa": "Elefante africano"
+    },
+    {
+        "pregunta": "¿Cuál es la inventor del teléfono?",
+        "respuestaCorrecta": "Alexander Graham Bell",
+        "respuestaFalsa": "Thomas Edison"
+    },
+    {
+        "pregunta": "¿Cuál es la moneda de Japón?",
+        "respuestaCorrecta": "Yen",
+        "respuestaFalsa": "Won"
+    },
+    {
+        "pregunta": "¿Cuál es la idioma más hablado del mundo?",
+        "respuestaCorrecta": "Inglés",
+        "respuestaFalsa": "Español"
+    },
+    {
+        "pregunta": "¿Cuál es la continente donde está Egipto?",
+        "respuestaCorrecta": "África",
+        "respuestaFalsa": "Asia"
+    },
+    {
+        "pregunta": "¿Cuál es la gas necesario para respirar?",
+        "respuestaCorrecta": "Oxígeno",
+        "respuestaFalsa": "Hidrógeno"
+    },
+    {
+        "pregunta": "¿Cuál es la capital de Canadá?",
+        "respuestaCorrecta": "Ottawa",
+        "respuestaFalsa": "Toronto"
+    },
+    {
+        "pregunta": "¿Cuál es la país famoso por el tango?",
+        "respuestaCorrecta": "Argentina",
+        "respuestaFalsa": "Uruguay"
+    },
+    {
+        "pregunta": "¿Cuál es la capital de Francia?",
+        "respuestaCorrecta": "París",
+        "respuestaFalsa": "Marsella"
+    },
+    {
+        "pregunta": "¿Cuál es la planeta más cercano al Sol?",
+        "respuestaCorrecta": "Mercurio",
+        "respuestaFalsa": "Venus"
+    },
+    {
+        "pregunta": "¿Cuál es la animal más grande del mundo?",
+        "respuestaCorrecta": "Ballena azul",
+        "respuestaFalsa": "Elefante africano"
+    },
+    {
+        "pregunta": "¿Cuál es la inventor del teléfono?",
+        "respuestaCorrecta": "Alexander Graham Bell",
+        "respuestaFalsa": "Thomas Edison"
+    },
+    {
+        "pregunta": "¿Cuál es la moneda de Japón?",
+        "respuestaCorrecta": "Yen",
+        "respuestaFalsa": "Won"
+    },
+    {
+        "pregunta": "¿Cuál es la idioma más hablado del mundo?",
+        "respuestaCorrecta": "Inglés",
+        "respuestaFalsa": "Español"
+    },
+    {
+        "pregunta": "¿Cuál es la continente donde está Egipto?",
+        "respuestaCorrecta": "África",
+        "respuestaFalsa": "Asia"
+    },
+    {
+        "pregunta": "¿Cuál es la gas necesario para respirar?",
+        "respuestaCorrecta": "Oxígeno",
+        "respuestaFalsa": "Hidrógeno"
+    },
+    {
+        "pregunta": "¿Cuál es la capital de Canadá?",
+        "respuestaCorrecta": "Ottawa",
+        "respuestaFalsa": "Toronto"
+    },
+    {
+        "pregunta": "¿Cuál es la país famoso por el tango?",
+        "respuestaCorrecta": "Argentina",
+        "respuestaFalsa": "Uruguay"
+    },
+    {
+        "pregunta": "¿Cuál es la capital de Francia?",
+        "respuestaCorrecta": "París",
+        "respuestaFalsa": "Marsella"
+    },
+    {
+        "pregunta": "¿Cuál es la planeta más cercano al Sol?",
+        "respuestaCorrecta": "Mercurio",
+        "respuestaFalsa": "Venus"
+    },
+    {
+        "pregunta": "¿Cuál es la animal más grande del mundo?",
+        "respuestaCorrecta": "Ballena azul",
+        "respuestaFalsa": "Elefante africano"
+    },
+    {
+        "pregunta": "¿Cuál es la inventor del teléfono?",
+        "respuestaCorrecta": "Alexander Graham Bell",
+        "respuestaFalsa": "Thomas Edison"
+    },
+    {
+        "pregunta": "¿Cuál es la moneda de Japón?",
+        "respuestaCorrecta": "Yen",
+        "respuestaFalsa": "Won"
+    },
+    {
+        "pregunta": "¿Cuál es la idioma más hablado del mundo?",
+        "respuestaCorrecta": "Inglés",
+        "respuestaFalsa": "Español"
+    },
+    {
+        "pregunta": "¿Cuál es la continente donde está Egipto?",
+        "respuestaCorrecta": "África",
+        "respuestaFalsa": "Asia"
+    },
+    {
+        "pregunta": "¿Cuál es la gas necesario para respirar?",
+        "respuestaCorrecta": "Oxígeno",
+        "respuestaFalsa": "Hidrógeno"
+    },
+    {
+        "pregunta": "¿Cuál es la capital de Canadá?",
+        "respuestaCorrecta": "Ottawa",
+        "respuestaFalsa": "Toronto"
+    },
+    {
+        "pregunta": "¿Cuál es la país famoso por el tango?",
+        "respuestaCorrecta": "Argentina",
+        "respuestaFalsa": "Uruguay"
+    },
+    {
+        "pregunta": "¿Cuál es la capital de Francia?",
+        "respuestaCorrecta": "París",
+        "respuestaFalsa": "Marsella"
+    },
+    {
+        "pregunta": "¿Cuál es la planeta más cercano al Sol?",
+        "respuestaCorrecta": "Mercurio",
+        "respuestaFalsa": "Venus"
+    },
+    {
+        "pregunta": "¿Cuál es la animal más grande del mundo?",
+        "respuestaCorrecta": "Ballena azul",
+        "respuestaFalsa": "Elefante africano"
+    },
+    {
+        "pregunta": "¿Cuál es la inventor del teléfono?",
+        "respuestaCorrecta": "Alexander Graham Bell",
+        "respuestaFalsa": "Thomas Edison"
+    },
+    {
+        "pregunta": "¿Cuál es la moneda de Japón?",
+        "respuestaCorrecta": "Yen",
+        "respuestaFalsa": "Won"
+    },
+    {
+        "pregunta": "¿Cuál es la idioma más hablado del mundo?",
+        "respuestaCorrecta": "Inglés",
+        "respuestaFalsa": "Español"
+    },
+    {
+        "pregunta": "¿Cuál es la continente donde está Egipto?",
+        "respuestaCorrecta": "África",
+        "respuestaFalsa": "Asia"
+    },
+    {
+        "pregunta": "¿Cuál es la gas necesario para respirar?",
+        "respuestaCorrecta": "Oxígeno",
+        "respuestaFalsa": "Hidrógeno"
+    },
+    {
+        "pregunta": "¿Cuál es la capital de Canadá?",
+        "respuestaCorrecta": "Ottawa",
+        "respuestaFalsa": "Toronto"
+    },
+    {
+        "pregunta": "¿Cuál es la país famoso por el tango?",
+        "respuestaCorrecta": "Argentina",
+        "respuestaFalsa": "Uruguay"
+    },
+    {
+        "pregunta": "¿Cuál es la capital de Francia?",
+        "respuestaCorrecta": "París",
+        "respuestaFalsa": "Marsella"
+    },
+    {
+        "pregunta": "¿Cuál es la planeta más cercano al Sol?",
+        "respuestaCorrecta": "Mercurio",
+        "respuestaFalsa": "Venus"
+    },
+    {
+        "pregunta": "¿Cuál es la animal más grande del mundo?",
+        "respuestaCorrecta": "Ballena azul",
+        "respuestaFalsa": "Elefante africano"
+    },
+    {
+        "pregunta": "¿Cuál es la inventor del teléfono?",
+        "respuestaCorrecta": "Alexander Graham Bell",
+        "respuestaFalsa": "Thomas Edison"
+    },
+    {
+        "pregunta": "¿Cuál es la moneda de Japón?",
+        "respuestaCorrecta": "Yen",
+        "respuestaFalsa": "Won"
+    },
+    {
+        "pregunta": "¿Cuál es la idioma más hablado del mundo?",
+        "respuestaCorrecta": "Inglés",
+        "respuestaFalsa": "Español"
+    },
+    {
+        "pregunta": "¿Cuál es la continente donde está Egipto?",
+        "respuestaCorrecta": "África",
+        "respuestaFalsa": "Asia"
+    },
+    {
+        "pregunta": "¿Cuál es la gas necesario para respirar?",
+        "respuestaCorrecta": "Oxígeno",
+        "respuestaFalsa": "Hidrógeno"
+    },
+    {
+        "pregunta": "¿Cuál es la capital de Canadá?",
+        "respuestaCorrecta": "Ottawa",
+        "respuestaFalsa": "Toronto"
+    },
+    {
+        "pregunta": "¿Cuál es la país famoso por el tango?",
+        "respuestaCorrecta": "Argentina",
+        "respuestaFalsa": "Uruguay"
+    },
+    {
+        "pregunta": "¿Cuál es la capital de Francia?",
+        "respuestaCorrecta": "París",
+        "respuestaFalsa": "Marsella"
+    },
+    {
+        "pregunta": "¿Cuál es la planeta más cercano al Sol?",
+        "respuestaCorrecta": "Mercurio",
+        "respuestaFalsa": "Venus"
+    },
+    {
+        "pregunta": "¿Cuál es la animal más grande del mundo?",
+        "respuestaCorrecta": "Ballena azul",
+        "respuestaFalsa": "Elefante africano"
+    },
+    {
+        "pregunta": "¿Cuál es la inventor del teléfono?",
+        "respuestaCorrecta": "Alexander Graham Bell",
+        "respuestaFalsa": "Thomas Edison"
+    },
+    {
+        "pregunta": "¿Cuál es la moneda de Japón?",
+        "respuestaCorrecta": "Yen",
+        "respuestaFalsa": "Won"
+    },
+    {
+        "pregunta": "¿Cuál es la idioma más hablado del mundo?",
+        "respuestaCorrecta": "Inglés",
+        "respuestaFalsa": "Español"
+    },
+    {
+        "pregunta": "¿Cuál es la continente donde está Egipto?",
+        "respuestaCorrecta": "África",
+        "respuestaFalsa": "Asia"
+    },
+    {
+        "pregunta": "¿Cuál es la gas necesario para respirar?",
+        "respuestaCorrecta": "Oxígeno",
+        "respuestaFalsa": "Hidrógeno"
+    },
+    {
+        "pregunta": "¿Cuál es la capital de Canadá?",
+        "respuestaCorrecta": "Ottawa",
+        "respuestaFalsa": "Toronto"
+    },
+    {
+        "pregunta": "¿Cuál es la país famoso por el tango?",
+        "respuestaCorrecta": "Argentina",
+        "respuestaFalsa": "Uruguay"
+    },
+    {
+        "pregunta": "¿Cuál es la capital de Francia?",
+        "respuestaCorrecta": "París",
+        "respuestaFalsa": "Marsella"
+    },
+    {
+        "pregunta": "¿Cuál es la planeta más cercano al Sol?",
+        "respuestaCorrecta": "Mercurio",
+        "respuestaFalsa": "Venus"
+    },
+    {
+        "pregunta": "¿Cuál es la animal más grande del mundo?",
+        "respuestaCorrecta": "Ballena azul",
+        "respuestaFalsa": "Elefante africano"
+    },
+    {
+        "pregunta": "¿Cuál es la inventor del teléfono?",
+        "respuestaCorrecta": "Alexander Graham Bell",
+        "respuestaFalsa": "Thomas Edison"
+    },
+    {
+        "pregunta": "¿Cuál es la moneda de Japón?",
+        "respuestaCorrecta": "Yen",
+        "respuestaFalsa": "Won"
+    },
+    {
+        "pregunta": "¿Cuál es la idioma más hablado del mundo?",
+        "respuestaCorrecta": "Inglés",
+        "respuestaFalsa": "Español"
+    },
+    {
+        "pregunta": "¿Cuál es la continente donde está Egipto?",
+        "respuestaCorrecta": "África",
+        "respuestaFalsa": "Asia"
+    },
+    {
+        "pregunta": "¿Cuál es la gas necesario para respirar?",
+        "respuestaCorrecta": "Oxígeno",
+        "respuestaFalsa": "Hidrógeno"
+    },
+    {
+        "pregunta": "¿Cuál es la capital de Canadá?",
+        "respuestaCorrecta": "Ottawa",
+        "respuestaFalsa": "Toronto"
+    },
+    {
+        "pregunta": "¿Cuál es la país famoso por el tango?",
+        "respuestaCorrecta": "Argentina",
+        "respuestaFalsa": "Uruguay"
+    },
+    {
+        "pregunta": "¿Cuál es la capital de Francia?",
+        "respuestaCorrecta": "París",
+        "respuestaFalsa": "Marsella"
+    },
+    {
+        "pregunta": "¿Cuál es la planeta más cercano al Sol?",
+        "respuestaCorrecta": "Mercurio",
+        "respuestaFalsa": "Venus"
+    },
+    {
+        "pregunta": "¿Cuál es la animal más grande del mundo?",
+        "respuestaCorrecta": "Ballena azul",
+        "respuestaFalsa": "Elefante africano"
+    },
+    {
+        "pregunta": "¿Cuál es la inventor del teléfono?",
+        "respuestaCorrecta": "Alexander Graham Bell",
+        "respuestaFalsa": "Thomas Edison"
+    },
+    {
+        "pregunta": "¿Cuál es la moneda de Japón?",
+        "respuestaCorrecta": "Yen",
+        "respuestaFalsa": "Won"
+    },
+    {
+        "pregunta": "¿Cuál es la idioma más hablado del mundo?",
+        "respuestaCorrecta": "Inglés",
+        "respuestaFalsa": "Español"
+    },
+    {
+        "pregunta": "¿Cuál es la continente donde está Egipto?",
+        "respuestaCorrecta": "África",
+        "respuestaFalsa": "Asia"
+    },
+    {
+        "pregunta": "¿Cuál es la gas necesario para respirar?",
+        "respuestaCorrecta": "Oxígeno",
+        "respuestaFalsa": "Hidrógeno"
+    },
+    {
+        "pregunta": "¿Cuál es la capital de Canadá?",
+        "respuestaCorrecta": "Ottawa",
+        "respuestaFalsa": "Toronto"
+    },
+    {
+        "pregunta": "¿Cuál es la país famoso por el tango?",
+        "respuestaCorrecta": "Argentina",
+        "respuestaFalsa": "Uruguay"
+    },
+    {
+        "pregunta": "¿Cuál es la capital de Francia?",
+        "respuestaCorrecta": "París",
+        "respuestaFalsa": "Marsella"
+    },
+    {
+        "pregunta": "¿Cuál es la planeta más cercano al Sol?",
+        "respuestaCorrecta": "Mercurio",
+        "respuestaFalsa": "Venus"
+    },
+    {
+        "pregunta": "¿Cuál es la animal más grande del mundo?",
+        "respuestaCorrecta": "Ballena azul",
+        "respuestaFalsa": "Elefante africano"
+    },
+    {
+        "pregunta": "¿Cuál es la inventor del teléfono?",
+        "respuestaCorrecta": "Alexander Graham Bell",
+        "respuestaFalsa": "Thomas Edison"
+    },
+    {
+        "pregunta": "¿Cuál es la moneda de Japón?",
+        "respuestaCorrecta": "Yen",
+        "respuestaFalsa": "Won"
+    },
+    {
+        "pregunta": "¿Cuál es la idioma más hablado del mundo?",
+        "respuestaCorrecta": "Inglés",
+        "respuestaFalsa": "Español"
+    },
+    {
+        "pregunta": "¿Cuál es la continente donde está Egipto?",
+        "respuestaCorrecta": "África",
+        "respuestaFalsa": "Asia"
+    },
+    {
+        "pregunta": "¿Cuál es la gas necesario para respirar?",
+        "respuestaCorrecta": "Oxígeno",
+        "respuestaFalsa": "Hidrógeno"
+    },
+    {
+        "pregunta": "¿Cuál es la capital de Canadá?",
+        "respuestaCorrecta": "Ottawa",
+        "respuestaFalsa": "Toronto"
+    },
+    {
+        "pregunta": "¿Cuál es la país famoso por el tango?",
+        "respuestaCorrecta": "Argentina",
+        "respuestaFalsa": "Uruguay"
+    },
+    {
+        "pregunta": "¿Cuál es la capital de Francia?",
+        "respuestaCorrecta": "París",
+        "respuestaFalsa": "Marsella"
+    },
+    {
+        "pregunta": "¿Cuál es la planeta más cercano al Sol?",
+        "respuestaCorrecta": "Mercurio",
+        "respuestaFalsa": "Venus"
+    },
+    {
+        "pregunta": "¿Cuál es la animal más grande del mundo?",
+        "respuestaCorrecta": "Ballena azul",
+        "respuestaFalsa": "Elefante africano"
+    },
+    {
+        "pregunta": "¿Cuál es la inventor del teléfono?",
+        "respuestaCorrecta": "Alexander Graham Bell",
+        "respuestaFalsa": "Thomas Edison"
+    },
+    {
+        "pregunta": "¿Cuál es la moneda de Japón?",
+        "respuestaCorrecta": "Yen",
+        "respuestaFalsa": "Won"
+    },
+    {
+        "pregunta": "¿Cuál es la idioma más hablado del mundo?",
+        "respuestaCorrecta": "Inglés",
+        "respuestaFalsa": "Español"
+    },
+    {
+        "pregunta": "¿Cuál es la continente donde está Egipto?",
+        "respuestaCorrecta": "África",
+        "respuestaFalsa": "Asia"
+    },
+    {
+        "pregunta": "¿Cuál es la gas necesario para respirar?",
+        "respuestaCorrecta": "Oxígeno",
+        "respuestaFalsa": "Hidrógeno"
+    },
+    {
+        "pregunta": "¿Cuál es la capital de Canadá?",
+        "respuestaCorrecta": "Ottawa",
+        "respuestaFalsa": "Toronto"
+    },
+    {
+        "pregunta": "¿Cuál es la país famoso por el tango?",
+        "respuestaCorrecta": "Argentina",
+        "respuestaFalsa": "Uruguay"
+    },
+    {
+        "pregunta": "¿Cuál es la capital de Francia?",
+        "respuestaCorrecta": "París",
+        "respuestaFalsa": "Marsella"
+    },
+    {
+        "pregunta": "¿Cuál es la planeta más cercano al Sol?",
+        "respuestaCorrecta": "Mercurio",
+        "respuestaFalsa": "Venus"
+    },
+    {
+        "pregunta": "¿Cuál es la animal más grande del mundo?",
+        "respuestaCorrecta": "Ballena azul",
+        "respuestaFalsa": "Elefante africano"
+    },
+    {
+        "pregunta": "¿Cuál es la inventor del teléfono?",
+        "respuestaCorrecta": "Alexander Graham Bell",
+        "respuestaFalsa": "Thomas Edison"
+    },
+    {
+        "pregunta": "¿Cuál es la moneda de Japón?",
+        "respuestaCorrecta": "Yen",
+        "respuestaFalsa": "Won"
+    },
+    {
+        "pregunta": "¿Cuál es la idioma más hablado del mundo?",
+        "respuestaCorrecta": "Inglés",
+        "respuestaFalsa": "Español"
+    },
+    {
+        "pregunta": "¿Cuál es la continente donde está Egipto?",
+        "respuestaCorrecta": "África",
+        "respuestaFalsa": "Asia"
+    },
+    {
+        "pregunta": "¿Cuál es la gas necesario para respirar?",
+        "respuestaCorrecta": "Oxígeno",
+        "respuestaFalsa": "Hidrógeno"
+    },
+    {
+        "pregunta": "¿Cuál es la capital de Canadá?",
+        "respuestaCorrecta": "Ottawa",
+        "respuestaFalsa": "Toronto"
+    },
+    {
+        "pregunta": "¿Cuál es la país famoso por el tango?",
+        "respuestaCorrecta": "Argentina",
+        "respuestaFalsa": "Uruguay"
+    },
+    {
+        "pregunta": "¿Cuál es la capital de Francia?",
+        "respuestaCorrecta": "París",
+        "respuestaFalsa": "Marsella"
+    },
+    {
+        "pregunta": "¿Cuál es la planeta más cercano al Sol?",
+        "respuestaCorrecta": "Mercurio",
+        "respuestaFalsa": "Venus"
+    },
+    {
+        "pregunta": "¿Cuál es la animal más grande del mundo?",
+        "respuestaCorrecta": "Ballena azul",
+        "respuestaFalsa": "Elefante africano"
+    },
+    {
+        "pregunta": "¿Cuál es la inventor del teléfono?",
+        "respuestaCorrecta": "Alexander Graham Bell",
+        "respuestaFalsa": "Thomas Edison"
+    },
+    {
+        "pregunta": "¿Cuál es la moneda de Japón?",
+        "respuestaCorrecta": "Yen",
+        "respuestaFalsa": "Won"
+    },
+    {
+        "pregunta": "¿Cuál es la idioma más hablado del mundo?",
+        "respuestaCorrecta": "Inglés",
+        "respuestaFalsa": "Español"
+    },
+    {
+        "pregunta": "¿Cuál es la continente donde está Egipto?",
+        "respuestaCorrecta": "África",
+        "respuestaFalsa": "Asia"
+    },
+    {
+        "pregunta": "¿Cuál es la gas necesario para respirar?",
+        "respuestaCorrecta": "Oxígeno",
+        "respuestaFalsa": "Hidrógeno"
+    },
+    {
+        "pregunta": "¿Cuál es la capital de Canadá?",
+        "respuestaCorrecta": "Ottawa",
+        "respuestaFalsa": "Toronto"
+    },
+    {
+        "pregunta": "¿Cuál es la país famoso por el tango?",
+        "respuestaCorrecta": "Argentina",
+        "respuestaFalsa": "Uruguay"
+    },
+    {
+        "pregunta": "¿Cuál es la capital de Francia?",
+        "respuestaCorrecta": "París",
+        "respuestaFalsa": "Marsella"
+    },
+    {
+        "pregunta": "¿Cuál es la planeta más cercano al Sol?",
+        "respuestaCorrecta": "Mercurio",
+        "respuestaFalsa": "Venus"
+    },
+    {
+        "pregunta": "¿Cuál es la animal más grande del mundo?",
+        "respuestaCorrecta": "Ballena azul",
+        "respuestaFalsa": "Elefante africano"
+    },
+    {
+        "pregunta": "¿Cuál es la inventor del teléfono?",
+        "respuestaCorrecta": "Alexander Graham Bell",
+        "respuestaFalsa": "Thomas Edison"
+    },
+    {
+        "pregunta": "¿Cuál es la moneda de Japón?",
+        "respuestaCorrecta": "Yen",
+        "respuestaFalsa": "Won"
+    },
+    {
+        "pregunta": "¿Cuál es la idioma más hablado del mundo?",
+        "respuestaCorrecta": "Inglés",
+        "respuestaFalsa": "Español"
+    },
+    {
+        "pregunta": "¿Cuál es la continente donde está Egipto?",
+        "respuestaCorrecta": "África",
+        "respuestaFalsa": "Asia"
+    },
+    {
+        "pregunta": "¿Cuál es la gas necesario para respirar?",
+        "respuestaCorrecta": "Oxígeno",
+        "respuestaFalsa": "Hidrógeno"
+    },
+    {
+        "pregunta": "¿Cuál es la capital de Canadá?",
+        "respuestaCorrecta": "Ottawa",
+        "respuestaFalsa": "Toronto"
+    },
+    {
+        "pregunta": "¿Cuál es la país famoso por el tango?",
+        "respuestaCorrecta": "Argentina",
+        "respuestaFalsa": "Uruguay"
+    },
+    {
+        "pregunta": "¿Cuál es la capital de Francia?",
+        "respuestaCorrecta": "París",
+        "respuestaFalsa": "Marsella"
+    },
+    {
+        "pregunta": "¿Cuál es la planeta más cercano al Sol?",
+        "respuestaCorrecta": "Mercurio",
+        "respuestaFalsa": "Venus"
+    },
+    {
+        "pregunta": "¿Cuál es la animal más grande del mundo?",
+        "respuestaCorrecta": "Ballena azul",
+        "respuestaFalsa": "Elefante africano"
+    },
+    {
+        "pregunta": "¿Cuál es la inventor del teléfono?",
+        "respuestaCorrecta": "Alexander Graham Bell",
+        "respuestaFalsa": "Thomas Edison"
+    },
+    {
+        "pregunta": "¿Cuál es la moneda de Japón?",
+        "respuestaCorrecta": "Yen",
+        "respuestaFalsa": "Won"
+    },
+    {
+        "pregunta": "¿Cuál es la idioma más hablado del mundo?",
+        "respuestaCorrecta": "Inglés",
+        "respuestaFalsa": "Español"
+    },
+    {
+        "pregunta": "¿Cuál es la continente donde está Egipto?",
+        "respuestaCorrecta": "África",
+        "respuestaFalsa": "Asia"
+    },
+    {
+        "pregunta": "¿Cuál es la gas necesario para respirar?",
+        "respuestaCorrecta": "Oxígeno",
+        "respuestaFalsa": "Hidrógeno"
+    },
+    {
+        "pregunta": "¿Cuál es la capital de Canadá?",
+        "respuestaCorrecta": "Ottawa",
+        "respuestaFalsa": "Toronto"
+    },
+    {
+        "pregunta": "¿Cuál es la país famoso por el tango?",
+        "respuestaCorrecta": "Argentina",
+        "respuestaFalsa": "Uruguay"
+    },
+    {
+        "pregunta": "¿Cuál es la capital de Francia?",
+        "respuestaCorrecta": "París",
+        "respuestaFalsa": "Marsella"
+    },
+    {
+        "pregunta": "¿Cuál es la planeta más cercano al Sol?",
+        "respuestaCorrecta": "Mercurio",
+        "respuestaFalsa": "Venus"
+    },
+    {
+        "pregunta": "¿Cuál es la animal más grande del mundo?",
+        "respuestaCorrecta": "Ballena azul",
+        "respuestaFalsa": "Elefante africano"
+    },
+    {
+        "pregunta": "¿Cuál es la inventor del teléfono?",
+        "respuestaCorrecta": "Alexander Graham Bell",
+        "respuestaFalsa": "Thomas Edison"
+    },
+    {
+        "pregunta": "¿Cuál es la moneda de Japón?",
+        "respuestaCorrecta": "Yen",
+        "respuestaFalsa": "Won"
+    },
+    {
+        "pregunta": "¿Cuál es la idioma más hablado del mundo?",
+        "respuestaCorrecta": "Inglés",
+        "respuestaFalsa": "Español"
+    },
+    {
+        "pregunta": "¿Cuál es la continente donde está Egipto?",
+        "respuestaCorrecta": "África",
+        "respuestaFalsa": "Asia"
+    },
+    {
+        "pregunta": "¿Cuál es la gas necesario para respirar?",
+        "respuestaCorrecta": "Oxígeno",
+        "respuestaFalsa": "Hidrógeno"
+    },
+    {
+        "pregunta": "¿Cuál es la capital de Canadá?",
+        "respuestaCorrecta": "Ottawa",
+        "respuestaFalsa": "Toronto"
+    },
+    {
+        "pregunta": "¿Cuál es la país famoso por el tango?",
+        "respuestaCorrecta": "Argentina",
+        "respuestaFalsa": "Uruguay"
+    },
+    {
+        "pregunta": "¿Cuál es la capital de Francia?",
+        "respuestaCorrecta": "París",
+        "respuestaFalsa": "Marsella"
+    },
+    {
+        "pregunta": "¿Cuál es la planeta más cercano al Sol?",
+        "respuestaCorrecta": "Mercurio",
+        "respuestaFalsa": "Venus"
+    },
+    {
+        "pregunta": "¿Cuál es la animal más grande del mundo?",
+        "respuestaCorrecta": "Ballena azul",
+        "respuestaFalsa": "Elefante africano"
+    },
+    {
+        "pregunta": "¿Cuál es la inventor del teléfono?",
+        "respuestaCorrecta": "Alexander Graham Bell",
+        "respuestaFalsa": "Thomas Edison"
+    },
+    {
+        "pregunta": "¿Cuál es la moneda de Japón?",
+        "respuestaCorrecta": "Yen",
+        "respuestaFalsa": "Won"
+    },
+    {
+        "pregunta": "¿Cuál es la idioma más hablado del mundo?",
+        "respuestaCorrecta": "Inglés",
+        "respuestaFalsa": "Español"
+    },
+    {
+        "pregunta": "¿Cuál es la continente donde está Egipto?",
+        "respuestaCorrecta": "África",
+        "respuestaFalsa": "Asia"
+    },
+    {
+        "pregunta": "¿Cuál es la gas necesario para respirar?",
+        "respuestaCorrecta": "Oxígeno",
+        "respuestaFalsa": "Hidrógeno"
+    },
+    {
+        "pregunta": "¿Cuál es la capital de Canadá?",
+        "respuestaCorrecta": "Ottawa",
+        "respuestaFalsa": "Toronto"
+    },
+    {
+        "pregunta": "¿Cuál es la país famoso por el tango?",
+        "respuestaCorrecta": "Argentina",
+        "respuestaFalsa": "Uruguay"
+    },
+    {
+        "pregunta": "¿Cuál es la capital de Francia?",
+        "respuestaCorrecta": "París",
+        "respuestaFalsa": "Marsella"
+    },
+    {
+        "pregunta": "¿Cuál es la planeta más cercano al Sol?",
+        "respuestaCorrecta": "Mercurio",
+        "respuestaFalsa": "Venus"
+    },
+    {
+        "pregunta": "¿Cuál es la animal más grande del mundo?",
+        "respuestaCorrecta": "Ballena azul",
+        "respuestaFalsa": "Elefante africano"
+    },
+    {
+        "pregunta": "¿Cuál es la inventor del teléfono?",
+        "respuestaCorrecta": "Alexander Graham Bell",
+        "respuestaFalsa": "Thomas Edison"
+    },
+    {
+        "pregunta": "¿Cuál es la moneda de Japón?",
+        "respuestaCorrecta": "Yen",
+        "respuestaFalsa": "Won"
+    },
+    {
+        "pregunta": "¿Cuál es la idioma más hablado del mundo?",
+        "respuestaCorrecta": "Inglés",
+        "respuestaFalsa": "Español"
+    },
+    {
+        "pregunta": "¿Cuál es la continente donde está Egipto?",
+        "respuestaCorrecta": "África",
+        "respuestaFalsa": "Asia"
+    },
+    {
+        "pregunta": "¿Cuál es la gas necesario para respirar?",
+        "respuestaCorrecta": "Oxígeno",
+        "respuestaFalsa": "Hidrógeno"
+    },
+    {
+        "pregunta": "¿Cuál es la capital de Canadá?",
+        "respuestaCorrecta": "Ottawa",
+        "respuestaFalsa": "Toronto"
+    },
+    {
+        "pregunta": "¿Cuál es la país famoso por el tango?",
+        "respuestaCorrecta": "Argentina",
+        "respuestaFalsa": "Uruguay"
+    },
+    {
+        "pregunta": "¿Cuál es la capital de Francia?",
+        "respuestaCorrecta": "París",
+        "respuestaFalsa": "Marsella"
+    },
+    {
+        "pregunta": "¿Cuál es la planeta más cercano al Sol?",
+        "respuestaCorrecta": "Mercurio",
+        "respuestaFalsa": "Venus"
+    },
+    {
+        "pregunta": "¿Cuál es la animal más grande del mundo?",
+        "respuestaCorrecta": "Ballena azul",
+        "respuestaFalsa": "Elefante africano"
+    },
+    {
+        "pregunta": "¿Cuál es la inventor del teléfono?",
+        "respuestaCorrecta": "Alexander Graham Bell",
+        "respuestaFalsa": "Thomas Edison"
+    },
+    {
+        "pregunta": "¿Cuál es la moneda de Japón?",
+        "respuestaCorrecta": "Yen",
+        "respuestaFalsa": "Won"
+    },
+    {
+        "pregunta": "¿Cuál es la idioma más hablado del mundo?",
+        "respuestaCorrecta": "Inglés",
+        "respuestaFalsa": "Español"
+    },
+    {
+        "pregunta": "¿Cuál es la continente donde está Egipto?",
+        "respuestaCorrecta": "África",
+        "respuestaFalsa": "Asia"
+    },
+    {
+        "pregunta": "¿Cuál es la gas necesario para respirar?",
+        "respuestaCorrecta": "Oxígeno",
+        "respuestaFalsa": "Hidrógeno"
+    },
+    {
+        "pregunta": "¿Cuál es la capital de Canadá?",
+        "respuestaCorrecta": "Ottawa",
+        "respuestaFalsa": "Toronto"
+    },
+    {
+        "pregunta": "¿Cuál es la país famoso por el tango?",
+        "respuestaCorrecta": "Argentina",
+        "respuestaFalsa": "Uruguay"
+    },
+    {
+        "pregunta": "¿Cuál es la capital de Francia?",
+        "respuestaCorrecta": "París",
+        "respuestaFalsa": "Marsella"
+    },
+    {
+        "pregunta": "¿Cuál es la planeta más cercano al Sol?",
+        "respuestaCorrecta": "Mercurio",
+        "respuestaFalsa": "Venus"
+    },
+    {
+        "pregunta": "¿Cuál es la animal más grande del mundo?",
+        "respuestaCorrecta": "Ballena azul",
+        "respuestaFalsa": "Elefante africano"
+    },
+    {
+        "pregunta": "¿Cuál es la inventor del teléfono?",
+        "respuestaCorrecta": "Alexander Graham Bell",
+        "respuestaFalsa": "Thomas Edison"
+    },
+    {
+        "pregunta": "¿Cuál es la moneda de Japón?",
+        "respuestaCorrecta": "Yen",
+        "respuestaFalsa": "Won"
+    },
+    {
+        "pregunta": "¿Cuál es la idioma más hablado del mundo?",
+        "respuestaCorrecta": "Inglés",
+        "respuestaFalsa": "Español"
+    },
+    {
+        "pregunta": "¿Cuál es la continente donde está Egipto?",
+        "respuestaCorrecta": "África",
+        "respuestaFalsa": "Asia"
+    },
+    {
+        "pregunta": "¿Cuál es la gas necesario para respirar?",
+        "respuestaCorrecta": "Oxígeno",
+        "respuestaFalsa": "Hidrógeno"
+    },
+    {
+        "pregunta": "¿Cuál es la capital de Canadá?",
+        "respuestaCorrecta": "Ottawa",
+        "respuestaFalsa": "Toronto"
+    },
+    {
+        "pregunta": "¿Cuál es la país famoso por el tango?",
+        "respuestaCorrecta": "Argentina",
+        "respuestaFalsa": "Uruguay"
+    },
+    {
+        "pregunta": "¿Cuál es la capital de Francia?",
+        "respuestaCorrecta": "París",
+        "respuestaFalsa": "Marsella"
+    },
+    {
+        "pregunta": "¿Cuál es la planeta más cercano al Sol?",
+        "respuestaCorrecta": "Mercurio",
+        "respuestaFalsa": "Venus"
+    },
+    {
+        "pregunta": "¿Cuál es la animal más grande del mundo?",
+        "respuestaCorrecta": "Ballena azul",
+        "respuestaFalsa": "Elefante africano"
+    },
+    {
+        "pregunta": "¿Cuál es la inventor del teléfono?",
+        "respuestaCorrecta": "Alexander Graham Bell",
+        "respuestaFalsa": "Thomas Edison"
+    },
+    {
+        "pregunta": "¿Cuál es la moneda de Japón?",
+        "respuestaCorrecta": "Yen",
+        "respuestaFalsa": "Won"
+    },
+    {
+        "pregunta": "¿Cuál es la idioma más hablado del mundo?",
+        "respuestaCorrecta": "Inglés",
+        "respuestaFalsa": "Español"
+    },
+    {
+        "pregunta": "¿Cuál es la continente donde está Egipto?",
+        "respuestaCorrecta": "África",
+        "respuestaFalsa": "Asia"
+    },
+    {
+        "pregunta": "¿Cuál es la gas necesario para respirar?",
+        "respuestaCorrecta": "Oxígeno",
+        "respuestaFalsa": "Hidrógeno"
+    },
+    {
+        "pregunta": "¿Cuál es la capital de Canadá?",
+        "respuestaCorrecta": "Ottawa",
+        "respuestaFalsa": "Toronto"
+    },
+    {
+        "pregunta": "¿Cuál es la país famoso por el tango?",
+        "respuestaCorrecta": "Argentina",
+        "respuestaFalsa": "Uruguay"
+    },
+    {
+        "pregunta": "¿Cuál es la capital de Francia?",
+        "respuestaCorrecta": "París",
+        "respuestaFalsa": "Marsella"
+    },
+    {
+        "pregunta": "¿Cuál es la planeta más cercano al Sol?",
+        "respuestaCorrecta": "Mercurio",
+        "respuestaFalsa": "Venus"
+    },
+    {
+        "pregunta": "¿Cuál es la animal más grande del mundo?",
+        "respuestaCorrecta": "Ballena azul",
+        "respuestaFalsa": "Elefante africano"
+    },
+    {
+        "pregunta": "¿Cuál es la inventor del teléfono?",
+        "respuestaCorrecta": "Alexander Graham Bell",
+        "respuestaFalsa": "Thomas Edison"
+    },
+    {
+        "pregunta": "¿Cuál es la moneda de Japón?",
+        "respuestaCorrecta": "Yen",
+        "respuestaFalsa": "Won"
+    },
+    {
+        "pregunta": "¿Cuál es la idioma más hablado del mundo?",
+        "respuestaCorrecta": "Inglés",
+        "respuestaFalsa": "Español"
+    },
+    {
+        "pregunta": "¿Cuál es la continente donde está Egipto?",
+        "respuestaCorrecta": "África",
+        "respuestaFalsa": "Asia"
+    },
+    {
+        "pregunta": "¿Cuál es la gas necesario para respirar?",
+        "respuestaCorrecta": "Oxígeno",
+        "respuestaFalsa": "Hidrógeno"
+    },
+    {
+        "pregunta": "¿Cuál es la capital de Canadá?",
+        "respuestaCorrecta": "Ottawa",
+        "respuestaFalsa": "Toronto"
+    },
+    {
+        "pregunta": "¿Cuál es la país famoso por el tango?",
+        "respuestaCorrecta": "Argentina",
+        "respuestaFalsa": "Uruguay"
+    },
+    {
+        "pregunta": "¿Cuál es la capital de Francia?",
+        "respuestaCorrecta": "París",
+        "respuestaFalsa": "Marsella"
+    },
+    {
+        "pregunta": "¿Cuál es la planeta más cercano al Sol?",
+        "respuestaCorrecta": "Mercurio",
+        "respuestaFalsa": "Venus"
+    },
+    {
+        "pregunta": "¿Cuál es la animal más grande del mundo?",
+        "respuestaCorrecta": "Ballena azul",
+        "respuestaFalsa": "Elefante africano"
+    },
+    {
+        "pregunta": "¿Cuál es la inventor del teléfono?",
+        "respuestaCorrecta": "Alexander Graham Bell",
+        "respuestaFalsa": "Thomas Edison"
+    },
+    {
+        "pregunta": "¿Cuál es la moneda de Japón?",
+        "respuestaCorrecta": "Yen",
+        "respuestaFalsa": "Won"
+    },
+    {
+        "pregunta": "¿Cuál es la idioma más hablado del mundo?",
+        "respuestaCorrecta": "Inglés",
+        "respuestaFalsa": "Español"
+    },
+    {
+        "pregunta": "¿Cuál es la continente donde está Egipto?",
+        "respuestaCorrecta": "África",
+        "respuestaFalsa": "Asia"
+    },
+    {
+        "pregunta": "¿Cuál es la gas necesario para respirar?",
+        "respuestaCorrecta": "Oxígeno",
+        "respuestaFalsa": "Hidrógeno"
+    },
+    {
+        "pregunta": "¿Cuál es la capital de Canadá?",
+        "respuestaCorrecta": "Ottawa",
+        "respuestaFalsa": "Toronto"
+    },
+    {
+        "pregunta": "¿Cuál es la país famoso por el tango?",
+        "respuestaCorrecta": "Argentina",
+        "respuestaFalsa": "Uruguay"
+    },
+    {
+        "pregunta": "¿Cuál es la capital de Francia?",
+        "respuestaCorrecta": "París",
+        "respuestaFalsa": "Marsella"
+    },
+    {
+        "pregunta": "¿Cuál es la planeta más cercano al Sol?",
+        "respuestaCorrecta": "Mercurio",
+        "respuestaFalsa": "Venus"
+    },
+    {
+        "pregunta": "¿Cuál es la animal más grande del mundo?",
+        "respuestaCorrecta": "Ballena azul",
+        "respuestaFalsa": "Elefante africano"
+    },
+    {
+        "pregunta": "¿Cuál es la inventor del teléfono?",
+        "respuestaCorrecta": "Alexander Graham Bell",
+        "respuestaFalsa": "Thomas Edison"
+    },
+    {
+        "pregunta": "¿Cuál es la moneda de Japón?",
+        "respuestaCorrecta": "Yen",
+        "respuestaFalsa": "Won"
+    },
+    {
+        "pregunta": "¿Cuál es la idioma más hablado del mundo?",
+        "respuestaCorrecta": "Inglés",
+        "respuestaFalsa": "Español"
+    },
+    {
+        "pregunta": "¿Cuál es la continente donde está Egipto?",
+        "respuestaCorrecta": "África",
+        "respuestaFalsa": "Asia"
+    },
+    {
+        "pregunta": "¿Cuál es la gas necesario para respirar?",
+        "respuestaCorrecta": "Oxígeno",
+        "respuestaFalsa": "Hidrógeno"
+    },
+    {
+        "pregunta": "¿Cuál es la capital de Canadá?",
+        "respuestaCorrecta": "Ottawa",
+        "respuestaFalsa": "Toronto"
+    },
+    {
+        "pregunta": "¿Cuál es la país famoso por el tango?",
+        "respuestaCorrecta": "Argentina",
+        "respuestaFalsa": "Uruguay"
+    },
+    {
+        "pregunta": "¿Cuál es la capital de Francia?",
+        "respuestaCorrecta": "París",
+        "respuestaFalsa": "Marsella"
+    },
+    {
+        "pregunta": "¿Cuál es la planeta más cercano al Sol?",
+        "respuestaCorrecta": "Mercurio",
+        "respuestaFalsa": "Venus"
+    },
+    {
+        "pregunta": "¿Cuál es la animal más grande del mundo?",
+        "respuestaCorrecta": "Ballena azul",
+        "respuestaFalsa": "Elefante africano"
+    },
+    {
+        "pregunta": "¿Cuál es la inventor del teléfono?",
+        "respuestaCorrecta": "Alexander Graham Bell",
+        "respuestaFalsa": "Thomas Edison"
+    },
+    {
+        "pregunta": "¿Cuál es la moneda de Japón?",
+        "respuestaCorrecta": "Yen",
+        "respuestaFalsa": "Won"
+    },
+    {
+        "pregunta": "¿Cuál es la idioma más hablado del mundo?",
+        "respuestaCorrecta": "Inglés",
+        "respuestaFalsa": "Español"
+    },
+    {
+        "pregunta": "¿Cuál es la continente donde está Egipto?",
+        "respuestaCorrecta": "África",
+        "respuestaFalsa": "Asia"
+    },
+    {
+        "pregunta": "¿Cuál es la gas necesario para respirar?",
+        "respuestaCorrecta": "Oxígeno",
+        "respuestaFalsa": "Hidrógeno"
+    },
+    {
+        "pregunta": "¿Cuál es la capital de Canadá?",
+        "respuestaCorrecta": "Ottawa",
+        "respuestaFalsa": "Toronto"
+    },
+    {
+        "pregunta": "¿Cuál es la país famoso por el tango?",
+        "respuestaCorrecta": "Argentina",
+        "respuestaFalsa": "Uruguay"
+    },
+    {
+        "pregunta": "¿Cuál es la capital de Francia?",
+        "respuestaCorrecta": "París",
+        "respuestaFalsa": "Marsella"
+    },
+    {
+        "pregunta": "¿Cuál es la planeta más cercano al Sol?",
+        "respuestaCorrecta": "Mercurio",
+        "respuestaFalsa": "Venus"
+    },
+    {
+        "pregunta": "¿Cuál es la animal más grande del mundo?",
+        "respuestaCorrecta": "Ballena azul",
+        "respuestaFalsa": "Elefante africano"
+    },
+    {
+        "pregunta": "¿Cuál es la inventor del teléfono?",
+        "respuestaCorrecta": "Alexander Graham Bell",
+        "respuestaFalsa": "Thomas Edison"
+    },
+    {
+        "pregunta": "¿Cuál es la moneda de Japón?",
+        "respuestaCorrecta": "Yen",
+        "respuestaFalsa": "Won"
+    },
+    {
+        "pregunta": "¿Cuál es la idioma más hablado del mundo?",
+        "respuestaCorrecta": "Inglés",
+        "respuestaFalsa": "Español"
+    },
+    {
+        "pregunta": "¿Cuál es la continente donde está Egipto?",
+        "respuestaCorrecta": "África",
+        "respuestaFalsa": "Asia"
+    },
+    {
+        "pregunta": "¿Cuál es la gas necesario para respirar?",
+        "respuestaCorrecta": "Oxígeno",
+        "respuestaFalsa": "Hidrógeno"
+    },
+    {
+        "pregunta": "¿Cuál es la capital de Canadá?",
+        "respuestaCorrecta": "Ottawa",
+        "respuestaFalsa": "Toronto"
+    },
+    {
+        "pregunta": "¿Cuál es la país famoso por el tango?",
+        "respuestaCorrecta": "Argentina",
+        "respuestaFalsa": "Uruguay"
+    },
+    {
+        "pregunta": "¿Cuál es la capital de Francia?",
+        "respuestaCorrecta": "París",
+        "respuestaFalsa": "Marsella"
+    },
+    {
+        "pregunta": "¿Cuál es la planeta más cercano al Sol?",
+        "respuestaCorrecta": "Mercurio",
+        "respuestaFalsa": "Venus"
+    },
+    {
+        "pregunta": "¿Cuál es la animal más grande del mundo?",
+        "respuestaCorrecta": "Ballena azul",
+        "respuestaFalsa": "Elefante africano"
+    },
+    {
+        "pregunta": "¿Cuál es la inventor del teléfono?",
+        "respuestaCorrecta": "Alexander Graham Bell",
+        "respuestaFalsa": "Thomas Edison"
+    },
+    {
+        "pregunta": "¿Cuál es la moneda de Japón?",
+        "respuestaCorrecta": "Yen",
+        "respuestaFalsa": "Won"
+    },
+    {
+        "pregunta": "¿Cuál es la idioma más hablado del mundo?",
+        "respuestaCorrecta": "Inglés",
+        "respuestaFalsa": "Español"
+    },
+    {
+        "pregunta": "¿Cuál es la continente donde está Egipto?",
+        "respuestaCorrecta": "África",
+        "respuestaFalsa": "Asia"
+    },
+    {
+        "pregunta": "¿Cuál es la gas necesario para respirar?",
+        "respuestaCorrecta": "Oxígeno",
+        "respuestaFalsa": "Hidrógeno"
+    },
+    {
+        "pregunta": "¿Cuál es la capital de Canadá?",
+        "respuestaCorrecta": "Ottawa",
+        "respuestaFalsa": "Toronto"
+    },
+    {
+        "pregunta": "¿Cuál es la país famoso por el tango?",
+        "respuestaCorrecta": "Argentina",
+        "respuestaFalsa": "Uruguay"
+    },
+    {
+        "pregunta": "¿Cuál es la capital de Francia?",
+        "respuestaCorrecta": "París",
+        "respuestaFalsa": "Marsella"
+    },
+    {
+        "pregunta": "¿Cuál es la planeta más cercano al Sol?",
+        "respuestaCorrecta": "Mercurio",
+        "respuestaFalsa": "Venus"
+    },
+    {
+        "pregunta": "¿Cuál es la animal más grande del mundo?",
+        "respuestaCorrecta": "Ballena azul",
+        "respuestaFalsa": "Elefante africano"
+    },
+    {
+        "pregunta": "¿Cuál es la inventor del teléfono?",
+        "respuestaCorrecta": "Alexander Graham Bell",
+        "respuestaFalsa": "Thomas Edison"
+    },
+    {
+        "pregunta": "¿Cuál es la moneda de Japón?",
+        "respuestaCorrecta": "Yen",
+        "respuestaFalsa": "Won"
+    },
+    {
+        "pregunta": "¿Cuál es la idioma más hablado del mundo?",
+        "respuestaCorrecta": "Inglés",
+        "respuestaFalsa": "Español"
+    },
+    {
+        "pregunta": "¿Cuál es la continente donde está Egipto?",
+        "respuestaCorrecta": "África",
+        "respuestaFalsa": "Asia"
+    },
+    {
+        "pregunta": "¿Cuál es la gas necesario para respirar?",
+        "respuestaCorrecta": "Oxígeno",
+        "respuestaFalsa": "Hidrógeno"
+    },
+    {
+        "pregunta": "¿Cuál es la capital de Canadá?",
+        "respuestaCorrecta": "Ottawa",
+        "respuestaFalsa": "Toronto"
+    },
+    {
+        "pregunta": "¿Cuál es la país famoso por el tango?",
+        "respuestaCorrecta": "Argentina",
+        "respuestaFalsa": "Uruguay"
+    },
+    {
+        "pregunta": "¿Cuál es la capital de Francia?",
+        "respuestaCorrecta": "París",
+        "respuestaFalsa": "Marsella"
+    },
+    {
+        "pregunta": "¿Cuál es la planeta más cercano al Sol?",
+        "respuestaCorrecta": "Mercurio",
+        "respuestaFalsa": "Venus"
+    },
+    {
+        "pregunta": "¿Cuál es la animal más grande del mundo?",
+        "respuestaCorrecta": "Ballena azul",
+        "respuestaFalsa": "Elefante africano"
+    },
+    {
+        "pregunta": "¿Cuál es la inventor del teléfono?",
+        "respuestaCorrecta": "Alexander Graham Bell",
+        "respuestaFalsa": "Thomas Edison"
+    },
+    {
+        "pregunta": "¿Cuál es la moneda de Japón?",
+        "respuestaCorrecta": "Yen",
+        "respuestaFalsa": "Won"
+    },
+    {
+        "pregunta": "¿Cuál es la idioma más hablado del mundo?",
+        "respuestaCorrecta": "Inglés",
+        "respuestaFalsa": "Español"
+    },
+    {
+        "pregunta": "¿Cuál es la continente donde está Egipto?",
+        "respuestaCorrecta": "África",
+        "respuestaFalsa": "Asia"
+    },
+    {
+        "pregunta": "¿Cuál es la gas necesario para respirar?",
+        "respuestaCorrecta": "Oxígeno",
+        "respuestaFalsa": "Hidrógeno"
+    },
+    {
+        "pregunta": "¿Cuál es la capital de Canadá?",
+        "respuestaCorrecta": "Ottawa",
+        "respuestaFalsa": "Toronto"
+    },
+    {
+        "pregunta": "¿Cuál es la país famoso por el tango?",
+        "respuestaCorrecta": "Argentina",
+        "respuestaFalsa": "Uruguay"
+    },
+    {
+        "pregunta": "¿Cuál es la capital de Francia?",
+        "respuestaCorrecta": "París",
+        "respuestaFalsa": "Marsella"
+    }
+];
 
         // Elementos del DOM
         const juegoActivoEl = document.getElementById('juego-activo');
