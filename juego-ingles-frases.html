@@ -6,8 +6,28 @@
     <title>Crea la Frase</title>
     <link rel="icon" href="img/favicon.png">
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #a984e5; margin: 0; padding: 15px; box-sizing: border-box; }
-        .game-container { width: 100%; max-width: 550px; background: #fff; padding: 25px; border-radius: 20px; box-shadow: 0 8px 0 #8e6ac5; }
+        /* El padding: 15px del body crea el espacio lateral que necesitas */
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; background-color: #a984e5; margin: 0; padding: 15px; box-sizing: border-box; }
+
+        /* --- CAMBIO AQUÍ: Añadimos estilos para el .wrapper --- */
+        .wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 550px; /* El max-width se mueve aquí */
+        }
+
+        /* --- CAMBIO AQUÍ: El game-container ahora solo ocupa el 100% de su padre (el wrapper) --- */
+        .game-container { 
+            width: 100%; 
+            background: #fff; 
+            padding: 25px; 
+            border-radius: 20px; 
+            box-shadow: 0 8px 0 #8e6ac5;
+            box-sizing: border-box;
+        }
+
         .source-sentence { display: flex; align-items: center; font-size: 1.5em; color: #555; margin-bottom: 20px; }
         .source-sentence img { width: 40px; height: 40px; margin-right: 15px; }
         .target-area { min-height: 60px; border-bottom: 2px solid #eee; padding-bottom: 10px; display: flex; flex-wrap: wrap; gap: 10px; }
@@ -19,135 +39,41 @@
         #check-button:disabled { background-color: #ccc; box-shadow: 0 5px 0 #aaa; }
         #check-button:active:not(:disabled) { transform: translateY(5px); box-shadow: 0 0 0 #4aa302; }
 		.home-link {
-    display: block;
-    text-align: center;
-    margin-top: 25px;
-    font-weight: bold;
-    color: rgba(255, 255, 255, 0.8);
-    text-decoration: none;
-    transition: color 0.2s;
-}
+            display: block;
+            text-align: center;
+            margin-top: 25px;
+            font-weight: bold;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: color 0.2s, transform 0.2s;
+        }
+        .home-link:hover {
+            color: #fff;
+            transform: scale(1.05);
+        }
     </style>
 </head>
 <body>
-    <div class="game-container">
-        <div class="source-sentence">
-            <span id="source-text"></span>
+    <!-- --- CAMBIO AQUÍ: Envolvemos todo en el .wrapper --- -->
+    <div class="wrapper">
+        <div class="game-container">
+            <div class="source-sentence">
+                <span id="source-text"></span>
+            </div>
+            <div class="target-area" id="target-area"></div>
+            <div class="word-bank" id="word-bank"></div>
+            <button id="check-button" disabled>COMPROBAR</button>
         </div>
-        <div class="target-area" id="target-area"></div>
-        <div class="word-bank" id="word-bank"></div>
-        <button id="check-button" disabled>COMPROBAR</button>
-    </div>
         <a href="index.html" class="home-link">Volver al menú</a>
-	<script>
-        const sentences = [
-    { es: "Yo tengo un perro", en: "I have a dog" },
-    { es: "El cielo es azul", en: "The sky is blue" },
-    { es: "Me gusta el queso", en: "I like cheese" },
-    { es: "Ella tiene un gato", en: "She has a cat" },
-    { es: "Nosotros vivimos en Madrid", en: "We live in Madrid" },
-    { es: "Ellos juegan al fútbol", en: "They play football" },
-    { es: "Tú eres mi amigo", en: "You are my friend" },
-    { es: "Hace calor hoy", en: "It is hot today" },
-    { es: "Tengo hambre", en: "I am hungry" },
-    { es: "Ella está cansada", en: "She is tired" },
-    { es: "Mi casa es grande", en: "My house is big" },
-    { es: "El café está caliente", en: "The coffee is hot" },
-    { es: "Me gusta leer libros", en: "I like to read books" },
-    { es: "Nos gusta bailar", en: "We like to dance" },
-    { es: "El coche es rojo", en: "The car is red" },
-    { es: "Él corre rápido", en: "He runs fast" },
-    { es: "Tengo una hermana", en: "I have a sister" },
-    { es: "El agua está fría", en: "The water is cold" },
-    { es: "La escuela es nueva", en: "The school is new" },
-    { es: "Ellos comen pizza", en: "They eat pizza" },
-    { es: "El gato duerme", en: "The cat sleeps" },
-    { es: "Nosotros estudiamos inglés", en: "We study English" },
-    { es: "Ella canta bien", en: "She sings well" },
-    { es: "Mi padre trabaja mucho", en: "My father works a lot" },
-    { es: "El sol brilla", en: "The sun shines" },
-    { es: "Yo veo la luna", en: "I see the moon" },
-    { es: "Tú bebes leche", en: "You drink milk" },
-    { es: "El perro ladra", en: "The dog barks" },
-    { es: "Me gusta el verano", en: "I like summer" },
-    { es: "Hace frío afuera", en: "It is cold outside" },
-    { es: "Ella abre la puerta", en: "She opens the door" },
-    { es: "Nosotros cocinamos arroz", en: "We cook rice" },
-    { es: "El tren llega tarde", en: "The train arrives late" },
-    { es: "Tú escribes una carta", en: "You write a letter" },
-    { es: "Yo leo un periódico", en: "I read a newspaper" },
-    { es: "Mi hermano tiene diez años", en: "My brother is ten years old" },
-    { es: "La flor es bonita", en: "The flower is pretty" },
-    { es: "El niño corre en el parque", en: "The boy runs in the park" },
-    { es: "Nos gusta el chocolate", en: "We like chocolate" },
-    { es: "Yo estudio matemáticas", en: "I study math" },
-    { es: "El avión vuela alto", en: "The plane flies high" },
-    { es: "Ella toca la guitarra", en: "She plays the guitar" },
-    { es: "Mi abuela cocina sopa", en: "My grandmother cooks soup" },
-    { es: "Ellos leen un libro", en: "They read a book" },
-    { es: "El niño está feliz", en: "The boy is happy" },
-    { es: "La niña canta una canción", en: "The girl sings a song" },
-    { es: "Tengo una bicicleta nueva", en: "I have a new bicycle" },
-    { es: "Nosotros comemos manzanas", en: "We eat apples" },
-    { es: "Ella pinta una casa", en: "She paints a house" },
-    { es: "El reloj es caro", en: "The watch is expensive" },
-    { es: "Yo camino todos los días", en: "I walk every day" },
-    { es: "Ellos viajan mucho", en: "They travel a lot" },
-    { es: "Mi madre bebe té", en: "My mother drinks tea" },
-    { es: "El pájaro canta", en: "The bird sings" },
-    { es: "El mar es profundo", en: "The sea is deep" },
-    { es: "Tú tienes razón", en: "You are right" },
-    { es: "Nos levantamos temprano", en: "We get up early" },
-    { es: "Ella compra pan", en: "She buys bread" },
-    { es: "El caballo corre rápido", en: "The horse runs fast" },
-    { es: "Yo veo televisión", en: "I watch television" },
-    { es: "Ellos estudian historia", en: "They study history" },
-    { es: "Mi primo juega tenis", en: "My cousin plays tennis" },
-    { es: "Nos gusta el cine", en: "We like the cinema" },
-    { es: "El jardín tiene flores", en: "The garden has flowers" },
-    { es: "Ella bebe agua", en: "She drinks water" },
-    { es: "Yo trabajo en una oficina", en: "I work in an office" },
-    { es: "El gato come pescado", en: "The cat eats fish" },
-    { es: "Tú hablas inglés", en: "You speak English" },
-    { es: "Nosotros vemos una película", en: "We watch a movie" },
-    { es: "Él limpia su habitación", en: "He cleans his room" },
-    { es: "Mi tío vive en Francia", en: "My uncle lives in France" },
-    { es: "El autobús llega pronto", en: "The bus arrives soon" },
-    { es: "Yo escucho música", en: "I listen to music" },
-    { es: "Ella baila muy bien", en: "She dances very well" },
-    { es: "El pastel es dulce", en: "The cake is sweet" },
-    { es: "Mi hermana dibuja flores", en: "My sister draws flowers" },
-    { es: "Nos levantamos tarde", en: "We get up late" },
-    { es: "El río es largo", en: "The river is long" },
-    { es: "Ellos caminan al colegio", en: "They walk to school" },
-    { es: "El doctor trabaja mucho", en: "The doctor works a lot" },
-    { es: "Yo tengo frío", en: "I am cold" },
-    { es: "Ella toma café", en: "She drinks coffee" },
-    { es: "El pan está fresco", en: "The bread is fresh" },
-    { es: "Nos gusta el invierno", en: "We like winter" },
-    { es: "El niño abre la ventana", en: "The boy opens the window" },
-    { es: "Yo cierro la puerta", en: "I close the door" },
-    { es: "Ella lava los platos", en: "She washes the dishes" },
-    { es: "El coche es nuevo", en: "The car is new" },
-    { es: "Nosotros jugamos cartas", en: "We play cards" },
-    { es: "Tú cocinas bien", en: "You cook well" },
-    { es: "Mi madre lee revistas", en: "My mother reads magazines" },
-    { es: "El perro come carne", en: "The dog eats meat" },
-    { es: "Yo corro en el parque", en: "I run in the park" },
-    { es: "Ella escribe un correo", en: "She writes an email" },
-    { es: "El cielo está gris", en: "The sky is gray" },
-    { es: "Nos gusta el campo", en: "We like the countryside" },
-    { es: "Ellos toman jugo", en: "They drink juice" },
-    { es: "El bebé duerme mucho", en: "The baby sleeps a lot" },
-    { es: "Yo nado en el mar", en: "I swim in the sea" },
-    { es: "Ella compra flores", en: "She buys flowers" },
-    { es: "El gato salta alto", en: "The cat jumps high" },
-    { es: "Nosotros comemos juntos", en: "We eat together" },
-    { es: "Tú estudias mucho", en: "You study a lot" }
-];
+    </div>
 
+	<script>
+        // El JavaScript no necesita cambios
+        const sentences = [
+            { es: "Yo tengo un perro", en: "I have a dog" }, { es: "El cielo es azul", en: "The sky is blue" }, { es: "Me gusta el queso", en: "I like cheese" }, { es: "Ella tiene un gato", en: "She has a cat" }, { es: "Nosotros vivimos en Madrid", en: "We live in Madrid" }, { es: "Ellos juegan al fútbol", en: "They play football" }, { es: "Tú eres mi amigo", en: "You are my friend" }, { es: "Hace calor hoy", en: "It is hot today" }, { es: "Tengo hambre", en: "I am hungry" }, { es: "Ella está cansada", en: "She is tired" }, { es: "Mi casa es grande", en: "My house is big" }, { es: "El café está caliente", en: "The coffee is hot" }, { es: "Me gusta leer libros", en: "I like to read books" }, { es: "Nos gusta bailar", en: "We like to dance" }, { es: "El coche es rojo", en: "The car is red" }, { es: "Él corre rápido", en: "He runs fast" }, { es: "Tengo una hermana", en: "I have a sister" }, { es: "El agua está fría", en: "The water is cold" }, { es: "La escuela es nueva", en: "The school is new" }, { es: "Ellos comen pizza", en: "They eat pizza" }, { es: "El gato duerme", en: "The cat sleeps" }, { es: "Nosotros estudiamos inglés", en: "We study English" }, { es: "Ella canta bien", en: "She sings well" }, { es: "Mi padre trabaja mucho", en: "My father works a lot" }, { es: "El sol brilla", en: "The sun shines" }, { es: "Yo veo la luna", en: "I see the moon" }, { es: "Tú bebes leche", en: "You drink milk" }, { es: "El perro ladra", en: "The dog barks" }, { es: "Me gusta el verano", en: "I like summer" }, { es: "Hace frío afuera", en: "It is cold outside" }, { es: "Ella abre la puerta", en: "She opens the door" }, { es: "Nosotros cocinamos arroz", en: "We cook rice" }, { es: "El tren llega tarde", en: "The train arrives late" }, { es: "Tú escribes una carta", en: "You write a letter" }, { es: "Yo leo un periódico", en: "I read a newspaper" }, { es: "Mi hermano tiene diez años", en: "My brother is ten years old" }, { es: "La flor es bonita", en: "The flower is pretty" }, { es: "El niño corre en el parque", en: "The boy runs in the park" }, { es: "Nos gusta el chocolate", en: "We like chocolate" }, { es: "Yo estudio matemáticas", en: "I study math" }, { es: "El avión vuela alto", en: "The plane flies high" }, { es: "Ella toca la guitarra", en: "She plays the guitar" }, { es: "Mi abuela cocina sopa", en: "My grandmother cooks soup" }, { es: "Ellos leen un libro", en: "They read a book" }, { es: "El niño está feliz", en: "The boy is happy" }, { es: "La niña canta una canción", en: "The girl sings a song" }, { es: "Tengo una bicicleta nueva", en: "I have a new bicycle" }, { es: "Nosotros comemos manzanas", en: "We eat apples" }, { es: "Ella pinta una casa", en: "She paints a house" }, { es: "El reloj es caro", en: "The watch is expensive" }, { es: "Yo camino todos los días", en: "I walk every day" }, { es: "Ellos viajan mucho", en: "They travel a lot" }, { es: "Mi madre bebe té", en: "My mother drinks tea" }, { es: "El pájaro canta", en: "The bird sings" }, { es: "El mar es profundo", en: "The sea is deep" }, { es: "Tú tienes razón", en: "You are right" }, { es: "Nos levantamos temprano", en: "We get up early" }, { es: "Ella compra pan", en: "She buys bread" }, { es: "El caballo corre rápido", en: "The horse runs fast" }, { es: "Yo veo televisión", en: "I watch television" }, { es: "Ellos estudian historia", en: "They study history" }, { es: "Mi primo juega tenis", en: "My cousin plays tennis" }, { es: "Nos gusta el cine", en: "We like the cinema" }, { es: "El jardín tiene flores", en: "The garden has flowers" }, { es: "Ella bebe agua", en: "She drinks water" }, { es: "Yo trabajo en una oficina", en: "I work in an office" }, { es: "El gato come pescado", en: "The cat eats fish" }, { es: "Tú hablas inglés", en: "You speak English" }, { es: "Nosotros vemos una película", en: "We watch a movie" }, { es: "Él limpia su habitación", en: "He cleans his room" }, { es: "Mi tío vive en Francia", en: "My uncle lives in France" }, { es: "El autobús llega pronto", en: "The bus arrives soon" }, { es: "Yo escucho música", en: "I listen to music" }, { es: "Ella baila muy bien", en: "She dances very well" }, { es: "El pastel es dulce", en: "The cake is sweet" }, { es: "Mi hermana dibuja flores", en: "My sister draws flowers" }, { es: "Nos levantamos tarde", en: "We get up late" }, { es: "El río es largo", en: "The river is long" }, { es: "Ellos caminan al colegio", en: "They walk to school" }, { es: "El doctor trabaja mucho", en: "The doctor works a lot" }, { es: "Yo tengo frío", en: "I am cold" }, { es: "Ella toma café", en: "She drinks coffee" }, { es: "El pan está fresco", en: "The bread is fresh" }, { es: "Nos gusta el invierno", en: "We like winter" }, { es: "El niño abre la ventana", en: "The boy opens the window" }, { es: "Yo cierro la puerta", en: "I close the door" }, { es: "Ella lava los platos", en: "She washes the dishes" }, { es: "El coche es nuevo", en: "The car is new" }, { es: "Nosotros jugamos cartas", en: "We play cards" }, { es: "Tú cocinas bien", en: "You cook well" }, { es: "Mi madre lee revistas", en: "My mother reads magazines" }, { es: "El perro come carne", en: "The dog eats meat" }, { es: "Yo corro en el parque", en: "I run in the park" }, { es: "Ella escribe un correo", en: "She writes an email" }, { es: "El cielo está gris", en: "The sky is gray" }, { es: "Nos gusta el campo", en: "We like the countryside" }, { es: "Ellos toman jugo", en: "They drink juice" }, { es: "El bebé duerme mucho", en: "The baby sleeps a lot" }, { es: "Yo nado en el mar", en: "I swim in the sea" }, { es: "Ella compra flores", en: "She buys flowers" }, { es: "El gato salta alto", en: "The cat jumps high" }, { es: "Nosotros comemos juntos", en: "We eat together" }, { es: "Tú estudias mucho", en: "You study a lot" }
+        ];
         let currentSentence;
-        const sourceTextEl = document.getElementById('source-text' );
+        const sourceTextEl = document.getElementById('source-text');
         const targetAreaEl = document.getElementById('target-area');
         const wordBankEl = document.getElementById('word-bank');
         const checkButton = document.getElementById('check-button');
@@ -158,7 +84,6 @@
             targetAreaEl.innerHTML = '';
             wordBankEl.innerHTML = '';
             checkButton.disabled = true;
-
             const words = currentSentence.en.split(' ').sort(() => Math.random() - 0.5);
             words.forEach(word => {
                 const bubble = createBubble(word, 'in-bank');
