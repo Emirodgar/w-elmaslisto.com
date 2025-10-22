@@ -6,31 +6,29 @@
     <title>Construye la Palabra</title>
     <link rel="icon" href="img/favicon.png">
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #ffc02e; margin: 0; padding: 15px; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; background-color: #ffc02e; margin: 0; padding: 15px; box-sizing: border-box; }
         .game-container { width: 100%; max-width: 500px; background: #fff; padding: 25px; border-radius: 20px; box-shadow: 0 8px 0 #e5a91a; text-align: center; }
         #main-image { max-width: 50%; height: auto; margin-bottom: 20px; }
         .slots, .letters { display: flex; justify-content: center; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
-        .slot, .letter { width: 50px; height: 50px; display: flex; justify-content: center; align-items: center; font-size: 1.8em; font-weight: bold; border-radius: 10px; }
+        .slot, .letter { width: 50px; height: 50px; display: flex; justify-content: center; align-items: center; font-size: 1.8em; font-weight: bold; border-radius: 10px; user-select: none; /* Evita la selección de texto al pulsar */ }
         .slot { background-color: #eee; border: 2px dashed #ccc; }
-        .letter { background-color: #78c8ff; color: white; cursor: grab; box-shadow: 0 4px 0 #4a90e2; }
-        .letter:active { cursor: grabbing; }
-        .slot.filled { border-style: solid; }
+        .letter { background-color: #78c8ff; color: white; cursor: pointer; box-shadow: 0 4px 0 #4a90e2; }
         .correct-animation { animation: bounce 0.5s; }
         @keyframes bounce { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
+        /* Estilo para el enlace de volver */
+        .home-link { display: block; text-align: center; margin-top: 25px; font-weight: bold; color: rgba(255, 255, 255, 0.8); text-decoration: none; transition: color 0.2s; }
+        .home-link:hover { color: #fff; }
     </style>
 </head>
 <body>
-<!-- ENLACE PARA VOLVER AL MENÚ PRINCIPAL -->
-    <a href="https://elmaslisto.com" class="back-to-home">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
-            <path d="M8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4.5a.5.5 0 0 0 .5-.5v-4h2v4a.5.5 0 0 0 .5.5H14a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L8.354 1.146zM2.5 7.707l5.5-5.5 5.5 5.5V14H10v-4a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v4H2.5V7.707z"/>
-        </svg>
-    </a>
     <div class="game-container">
         <img id="main-image" src="" alt="Imagen de la palabra a deletrear">
         <div class="slots" id="slots"></div>
         <div class="letters" id="letters"></div>
     </div>
+    <!-- Enlace para volver al menú, ubicado abajo -->
+    <a href="index.html" class="home-link">Volver al menú</a>
+
     <script>
         const words = [
             { word: "CAT", image: "https://img.icons8.com/plasticine/200/cat.png" },
@@ -50,52 +48,73 @@
 
             const shuffledLetters = currentWord.word.split('').sort(() => Math.random() - 0.5);
 
+            // Crear los huecos (slots)
             currentWord.word.split('').forEach(() => {
                 const slot = document.createElement('div');
                 slot.classList.add('slot');
+                slot.onclick = (e) => moveLetterBack(e.target); // Permite devolver la letra
                 slotsEl.appendChild(slot);
             });
 
+            // Crear las letras disponibles
             shuffledLetters.forEach(char => {
                 const letter = document.createElement('div');
                 letter.textContent = char;
                 letter.classList.add('letter');
-                letter.draggable = true;
-                letter.addEventListener('dragstart', e => e.dataTransfer.setData('text/plain', char));
+                letter.onclick = (e) => moveLetterToSlot(e.target); // Mueve la letra al pulsar
                 lettersEl.appendChild(letter);
             });
-
-            document.querySelectorAll('.slot').forEach((slot, index) => {
-                slot.addEventListener('dragover', e => e.preventDefault());
-                slot.addEventListener('drop', e => {
-                    e.preventDefault();
-                    const droppedLetter = e.dataTransfer.getData('text/plain');
-                    if (droppedLetter === currentWord.word[index] && !slot.textContent) {
-                        slot.textContent = droppedLetter;
-                        slot.classList.add('filled');
-                        // Ocultar la letra arrastrada
-                        document.querySelectorAll('.letter').forEach(l => {
-                            if (l.textContent === droppedLetter && !l.hidden) {
-                                l.hidden = true;
-                                return;
-                            }
-                        });
-                        checkWin();
-                    }
-                });
-            });
         }
 
-        function checkWin() {
-            const filledSlots = document.querySelectorAll('.slot.filled');
-            if (filledSlots.length === currentWord.word.length) {
-                slotsEl.classList.add('correct-animation');
-                setTimeout(() => {
-                    slotsEl.classList.remove('correct-animation');
-                    setupRound();
-                }, 2000);
+        // --- NUEVA LÓGICA TÁCTIL ---
+
+        function moveLetterToSlot(letterElement) {
+            // Encontrar el primer hueco vacío
+            const firstEmptySlot = Array.from(slotsEl.children).find(slot => !slot.textContent);
+            
+            if (firstEmptySlot) {
+                // Mover la letra al hueco
+                firstEmptySlot.textContent = letterElement.textContent;
+                // Ocultar la letra de la zona de letras
+                letterElement.style.visibility = 'hidden';
+                checkWord();
             }
         }
+
+        function moveLetterBack(slotElement) {
+            const letterToMoveBack = slotElement.textContent;
+            if (!letterToMoveBack) return; // No hacer nada si el hueco está vacío
+
+            // Encontrar la letra oculta correspondiente y volver a mostrarla
+            const hiddenLetter = Array.from(lettersEl.children).find(l => l.textContent === letterToMoveBack && l.style.visibility === 'hidden');
+            if (hiddenLetter) {
+                hiddenLetter.style.visibility = 'visible';
+            }
+            
+            // Vaciar el hueco
+            slotElement.textContent = '';
+        }
+
+        function checkWord() {
+            const filledSlots = Array.from(slotsEl.children).filter(slot => slot.textContent);
+            if (filledSlots.length === currentWord.word.length) {
+                const formedWord = filledSlots.map(slot => slot.textContent).join('');
+                if (formedWord === currentWord.word) {
+                    // ¡Correcto!
+                    slotsEl.classList.add('correct-animation');
+                    setTimeout(() => {
+                        slotsEl.classList.remove('correct-animation');
+                        setupRound();
+                    }, 2000);
+                } else {
+                    // Incorrecto, devolver todas las letras
+                    setTimeout(() => {
+                        Array.from(slotsEl.children).forEach(moveLetterBack);
+                    }, 800);
+                }
+            }
+        }
+
         setupRound();
     </script>
 </body>
