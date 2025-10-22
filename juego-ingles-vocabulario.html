@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¿Qué es esto?</title>
+    <link rel="icon" href="img/favicon.png">
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #78c8ff; margin: 0; padding: 15px; box-sizing: border-box; }
+        .game-container { width: 100%; max-width: 450px; background: #fff; padding: 25px; border-radius: 20px; box-shadow: 0 8px 0 #4a90e2; text-align: center; }
+        #main-image { max-width: 70%; height: auto; margin: 20px 0; border-radius: 15px; border: 5px solid #eee; }
+        .options { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
+        .option-btn { padding: 20px; font-size: 1.5em; font-weight: bold; border: 2px solid #ddd; background-color: #f9f9f9; border-radius: 15px; cursor: pointer; box-shadow: 0 4px 0 #ddd; transition: all 0.1s; }
+        .option-btn:active { transform: translateY(4px); box-shadow: 0 0 0 #ddd; }
+        .correct { background-color: #d7ffb8; border-color: #8ac926; box-shadow: 0 4px 0 #8ac926; }
+        .incorrect { background-color: #ffdfe0; border-color: #ff5c5c; box-shadow: 0 4px 0 #ff5c5c; }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <img id="main-image" src="" alt="Imagen del objeto a adivinar">
+        <div class="options" id="options"></div>
+    </div>
+    <script>
+        const vocabulary = [
+            { word: "Apple", image: "https://img.icons8.com/plasticine/200/apple.png", options: ["Apple", "Banana"] },
+            { word: "Dog", image: "https://img.icons8.com/plasticine/200/dog.png", options: ["Dog", "Cat"] },
+            { word: "Sun", image: "https://img.icons8.com/plasticine/200/sun.png", options: ["Moon", "Sun"] },
+            { word: "Car", image: "https://img.icons8.com/plasticine/200/car.png", options: ["Car", "Bus"] }
+        ];
+        let currentItem;
+        const imageEl = document.getElementById('main-image' );
+        const optionsEl = document.getElementById('options');
+
+        function nextRound() {
+            currentItem = vocabulary[Math.floor(Math.random() * vocabulary.length)];
+            imageEl.src = currentItem.image;
+            optionsEl.innerHTML = '';
+            
+            const shuffledOptions = [...currentItem.options].sort(() => Math.random() - 0.5);
+            
+            shuffledOptions.forEach(opt => {
+                const button = document.createElement('button');
+                button.textContent = opt;
+                button.classList.add('option-btn');
+                button.onclick = () => checkAnswer(opt, button);
+                optionsEl.appendChild(button);
+            });
+        }
+
+        function checkAnswer(selectedWord, button) {
+            document.querySelectorAll('.option-btn').forEach(btn => btn.disabled = true); // Deshabilitar botones
+            if (selectedWord === currentItem.word) {
+                button.classList.add('correct');
+                // Aquí iría el sonido de acierto
+                setTimeout(nextRound, 1500); // Esperar y pasar a la siguiente
+            } else {
+                button.classList.add('incorrect');
+                // Aquí iría el sonido de error
+                setTimeout(() => {
+                    document.querySelectorAll('.option-btn').forEach(btn => btn.disabled = false);
+                    button.classList.remove('incorrect');
+                }, 1500); // Permitir intentarlo de nuevo
+            }
+        }
+        nextRound();
+    </script>
+</body>
+</html>
