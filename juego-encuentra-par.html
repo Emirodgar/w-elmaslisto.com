@@ -3,110 +3,126 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Encuentra el Par</title>
+    <title>Encuentra la Diferencia</title>
 	<link rel="icon" href="img/favicon.png">
     <style>
-        body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;display:flex;flex-direction:column;justify-content:center;align-items:center;height:100vh;background-color:#2ecc71;margin:0;padding:15px;box-sizing:border-box}#info{font-size:1.2em;color:#fff;background:rgba(0,0,0,.2);padding:10px 20px;border-radius:10px;margin-bottom:20px;font-weight:700}.game-board{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;perspective:1000px;width:100%;max-width:400px}.card{width:100%;aspect-ratio:1/1;position:relative;transform-style:preserve-3d;transition:transform .6s;cursor:pointer}.card.flipped,.card.matched{transform:rotateY(180deg)}.card-face{position:absolute;width:100%;height:100%;backface-visibility:hidden;display:flex;justify-content:center;align-items:center;font-size:2em;border-radius:10px}.card-front{background-color:#3498db;color:#fff}.card-back{background-color:#ecf0f1;transform:rotateY(180deg)}@media (min-width:768px){.card-face{font-size:40px}}
+        /* El padding: 15px del body crea el espacio lateral que necesitas */
+        body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;display:flex;justify-content:center;align-items:center;min-height:100vh;background-color:#9b59b6;margin:0;padding:15px;box-sizing:border-box}
+
+        /* --- CAMBIO AQUÍ: Añadimos estilos para el .wrapper --- */
+        .wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 500px; /* El max-width se mueve aquí */
+        }
+
+        /* --- CAMBIO AQUÍ: El game-container ahora solo ocupa el 100% de su padre (el wrapper) --- */
+        .game-container{width:100%;background:#fff;padding:20px;border-radius:15px;text-align:center;box-shadow:0 5px 15px rgba(0,0,0,.2);box-sizing:border-box;}
+
+        .header{font-size:1.5em;margin-bottom:15px;font-weight:700;color:#333}#grid{display:grid;gap:10px;margin-bottom:15px}.shape{aspect-ratio:1/1;background-color:#3498db;cursor:pointer;transition:transform .2s,background-color .2s;border-radius:10%}.shape:hover{transform:scale(1.1)}#progress-bar{width:100%;height:10px;background-color:#ecf0f1;border-radius:5px;overflow:hidden}#progress{width:100%;height:100%;background-color:#2ecc71;transition:width .1s linear}#grid h1{font-size:2em;color:#c0392b}#grid p{font-size:1.2em}#grid button{margin-top:10px;padding:10px 20px;font-size:1em;border:none;border-radius:8px;background-color:#3498db;color:#fff;cursor:pointer;transition:background-color .2s}#grid button:hover{background-color:#2980b9}
 		.home-link {
-    display: block;
-    text-align: center;
-    margin-top: 25px;
-    font-weight: bold;
-    color: rgba(255, 255, 255, 0.8);
-    text-decoration: none;
-    transition: color 0.2s;
-}
+            display: block;
+            text-align: center;
+            margin-top: 25px;
+            font-weight: bold;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: color 0.2s, transform 0.2s;
+        }
+        .home-link:hover {
+            color: #fff;
+            transform: scale(1.05);
+        }
     </style>
 </head>
 <body>
 
-    <div id="info">Tiempo: 0s | Intentos: 0</div>
-    <div class="game-board" id="game-board"></div>
-    <a href="index.html" class="home-link">Volver al menú</a>
+    <!-- --- CAMBIO AQUÍ: Envolvemos todo en el .wrapper --- -->
+    <div class="wrapper">
+        <div class="game-container">
+            <div class="header">Nivel: <span id="level">1</span></div>
+            <div id="grid"></div>
+            <div id="progress-bar"><div id="progress"></div></div>
+        </div>
+        <a href="index.html" class="home-link">Volver al menú</a>
+    </div>
+
     <script>
-        const gameBoard = document.getElementById('game-board');
-        const infoEl = document.getElementById('info');
-        const emojis = ['🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼'];
-        const cardsArray = [...emojis, ...emojis];
+        // El JavaScript no necesita cambios
+        const grid = document.getElementById('grid');
+        const levelEl = document.getElementById('level');
+        const progressEl = document.getElementById('progress');
 
-        let flippedCards = [];
-        let matchedPairs = 0;
-        let attempts = 0;
-        let timer = 0;
-        let timerInterval;
+        let level = 1;
+        let timer;
+        const baseTime = 5000;
 
-        function shuffle(array) {
-            array.sort(() => Math.random() - 0.5);
+        function nextLevel() {
+            levelEl.textContent = level;
+            grid.innerHTML = '';
+            clearInterval(timer);
+
+            const gridSize = Math.min(Math.floor(level / 3) + 2, 7);
+            grid.style.gridTemplateColumns = `repeat(${gridSize}, 1fr)`;
+            
+            const baseHue = Math.random() * 360;
+            const hueDifference = 180 / (level + 2);
+            const baseColor = `hsl(${baseHue}, 80%, 50%)`;
+            const diffColor = `hsl(${baseHue + hueDifference}, 80%, 50%)`;
+            
+            const diffIndex = Math.floor(Math.random() * gridSize * gridSize);
+
+            for (let i = 0; i < gridSize * gridSize; i++) {
+                const shape = document.createElement('div');
+                shape.classList.add('shape');
+                
+                if (i === diffIndex) {
+                    shape.style.backgroundColor = diffColor;
+                    shape.addEventListener('click', () => {
+                        level++;
+                        nextLevel();
+                    });
+                } else {
+                    shape.style.backgroundColor = baseColor;
+                    shape.addEventListener('click', gameOver);
+                }
+                
+                if (level > 5 && Math.random() > 0.9) {
+                    shape.style.borderRadius = '50%';
+                }
+
+                grid.appendChild(shape);
+            }
+            
+            startTimer();
         }
 
-        function startGame() {
-            shuffle(cardsArray);
-            gameBoard.innerHTML = '';
-            flippedCards = [];
-            matchedPairs = 0;
-            attempts = 0;
-            timer = 0;
-            updateInfo();
-            clearInterval(timerInterval);
-            timerInterval = setInterval(() => {
-                timer++;
-                updateInfo();
-            }, 1000);
+        function startTimer() {
+            const timeForLevel = Math.max(baseTime - (level * 100), 1500);
+            
+            progressEl.style.transition = 'none';
+            progressEl.style.width = '100%';
+            
+            void progressEl.offsetWidth; 
 
-            cardsArray.forEach(emoji => {
-                const card = document.createElement('div');
-                card.classList.add('card');
-                card.dataset.emoji = emoji;
-                card.innerHTML = `
-                    <div class="card-face card-front">?</div>
-                    <div class="card-face card-back">${emoji}</div>
-                `;
-                card.addEventListener('click', handleCardClick);
-                gameBoard.appendChild(card);
+            progressEl.style.transition = `width ${timeForLevel / 1000}s linear`;
+            progressEl.style.width = '0%';
+
+            timer = setTimeout(gameOver, timeForLevel);
+        }
+
+        function gameOver() {
+            clearInterval(timer);
+            grid.innerHTML = `<h1>¡Fin del juego!</h1><p>Llegaste al nivel ${level}</p><button id="restart">Jugar de nuevo</button>`;
+            document.getElementById('restart').addEventListener('click', () => {
+                level = 1;
+                nextLevel();
             });
         }
 
-        function handleCardClick(e) {
-            const clickedCard = e.currentTarget;
-            if (flippedCards.length < 2 && !clickedCard.classList.contains('flipped')) {
-                clickedCard.classList.add('flipped');
-                flippedCards.push(clickedCard);
-
-                if (flippedCards.length === 2) {
-                    attempts++;
-                    updateInfo();
-                    checkForMatch();
-                }
-            }
-        }
-
-        function checkForMatch() {
-            const [card1, card2] = flippedCards;
-            if (card1.dataset.emoji === card2.dataset.emoji) {
-                // Es un par
-                card1.classList.add('matched');
-                card2.classList.add('matched');
-                matchedPairs++;
-                flippedCards = [];
-                if (matchedPairs === emojis.length) {
-                    clearInterval(timerInterval);
-                    infoEl.textContent = `¡Ganaste en ${timer}s con ${attempts} intentos!`;
-                }
-            } else {
-                // No es un par
-                setTimeout(() => {
-                    card1.classList.remove('flipped');
-                    card2.classList.remove('flipped');
-                    flippedCards = [];
-                }, 1000);
-            }
-        }
-        
-        function updateInfo() {
-            infoEl.textContent = `Tiempo: ${timer}s | Intentos: ${attempts}`;
-        }
-
-        startGame();
+        nextLevel();
     </script>
 </body>
 </html>
