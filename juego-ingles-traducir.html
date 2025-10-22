@@ -3,98 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crea la Frase</title>
+    <title>Construye la Palabra</title>
     <link rel="icon" href="img/favicon.png">
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #a984e5; margin: 0; padding: 15px; box-sizing: border-box; }
-        .game-container { width: 100%; max-width: 550px; background: #fff; padding: 25px; border-radius: 20px; box-shadow: 0 8px 0 #8e6ac5; }
-        .source-sentence { display: flex; align-items: center; font-size: 1.5em; color: #555; margin-bottom: 20px; }
-        .source-sentence img { width: 40px; height: 40px; margin-right: 15px; }
-        .target-area { min-height: 60px; border-bottom: 2px solid #eee; padding-bottom: 10px; display: flex; flex-wrap: wrap; gap: 10px; }
-        .word-bank { min-height: 100px; margin-top: 20px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
-        .word-bubble { padding: 10px 20px; font-size: 1.2em; background-color: #f0f0f0; border: 1px solid #ddd; border-bottom-width: 3px; border-radius: 10px; cursor: pointer; }
-        .word-bubble.in-bank { background-color: #fff; }
-        .word-bubble.in-target { background-color: #e0e0e0; }
-        #check-button { width: 100%; padding: 20px; font-size: 1.5em; font-weight: bold; color: white; background-color: #58cc02; border: none; border-radius: 15px; cursor: pointer; margin-top: 20px; box-shadow: 0 5px 0 #4aa302; transition: all 0.1s; }
-        #check-button:disabled { background-color: #ccc; box-shadow: 0 5px 0 #aaa; }
-        #check-button:active:not(:disabled) { transform: translateY(5px); box-shadow: 0 0 0 #4aa302; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #ffc02e; margin: 0; padding: 15px; box-sizing: border-box; }
+        .game-container { width: 100%; max-width: 500px; background: #fff; padding: 25px; border-radius: 20px; box-shadow: 0 8px 0 #e5a91a; text-align: center; }
+        #main-image { max-width: 50%; height: auto; margin-bottom: 20px; }
+        .slots, .letters { display: flex; justify-content: center; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
+        .slot, .letter { width: 50px; height: 50px; display: flex; justify-content: center; align-items: center; font-size: 1.8em; font-weight: bold; border-radius: 10px; }
+        .slot { background-color: #eee; border: 2px dashed #ccc; }
+        .letter { background-color: #78c8ff; color: white; cursor: grab; box-shadow: 0 4px 0 #4a90e2; }
+        .letter:active { cursor: grabbing; }
+        .slot.filled { border-style: solid; }
+        .correct-animation { animation: bounce 0.5s; }
+        @keyframes bounce { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
     </style>
 </head>
 <body>
     <div class="game-container">
-        <div class="source-sentence">
-            <img src="https://img.icons8.com/plasticine/100/spain-2-flag.png" alt="Bandera de España">
-            <span id="source-text"></span>
-        </div>
-        <div class="target-area" id="target-area"></div>
-        <div class="word-bank" id="word-bank"></div>
-        <button id="check-button" disabled>COMPROBAR</button>
+        <img id="main-image" src="" alt="Imagen de la palabra a deletrear">
+        <div class="slots" id="slots"></div>
+        <div class="letters" id="letters"></div>
     </div>
     <script>
-        const sentences = [
-            { es: "Yo tengo un perro", en: "I have a dog" },
-            { es: "El cielo es azul", en: "The sky is blue" },
-            { es: "Me gusta el queso", en: "I like cheese" }
+        const words = [
+            { word: "CAT", image: "https://img.icons8.com/plasticine/200/cat.png" },
+            { word: "SUN", image: "https://img.icons8.com/plasticine/200/sun.png" },
+            { word: "BALL", image: "https://img.icons8.com/plasticine/200/football2.png" }
         ];
-        let currentSentence;
-        const sourceTextEl = document.getElementById('source-text' );
-        const targetAreaEl = document.getElementById('target-area');
-        const wordBankEl = document.getElementById('word-bank');
-        const checkButton = document.getElementById('check-button');
+        let currentWord;
+        const imageEl = document.getElementById('main-image' );
+        const slotsEl = document.getElementById('slots');
+        const lettersEl = document.getElementById('letters');
 
         function setupRound() {
-            currentSentence = sentences[Math.floor(Math.random() * sentences.length)];
-            sourceTextEl.textContent = currentSentence.es;
-            targetAreaEl.innerHTML = '';
-            wordBankEl.innerHTML = '';
-            checkButton.disabled = true;
+            currentWord = words[Math.floor(Math.random() * words.length)];
+            imageEl.src = currentWord.image;
+            slotsEl.innerHTML = '';
+            lettersEl.innerHTML = '';
 
-            const words = currentSentence.en.split(' ').sort(() => Math.random() - 0.5);
-            words.forEach(word => {
-                const bubble = createBubble(word, 'in-bank');
-                bubble.onclick = () => moveBubble(bubble, wordBankEl, targetAreaEl);
-                wordBankEl.appendChild(bubble);
+            const shuffledLetters = currentWord.word.split('').sort(() => Math.random() - 0.5);
+
+            currentWord.word.split('').forEach(() => {
+                const slot = document.createElement('div');
+                slot.classList.add('slot');
+                slotsEl.appendChild(slot);
+            });
+
+            shuffledLetters.forEach(char => {
+                const letter = document.createElement('div');
+                letter.textContent = char;
+                letter.classList.add('letter');
+                letter.draggable = true;
+                letter.addEventListener('dragstart', e => e.dataTransfer.setData('text/plain', char));
+                lettersEl.appendChild(letter);
+            });
+
+            document.querySelectorAll('.slot').forEach((slot, index) => {
+                slot.addEventListener('dragover', e => e.preventDefault());
+                slot.addEventListener('drop', e => {
+                    e.preventDefault();
+                    const droppedLetter = e.dataTransfer.getData('text/plain');
+                    if (droppedLetter === currentWord.word[index] && !slot.textContent) {
+                        slot.textContent = droppedLetter;
+                        slot.classList.add('filled');
+                        // Ocultar la letra arrastrada
+                        document.querySelectorAll('.letter').forEach(l => {
+                            if (l.textContent === droppedLetter && !l.hidden) {
+                                l.hidden = true;
+                                return;
+                            }
+                        });
+                        checkWin();
+                    }
+                });
             });
         }
 
-        function createBubble(text, area) {
-            const bubble = document.createElement('div');
-            bubble.textContent = text;
-            bubble.classList.add('word-bubble', area);
-            return bubble;
-        }
-
-        function moveBubble(bubble, from, to) {
-            from.removeChild(bubble);
-            bubble.classList.replace(from.id.includes('bank') ? 'in-bank' : 'in-target', to.id.includes('bank') ? 'in-bank' : 'in-target');
-            bubble.onclick = () => moveBubble(bubble, to, from);
-            to.appendChild(bubble);
-            checkButton.disabled = targetAreaEl.children.length === 0;
-        }
-
-        checkButton.onclick = () => {
-            const userAnswer = Array.from(targetAreaEl.children).map(b => b.textContent).join(' ');
-            if (userAnswer === currentSentence.en) {
-                checkButton.style.backgroundColor = '#d7ffb8';
-                checkButton.style.color = '#58a700';
-                checkButton.textContent = '¡CORRECTO!';
+        function checkWin() {
+            const filledSlots = document.querySelectorAll('.slot.filled');
+            if (filledSlots.length === currentWord.word.length) {
+                slotsEl.classList.add('correct-animation');
                 setTimeout(() => {
-                    checkButton.style.backgroundColor = '#58cc02';
-                    checkButton.style.color = 'white';
-                    checkButton.textContent = 'COMPROBAR';
+                    slotsEl.classList.remove('correct-animation');
                     setupRound();
                 }, 2000);
-            } else {
-                checkButton.style.backgroundColor = '#ffdfe0';
-                checkButton.style.color = '#ea2b2b';
-                checkButton.textContent = 'INTÉNTALO DE NUEVO';
-                setTimeout(() => {
-                    checkButton.style.backgroundColor = '#58cc02';
-                    checkButton.style.color = 'white';
-                    checkButton.textContent = 'COMPROBAR';
-                }, 2000);
             }
-        };
+        }
         setupRound();
     </script>
 </body>
