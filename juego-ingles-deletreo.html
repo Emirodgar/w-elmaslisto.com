@@ -6,102 +6,58 @@
     <title>Construye la Palabra</title>
     <link rel="icon" href="img/favicon.png">
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; background-color: #ffc02e; margin: 0; padding: 15px; box-sizing: border-box; }
-        .game-container { width: 90%; max-width: 500px; background: #fff; padding: 25px; border-radius: 20px; box-shadow: 0 8px 0 #e5a91a; text-align: center; }
+        /* El padding: 15px del body ya crea el espacio lateral que necesitas */
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #ffc02e; margin: 0; padding: 15px; box-sizing: border-box; }
+        
+        /* --- CAMBIO AQUÍ: Añadimos estilos para el .wrapper --- */
+        .wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 500px; /* El max-width se mueve aquí */
+        }
+
+        /* --- CAMBIO AQUÍ: El game-container ahora solo ocupa el 100% de su padre (el wrapper) --- */
+        .game-container { 
+            width: 100%; 
+            background: #fff; 
+            padding: 25px; 
+            border-radius: 20px; 
+            box-shadow: 0 8px 0 #e5a91a; 
+            text-align: center;
+            box-sizing: border-box;
+        }
+
         #main-image { max-width: 50%; height: auto; margin-bottom: 20px; }
         .slots, .letters { display: flex; justify-content: center; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
-        .slot, .letter { width: 50px; height: 50px; display: flex; justify-content: center; align-items: center; font-size: 1.8em; font-weight: bold; border-radius: 10px; user-select: none; /* Evita la selección de texto al pulsar */ }
+        .slot, .letter { width: 50px; height: 50px; display: flex; justify-content: center; align-items: center; font-size: 1.8em; font-weight: bold; border-radius: 10px; user-select: none; }
         .slot { background-color: #eee; border: 2px dashed #ccc; }
         .letter { background-color: #78c8ff; color: white; cursor: pointer; box-shadow: 0 4px 0 #4a90e2; }
         .correct-animation { animation: bounce 0.5s; }
         @keyframes bounce { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
-        /* Estilo para el enlace de volver */
+        
         .home-link { display: block; text-align: center; margin-top: 25px; font-weight: bold; color: rgba(255, 255, 255, 0.8); text-decoration: none; transition: color 0.2s; }
         .home-link:hover { color: #fff; }
-		.home-link {
-    display: block;
-    text-align: center;
-    margin-top: 25px;
-    font-weight: bold;
-    color: rgba(255, 255, 255, 0.8);
-    text-decoration: none;
-    transition: color 0.2s;
-}
     </style>
 </head>
 <body>
-    <div class="game-container">
-        <img id="main-image" src="" alt="Imagen de la palabra a deletrear">
-        <div class="slots" id="slots"></div>
-        <div class="letters" id="letters"></div>
+    <!-- --- CAMBIO AQUÍ: Envolvemos todo en el .wrapper --- -->
+    <div class="wrapper">
+        <div class="game-container">
+            <img id="main-image" src="" alt="Imagen de la palabra a deletrear">
+            <div class="slots" id="slots"></div>
+            <div class="letters" id="letters"></div>
+        </div>
+        <!-- Enlace para volver al menú, ubicado abajo -->
+        <a href="index.html" class="home-link">Volver al menú</a>
     </div>
-    <!-- Enlace para volver al menú, ubicado abajo -->
-    <a href="index.html" class="home-link">Volver al menú</a>
 
     <script>
+        // El JavaScript no necesita cambios
         const words = [
-    // Animales
-    { word: "CAT", image: "https://img.icons8.com/plasticine/200/cat.png" },
-    { word: "DOG", image: "https://img.icons8.com/plasticine/200/dog.png" },
-    { word: "PIG", image: "https://img.icons8.com/plasticine/200/pig.png" },
-    { word: "BEE", image: "https://img.icons8.com/plasticine/200/bee.png" },
-    { word: "LION", image: "https://img.icons8.com/plasticine/200/lion.png" },
-    { word: "FISH", image: "https://img.icons8.com/plasticine/200/fish.png" },
-    { word: "BIRD", image: "https://img.icons8.com/plasticine/200/bird.png" },
-    { word: "FROG", image: "https://img.icons8.com/plasticine/200/frog.png" },
-    { word: "COW", image: "https://img.icons8.com/plasticine/200/cow.png" },
-    { word: "FOX", image: "https://img.icons8.com/plasticine/200/fox.png" },
-    { word: "BEAR", image: "https://img.icons8.com/plasticine/200/bear.png" },
-    { word: "DUCK", image: "https://img.icons8.com/plasticine/200/duck.png" },
-    
-    // Comida
-    { word: "EGG", image: "https://img.icons8.com/plasticine/200/egg.png" },
-    { word: "CAKE", image: "https://img.icons8.com/plasticine/200/cake.png" },
-    { word: "APPLE", image: "https://img.icons8.com/plasticine/200/apple.png" },
-    { word: "BREAD", image: "https://img.icons8.com/plasticine/200/bread.png" },
-    { word: "MILK", image: "https://img.icons8.com/plasticine/200/milk-bottle.png" },
-    { word: "CHEESE", image: "https://img.icons8.com/plasticine/200/cheese.png" },
-    { word: "ORANGE", image: "https://img.icons8.com/plasticine/200/orange.png" },
-    { word: "LEMON", image: "https://img.icons8.com/plasticine/200/lemon.png" },
-    { word: "GRAPE", image: "https://img.icons8.com/plasticine/200/grapes.png" },
-    { word: "PEAR", image: "https://img.icons8.com/plasticine/200/pear.png" },
-
-    // Naturaleza
-    { word: "SUN", image: "https://img.icons8.com/plasticine/200/sun.png" },
-    { word: "MOON", image: "https://img.icons8.com/plasticine/200/moon.png" },
-    { word: "STAR", image: "https://img.icons8.com/plasticine/200/star.png" },
-    { word: "TREE", image: "https://img.icons8.com/plasticine/200/tree.png" },
-    { word: "FLOWER", image: "https://img.icons8.com/plasticine/200/flower.png" },
-    { word: "CLOUD", image: "https://img.icons8.com/plasticine/200/cloud.png" },
-    { word: "WATER", image: "https://img.icons8.com/plasticine/200/water.png" },
-    { word: "FIRE", image: "https://img.icons8.com/plasticine/200/fire.png" },
-
-    // Objetos y Lugares
-    { word: "BALL", image: "https://img.icons8.com/plasticine/200/football2.png" },
-    { word: "CAR", image: "https://img.icons8.com/plasticine/200/car.png" },
-    { word: "HOUSE", image: "https://img.icons8.com/plasticine/200/home.png" },
-    { word: "BOOK", image: "https://img.icons8.com/plasticine/200/book.png" },
-    { word: "KEY", image: "https://img.icons8.com/plasticine/200/key.png" },
-    { word: "DOOR", image: "https://img.icons8.com/plasticine/200/door.png" },
-    { word: "BED", image: "https://img.icons8.com/plasticine/200/bed.png" },
-    { word: "CHAIR", image: "https://img.icons8.com/plasticine/200/chair.png" },
-    { word: "TABLE", image: "https://img.icons8.com/plasticine/200/table.png" },
-    { word: "CLOCK", image: "https://img.icons8.com/plasticine/200/clock.png" },
-    { word: "GIFT", image: "https://img.icons8.com/plasticine/200/gift.png" },
-    { word: "BOAT", image: "https://img.icons8.com/plasticine/200/boat.png" },
-    
-    // Colores y Formas
-    { word: "RED", image: "https://img.icons8.com/plasticine/200/paint-palette.png" }, // Imagen genérica
-    { word: "BLUE", image: "https://img.icons8.com/plasticine/200/paint-palette.png" }, // Imagen genérica
-    { word: "GREEN", image: "https://img.icons8.com/plasticine/200/paint-palette.png" }, // Imagen genérica
-    { word: "BOX", image: "https://img.icons8.com/plasticine/200/box.png" },
-    
-    // Partes del cuerpo
-    { word: "EYE", image: "https://img.icons8.com/plasticine/200/eye.png" },
-    { word: "HAND", image: "https://img.icons8.com/plasticine/200/hand.png" },
-    { word: "FOOT", image: "https://img.icons8.com/plasticine/200/foot.png" }
-];
-
+            { word: "CAT", image: "https://img.icons8.com/plasticine/200/cat.png" },{ word: "DOG", image: "https://img.icons8.com/plasticine/200/dog.png" },{ word: "PIG", image: "https://img.icons8.com/plasticine/200/pig.png" },{ word: "BEE", image: "https://img.icons8.com/plasticine/200/bee.png" },{ word: "LION", image: "https://img.icons8.com/plasticine/200/lion.png" },{ word: "FISH", image: "https://img.icons8.com/plasticine/200/fish.png" },{ word: "BIRD", image: "https://img.icons8.com/plasticine/200/bird.png" },{ word: "FROG", image: "https://img.icons8.com/plasticine/200/frog.png" },{ word: "COW", image: "https://img.icons8.com/plasticine/200/cow.png" },{ word: "FOX", image: "https://img.icons8.com/plasticine/200/fox.png" },{ word: "BEAR", image: "https://img.icons8.com/plasticine/200/bear.png" },{ word: "DUCK", image: "https://img.icons8.com/plasticine/200/duck.png" },{ word: "EGG", image: "https://img.icons8.com/plasticine/200/egg.png" },{ word: "CAKE", image: "https://img.icons8.com/plasticine/200/cake.png" },{ word: "APPLE", image: "https://img.icons8.com/plasticine/200/apple.png" },{ word: "BREAD", image: "https://img.icons8.com/plasticine/200/bread.png" },{ word: "MILK", image: "https://img.icons8.com/plasticine/200/milk-bottle.png" },{ word: "CHEESE", image: "https://img.icons8.com/plasticine/200/cheese.png" },{ word: "ORANGE", image: "https://img.icons8.com/plasticine/200/orange.png" },{ word: "LEMON", image: "https://img.icons8.com/plasticine/200/lemon.png" },{ word: "GRAPE", image: "https://img.icons8.com/plasticine/200/grapes.png" },{ word: "PEAR", image: "https://img.icons8.com/plasticine/200/pear.png" },{ word: "SUN", image: "https://img.icons8.com/plasticine/200/sun.png" },{ word: "MOON", image: "https://img.icons8.com/plasticine/200/moon.png" },{ word: "STAR", image: "https://img.icons8.com/plasticine/200/star.png" },{ word: "TREE", image: "https://img.icons8.com/plasticine/200/tree.png" },{ word: "FLOWER", image: "https://img.icons8.com/plasticine/200/flower.png" },{ word: "CLOUD", image: "https://img.icons8.com/plasticine/200/cloud.png" },{ word: "WATER", image: "https://img.icons8.com/plasticine/200/water.png" },{ word: "FIRE", image: "https://img.icons8.com/plasticine/200/fire.png" },{ word: "BALL", image: "https://img.icons8.com/plasticine/200/football2.png" },{ word: "CAR", image: "https://img.icons8.com/plasticine/200/car.png" },{ word: "HOUSE", image: "https://img.icons8.com/plasticine/200/home.png" },{ word: "BOOK", image: "https://img.icons8.com/plasticine/200/book.png" },{ word: "KEY", image: "https://img.icons8.com/plasticine/200/key.png" },{ word: "DOOR", image: "https://img.icons8.com/plasticine/200/door.png" },{ word: "BED", image: "https://img.icons8.com/plasticine/200/bed.png" },{ word: "CHAIR", image: "https://img.icons8.com/plasticine/200/chair.png" },{ word: "TABLE", image: "https://img.icons8.com/plasticine/200/table.png" },{ word: "CLOCK", image: "https://img.icons8.com/plasticine/200/clock.png" },{ word: "GIFT", image: "https://img.icons8.com/plasticine/200/gift.png" },{ word: "BOAT", image: "https://img.icons8.com/plasticine/200/boat.png" },{ word: "RED", image: "https://img.icons8.com/plasticine/200/paint-palette.png" },{ word: "BLUE", image: "https://img.icons8.com/plasticine/200/paint-palette.png" },{ word: "GREEN", image: "https://img.icons8.com/plasticine/200/paint-palette.png" },{ word: "BOX", image: "https://img.icons8.com/plasticine/200/box.png" },{ word: "EYE", image: "https://img.icons8.com/plasticine/200/eye.png" },{ word: "HAND", image: "https://img.icons8.com/plasticine/200/hand.png" },{ word: "FOOT", image: "https://img.icons8.com/plasticine/200/foot.png" }
+        ];
         let currentWord;
         const imageEl = document.getElementById('main-image' );
         const slotsEl = document.getElementById('slots');
@@ -112,37 +68,26 @@
             imageEl.src = currentWord.image;
             slotsEl.innerHTML = '';
             lettersEl.innerHTML = '';
-
             const shuffledLetters = currentWord.word.split('').sort(() => Math.random() - 0.5);
-
-            // Crear los huecos (slots)
             currentWord.word.split('').forEach(() => {
                 const slot = document.createElement('div');
                 slot.classList.add('slot');
-                slot.onclick = (e) => moveLetterBack(e.target); // Permite devolver la letra
+                slot.onclick = (e) => moveLetterBack(e.target);
                 slotsEl.appendChild(slot);
             });
-
-            // Crear las letras disponibles
             shuffledLetters.forEach(char => {
                 const letter = document.createElement('div');
                 letter.textContent = char;
                 letter.classList.add('letter');
-                letter.onclick = (e) => moveLetterToSlot(e.target); // Mueve la letra al pulsar
+                letter.onclick = (e) => moveLetterToSlot(e.target);
                 lettersEl.appendChild(letter);
             });
         }
 
-        // --- NUEVA LÓGICA TÁCTIL ---
-
         function moveLetterToSlot(letterElement) {
-            // Encontrar el primer hueco vacío
             const firstEmptySlot = Array.from(slotsEl.children).find(slot => !slot.textContent);
-            
             if (firstEmptySlot) {
-                // Mover la letra al hueco
                 firstEmptySlot.textContent = letterElement.textContent;
-                // Ocultar la letra de la zona de letras
                 letterElement.style.visibility = 'hidden';
                 checkWord();
             }
@@ -150,15 +95,11 @@
 
         function moveLetterBack(slotElement) {
             const letterToMoveBack = slotElement.textContent;
-            if (!letterToMoveBack) return; // No hacer nada si el hueco está vacío
-
-            // Encontrar la letra oculta correspondiente y volver a mostrarla
+            if (!letterToMoveBack) return;
             const hiddenLetter = Array.from(lettersEl.children).find(l => l.textContent === letterToMoveBack && l.style.visibility === 'hidden');
             if (hiddenLetter) {
                 hiddenLetter.style.visibility = 'visible';
             }
-            
-            // Vaciar el hueco
             slotElement.textContent = '';
         }
 
@@ -167,21 +108,18 @@
             if (filledSlots.length === currentWord.word.length) {
                 const formedWord = filledSlots.map(slot => slot.textContent).join('');
                 if (formedWord === currentWord.word) {
-                    // ¡Correcto!
                     slotsEl.classList.add('correct-animation');
                     setTimeout(() => {
                         slotsEl.classList.remove('correct-animation');
                         setupRound();
                     }, 2000);
                 } else {
-                    // Incorrecto, devolver todas las letras
                     setTimeout(() => {
                         Array.from(slotsEl.children).forEach(moveLetterBack);
                     }, 800);
                 }
             }
         }
-
         setupRound();
     </script>
 </body>
