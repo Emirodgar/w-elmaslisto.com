@@ -61,8 +61,8 @@
         <a href="index.html" class="home-link">Volver al menú</a>
     </div>
 
+    <script src="quiz-engine.js"></script>
     <script>
-        // El JavaScript no necesita cambios
         const bancoPreguntas = [
             {"pregunta": "¿Cuál es el río más largo del mundo?","respuestaCorrecta": "Amazonas","respuestaFalsa": "Nilo"},
             {"pregunta": "¿En qué año llegó el hombre a la Luna?","respuestaCorrecta": "1969","respuestaFalsa": "1965"},
@@ -86,30 +86,10 @@
             {"pregunta": "¿Cuál es el desierto más grande del mundo?","respuestaCorrecta": "Antártida","respuestaFalsa": "Sahara"}
         ];
 
-        const juegoActivoEl = document.getElementById('juego-activo');
-        const finJuegoEl = document.getElementById('fin-juego');
-        const puntuacionEl = document.getElementById('puntuacion');
-        const tiempoEl = document.getElementById('tiempo');
         const preguntaEl = document.getElementById('pregunta');
         const respuesta1Btn = document.getElementById('respuesta1');
         const respuesta2Btn = document.getElementById('respuesta2');
-        const puntuacionFinalEl = document.getElementById('puntuacion-final');
-        const reiniciarBtn = document.getElementById('reiniciar');
-        let puntuacion, tiempoRestante, temporizador, preguntaActual, preguntasDisponibles = [];
-
-        function iniciarJuego() {
-            puntuacion = 0;
-            juegoActivoEl.classList.remove('oculto');
-            finJuegoEl.classList.add('oculto');
-            preguntasDisponibles = [...bancoPreguntas];
-            siguienteRonda();
-        }
-
-        function siguienteRonda() {
-            puntuacionEl.textContent = puntuacion;
-            reiniciarTemporizador();
-            mostrarPregunta();
-        }
+        let preguntaActual, preguntasDisponibles = [];
 
         function mostrarPregunta() {
             if (preguntasDisponibles.length === 0) {
@@ -127,40 +107,16 @@
             }
         }
 
-        function reiniciarTemporizador() {
-            clearInterval(temporizador);
-            tiempoRestante = 15;
-            tiempoEl.textContent = tiempoRestante;
-            temporizador = setInterval(() => {
-                tiempoRestante--;
-                tiempoEl.textContent = tiempoRestante;
-                if (tiempoRestante <= 0) {
-                    terminarJuego();
-                }
-            }, 1000);
-        }
-
-        function comprobarRespuesta(e) {
-            const respuestaSeleccionada = e.target.textContent;
-            if (respuestaSeleccionada === preguntaActual.respuestaCorrecta) {
-                puntuacion++;
-                siguienteRonda();
-            } else {
-                terminarJuego();
-            }
-        }
-
-        function terminarJuego() {
-            clearInterval(temporizador);
-            juegoActivoEl.classList.add('oculto');
-            finJuegoEl.classList.remove('oculto');
-            puntuacionFinalEl.textContent = puntuacion;
-        }
-
-        respuesta1Btn.addEventListener('click', comprobarRespuesta);
-        respuesta2Btn.addEventListener('click', comprobarRespuesta);
-        reiniciarBtn.addEventListener('click', iniciarJuego);
-        iniciarJuego();
+        const quiz = crearQuizContrarreloj({
+            tiempoInicial: 15,
+            alIniciar() {
+                preguntasDisponibles = [...bancoPreguntas];
+                mostrarPregunta();
+            },
+            generarRonda: mostrarPregunta,
+            comprobarRespuesta: (texto) => texto === preguntaActual.respuestaCorrecta,
+        });
+        quiz.iniciar();
     </script>
 
 </body>

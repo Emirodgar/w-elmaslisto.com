@@ -60,40 +60,12 @@
         <a href="index.html" class="home-link">Volver al menú</a>
     </div>
 
+    <script src="quiz-engine.js"></script>
     <script>
-        // El JavaScript no necesita cambios
-        const juegoActivoEl = document.getElementById('juego-activo');
-        const finJuegoEl = document.getElementById('fin-juego');
-        const puntuacionEl = document.getElementById('puntuacion');
-        const tiempoEl = document.getElementById('tiempo');
         const operacionEl = document.getElementById('operacion');
         const respuesta1Btn = document.getElementById('respuesta1');
         const respuesta2Btn = document.getElementById('respuesta2');
-        const puntuacionFinalEl = document.getElementById('puntuacion-final');
-        const reiniciarBtn = document.getElementById('reiniciar');
-        let puntuacion, tiempoRestante, temporizador, respuestaCorrecta, numeroActual;
-
-        function iniciarJuego() {
-            puntuacion = 0;
-            const num1 = Math.floor(Math.random() * 10) + 1;
-            const num2 = Math.floor(Math.random() * 10) + 1;
-            numeroActual = num1 + num2;
-            juegoActivoEl.classList.remove('oculto');
-            finJuegoEl.classList.add('oculto');
-            puntuacionEl.textContent = puntuacion;
-            operacionEl.textContent = `${num1} + ${num2}`;
-            respuestaCorrecta = numeroActual;
-            generarRespuestas();
-            reiniciarTemporizador();
-        }
-
-        function siguienteRonda() {
-            puntuacion++;
-            puntuacionEl.textContent = puntuacion;
-            generarOperacion();
-            generarRespuestas();
-            reiniciarTemporizador();
-        }
+        let respuestaCorrecta, numeroActual;
 
         function generarOperacion() {
             const num2 = Math.floor(Math.random() * 10) + 1;
@@ -127,40 +99,27 @@
             }
         }
 
-        function reiniciarTemporizador() {
-            clearInterval(temporizador);
-            tiempoRestante = 10;
-            tiempoEl.textContent = tiempoRestante;
-            temporizador = setInterval(() => {
-                tiempoRestante--;
-                tiempoEl.textContent = tiempoRestante;
-                if (tiempoRestante <= 0) {
-                    terminarJuego();
-                }
-            }, 1000);
-        }
-
-        function comprobarRespuesta(e) {
-            const respuestaSeleccionada = parseInt(e.target.textContent);
-            if (respuestaSeleccionada === respuestaCorrecta) {
-                numeroActual = respuestaCorrecta;
-                siguienteRonda();
-            } else {
-                terminarJuego();
-            }
-        }
-
-        function terminarJuego() {
-            clearInterval(temporizador);
-            juegoActivoEl.classList.add('oculto');
-            finJuegoEl.classList.remove('oculto');
-            puntuacionFinalEl.textContent = puntuacion;
-        }
-
-        respuesta1Btn.addEventListener('click', comprobarRespuesta);
-        respuesta2Btn.addEventListener('click', comprobarRespuesta);
-        reiniciarBtn.addEventListener('click', iniciarJuego);
-        iniciarJuego();
+        const quiz = crearQuizContrarreloj({
+            tiempoInicial: 10,
+            alIniciar() {
+                const num1 = Math.floor(Math.random() * 10) + 1;
+                const num2 = Math.floor(Math.random() * 10) + 1;
+                numeroActual = num1 + num2;
+                operacionEl.textContent = `${num1} + ${num2}`;
+                respuestaCorrecta = numeroActual;
+                generarRespuestas();
+            },
+            generarRonda() {
+                generarOperacion();
+                generarRespuestas();
+            },
+            comprobarRespuesta(texto) {
+                const correcta = parseInt(texto) === respuestaCorrecta;
+                if (correcta) numeroActual = respuestaCorrecta;
+                return correcta;
+            },
+        });
+        quiz.iniciar();
     </script>
 </body>
 </html>
