@@ -3,11 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Efecto Stroop</title>
+    <title>Acierta el Color: Efecto Stroop Online | El Más Listo</title>
+    <meta name="description" content="Pon a prueba tu concentración con el efecto Stroop: acierta el color real en el que está escrita cada palabra.">
+    <link rel="canonical" href="https://elmaslisto.com/juego-colores">
+    <meta property="og:title" content="Acierta el Color: Efecto Stroop Online">
+    <meta property="og:description" content="Pon a prueba tu concentración con el efecto Stroop: acierta el color real en el que está escrita cada palabra.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://elmaslisto.com/juego-colores">
 	<link rel="icon" href="img/favicon.png">
+    <link rel="stylesheet" href="styles.css">
     <style>
         /* El padding: 15px del body crea el espacio lateral que necesitas */
-        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; background-color: #bdc3c7; margin: 0; padding: 15px; box-sizing: border-box; }
+        body { background-color: #bdc3c7; }
         
         /* --- CAMBIO AQUÍ: Añadimos estilos para el .wrapper --- */
         .wrapper {
@@ -34,19 +41,8 @@
         .options { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .option-btn { padding: 20px; font-size: 1.5em; border: none; border-radius: 10px; cursor: pointer; transition: transform 0.1s; }
         .option-btn:active { transform: scale(0.95); }
-		.home-link {
-            display: block;
-            text-align: center;
-            margin-top: 25px;
-            font-weight: bold;
-            color: #34495e; /* Color más oscuro para mejor contraste sobre fondo claro */
-            text-decoration: none;
-            transition: color 0.2s, transform 0.2s;
-        }
-        .home-link:hover {
-            color: #2c3e50;
-            transform: scale(1.05);
-        }
+		
+        
     </style>
 </head>
 <body>
@@ -54,7 +50,7 @@
     <div class="wrapper">
         <div class="game-container">
             <div class="header">
-                <span>Puntuación: <span id="score">0</span></span>
+                <span>Puntuación: <span id="score" aria-live="polite">0</span></span>
                 <span>Tiempo: <span id="time">5</span></span>
             </div>
             <div id="word-display"></div>

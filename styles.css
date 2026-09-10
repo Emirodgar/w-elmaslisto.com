@@ -1,0 +1,38 @@
+/* Estilos compartidos por las páginas de juego */
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 15px;
+    box-sizing: border-box;
+}
+
+.home-link {
+    display: block;
+    text-align: center;
+    margin-top: 25px;
+    font-weight: bold;
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    transition: color 0.2s, transform 0.2s;
+}
+
+.home-link:hover {
+    color: #fff;
+    transform: scale(1.05);
+}
+
+.credit {
+    margin: 4px 0 0;
+    font-size: 0.75em;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.credit a {
+    color: inherit;
+}

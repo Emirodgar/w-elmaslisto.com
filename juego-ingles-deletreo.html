@@ -3,11 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Construye la Palabra</title>
+    <title>Construye la Palabra: Deletrear en Inglés | El Más Listo</title>
+    <meta name="description" content="Aprende inglés deletreando palabras a partir de imágenes. Juego educativo gratuito para niños.">
+    <link rel="canonical" href="https://elmaslisto.com/juego-ingles-deletreo">
+    <meta property="og:title" content="Construye la Palabra: Deletrear en Inglés">
+    <meta property="og:description" content="Aprende inglés deletreando palabras a partir de imágenes. Juego educativo gratuito para niños.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://elmaslisto.com/juego-ingles-deletreo">
     <link rel="icon" href="img/favicon.png">
+    <link rel="stylesheet" href="styles.css">
     <style>
         /* El padding: 15px del body ya crea el espacio lateral que necesitas */
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #ffc02e; margin: 0; padding: 15px; box-sizing: border-box; }
+        body { background-color: #ffc02e; }
         
         /* --- CAMBIO AQUÍ: Añadimos estilos para el .wrapper --- */
         .wrapper {
@@ -37,26 +44,29 @@
         .correct-animation { animation: bounce 0.5s; }
         @keyframes bounce { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
         
-        .home-link { display: block; text-align: center; margin-top: 25px; font-weight: bold; color: rgba(255, 255, 255, 0.8); text-decoration: none; transition: color 0.2s; }
-        .home-link:hover { color: #fff; }
+        
+        
+        
+        
     </style>
 </head>
 <body>
     <!-- --- CAMBIO AQUÍ: Envolvemos todo en el .wrapper --- -->
     <div class="wrapper">
         <div class="game-container">
-            <img id="main-image" src="" alt="Imagen de la palabra a deletrear">
+            <img id="main-image" src="" alt="Imagen de la palabra a deletrear" width="200" height="200" onerror="this.style.visibility='hidden'">
             <div class="slots" id="slots"></div>
             <div class="letters" id="letters"></div>
         </div>
         <!-- Enlace para volver al menú, ubicado abajo -->
         <a href="index.html" class="home-link">Volver al menú</a>
+        <p class="credit">Iconos: <a href="https://icons8.com" target="_blank" rel="noopener">Icons8</a></p>
     </div>
 
     <script>
         // El JavaScript no necesita cambios
         const words = [
-            { word: "CAT", image: "https://img.icons8.com/plasticine/200/cat.png" },{ word: "DOG", image: "https://img.icons8.com/plasticine/200/dog.png" },{ word: "PIG", image: "https://img.icons8.com/plasticine/200/pig.png" },{ word: "BEE", image: "https://img.icons8.com/plasticine/200/bee.png" },{ word: "LION", image: "https://img.icons8.com/plasticine/200/lion.png" },{ word: "FISH", image: "https://img.icons8.com/plasticine/200/fish.png" },{ word: "BIRD", image: "https://img.icons8.com/plasticine/200/bird.png" },{ word: "FROG", image: "https://img.icons8.com/plasticine/200/frog.png" },{ word: "COW", image: "https://img.icons8.com/plasticine/200/cow.png" },{ word: "FOX", image: "https://img.icons8.com/plasticine/200/fox.png" },{ word: "BEAR", image: "https://img.icons8.com/plasticine/200/bear.png" },{ word: "DUCK", image: "https://img.icons8.com/plasticine/200/duck.png" },{ word: "EGG", image: "https://img.icons8.com/plasticine/200/egg.png" },{ word: "CAKE", image: "https://img.icons8.com/plasticine/200/cake.png" },{ word: "APPLE", image: "https://img.icons8.com/plasticine/200/apple.png" },{ word: "BREAD", image: "https://img.icons8.com/plasticine/200/bread.png" },{ word: "MILK", image: "https://img.icons8.com/plasticine/200/milk-bottle.png" },{ word: "CHEESE", image: "https://img.icons8.com/plasticine/200/cheese.png" },{ word: "ORANGE", image: "https://img.icons8.com/plasticine/200/orange.png" },{ word: "LEMON", image: "https://img.icons8.com/plasticine/200/lemon.png" },{ word: "GRAPE", image: "https://img.icons8.com/plasticine/200/grapes.png" },{ word: "PEAR", image: "https://img.icons8.com/plasticine/200/pear.png" },{ word: "SUN", image: "https://img.icons8.com/plasticine/200/sun.png" },{ word: "MOON", image: "https://img.icons8.com/plasticine/200/moon.png" },{ word: "STAR", image: "https://img.icons8.com/plasticine/200/star.png" },{ word: "TREE", image: "https://img.icons8.com/plasticine/200/tree.png" },{ word: "FLOWER", image: "https://img.icons8.com/plasticine/200/flower.png" },{ word: "CLOUD", image: "https://img.icons8.com/plasticine/200/cloud.png" },{ word: "WATER", image: "https://img.icons8.com/plasticine/200/water.png" },{ word: "FIRE", image: "https://img.icons8.com/plasticine/200/fire.png" },{ word: "BALL", image: "https://img.icons8.com/plasticine/200/football2.png" },{ word: "CAR", image: "https://img.icons8.com/plasticine/200/car.png" },{ word: "HOUSE", image: "https://img.icons8.com/plasticine/200/home.png" },{ word: "BOOK", image: "https://img.icons8.com/plasticine/200/book.png" },{ word: "KEY", image: "https://img.icons8.com/plasticine/200/key.png" },{ word: "DOOR", image: "https://img.icons8.com/plasticine/200/door.png" },{ word: "BED", image: "https://img.icons8.com/plasticine/200/bed.png" },{ word: "CHAIR", image: "https://img.icons8.com/plasticine/200/chair.png" },{ word: "TABLE", image: "https://img.icons8.com/plasticine/200/table.png" },{ word: "CLOCK", image: "https://img.icons8.com/plasticine/200/clock.png" },{ word: "GIFT", image: "https://img.icons8.com/plasticine/200/gift.png" },{ word: "BOAT", image: "https://img.icons8.com/plasticine/200/boat.png" },{ word: "RED", image: "https://img.icons8.com/plasticine/200/paint-palette.png" },{ word: "BLUE", image: "https://img.icons8.com/plasticine/200/paint-palette.png" },{ word: "GREEN", image: "https://img.icons8.com/plasticine/200/paint-palette.png" },{ word: "BOX", image: "https://img.icons8.com/plasticine/200/box.png" },{ word: "EYE", image: "https://img.icons8.com/plasticine/200/eye.png" },{ word: "HAND", image: "https://img.icons8.com/plasticine/200/hand.png" },{ word: "FOOT", image: "https://img.icons8.com/plasticine/200/foot.png" }
+            { word: "CAT", image: "img/vocab/cat.png" },{ word: "DOG", image: "img/vocab/dog.png" },{ word: "PIG", image: "img/vocab/pig.png" },{ word: "BEE", image: "img/vocab/bee.png" },{ word: "LION", image: "img/vocab/lion.png" },{ word: "FISH", image: "img/vocab/fish.png" },{ word: "BIRD", image: "img/vocab/bird.png" },{ word: "FROG", image: "img/vocab/frog.png" },{ word: "COW", image: "img/vocab/cow.png" },{ word: "FOX", image: "img/vocab/fox.png" },{ word: "BEAR", image: "img/vocab/bear.png" },{ word: "DUCK", image: "img/vocab/duck.png" },{ word: "EGG", image: "img/vocab/egg.png" },{ word: "CAKE", image: "img/vocab/cake.png" },{ word: "APPLE", image: "img/vocab/apple.png" },{ word: "BREAD", image: "img/vocab/bread.png" },{ word: "MILK", image: "img/vocab/milk-bottle.png" },{ word: "CHEESE", image: "img/vocab/cheese.png" },{ word: "ORANGE", image: "img/vocab/orange.png" },{ word: "LEMON", image: "img/vocab/lemon.svg" },{ word: "GRAPE", image: "img/vocab/grapes.png" },{ word: "PEAR", image: "img/vocab/pear.png" },{ word: "SUN", image: "img/vocab/sun.png" },{ word: "MOON", image: "img/vocab/moon.svg" },{ word: "STAR", image: "img/vocab/star.png" },{ word: "TREE", image: "img/vocab/tree.svg" },{ word: "FLOWER", image: "img/vocab/flower.png" },{ word: "CLOUD", image: "img/vocab/cloud.png" },{ word: "WATER", image: "img/vocab/water.png" },{ word: "FIRE", image: "img/vocab/fire.svg" },{ word: "BALL", image: "img/vocab/football2.png" },{ word: "CAR", image: "img/vocab/car.png" },{ word: "HOUSE", image: "img/vocab/home.png" },{ word: "BOOK", image: "img/vocab/book.png" },{ word: "KEY", image: "img/vocab/key.png" },{ word: "DOOR", image: "img/vocab/door.png" },{ word: "BED", image: "img/vocab/bed.png" },{ word: "CHAIR", image: "img/vocab/chair.svg" },{ word: "TABLE", image: "img/vocab/table.png" },{ word: "CLOCK", image: "img/vocab/clock.png" },{ word: "GIFT", image: "img/vocab/gift.png" },{ word: "BOAT", image: "img/vocab/boat.svg" },{ word: "RED", image: "img/vocab/paint-palette.png" },{ word: "BLUE", image: "img/vocab/paint-palette.png" },{ word: "GREEN", image: "img/vocab/paint-palette.png" },{ word: "BOX", image: "img/vocab/box.png" },{ word: "EYE", image: "img/vocab/eye.svg" },{ word: "HAND", image: "img/vocab/hand.svg" },{ word: "FOOT", image: "img/vocab/foot.svg" }
         ];
         let currentWord;
         const imageEl = document.getElementById('main-image' );
@@ -65,6 +75,7 @@
 
         function setupRound() {
             currentWord = words[Math.floor(Math.random() * words.length)];
+            imageEl.style.visibility = 'visible';
             imageEl.src = currentWord.image;
             slotsEl.innerHTML = '';
             lettersEl.innerHTML = '';

@@ -3,11 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Encuentra la Diferencia</title>
+    <title>Busca el Color Diferente: Juego de Atención Visual | El Más Listo</title>
+    <meta name="description" content="Encuentra el elemento diferente entre varios similares y entrena tu percepción y velocidad visual.">
+    <link rel="canonical" href="https://elmaslisto.com/juego-diferente">
+    <meta property="og:title" content="Busca el Color Diferente: Juego de Atención Visual">
+    <meta property="og:description" content="Encuentra el elemento diferente entre varios similares y entrena tu percepción y velocidad visual.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://elmaslisto.com/juego-diferente">
 	<link rel="icon" href="img/favicon.png">
+    <link rel="stylesheet" href="styles.css">
     <style>
         /* El padding: 15px del body crea el espacio lateral que necesitas */
-        body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;display:flex;justify-content:center;align-items:center;min-height:100vh;background-color:#9b59b6;margin:0;padding:15px;box-sizing:border-box}
+        body { background-color: #9b59b6; }
 
         /* --- CAMBIO AQUÍ: Añadimos estilos para el .wrapper --- */
         .wrapper {
@@ -22,19 +29,8 @@
         .game-container{width:100%;background:#fff;padding:20px;border-radius:15px;text-align:center;box-shadow:0 5px 15px rgba(0,0,0,.2);box-sizing:border-box;}
 
         .header{font-size:1.5em;margin-bottom:15px;font-weight:700;color:#333}#grid{display:grid;gap:10px;margin-bottom:15px}.shape{aspect-ratio:1/1;background-color:#3498db;cursor:pointer;transition:transform .2s,background-color .2s;border-radius:10%}.shape:hover{transform:scale(1.1)}#progress-bar{width:100%;height:10px;background-color:#ecf0f1;border-radius:5px;overflow:hidden}#progress{width:100%;height:100%;background-color:#2ecc71;transition:width .1s linear}#grid h1{font-size:2em;color:#c0392b}#grid p{font-size:1.2em}#grid button{margin-top:10px;padding:10px 20px;font-size:1em;border:none;border-radius:8px;background-color:#3498db;color:#fff;cursor:pointer;transition:background-color .2s}#grid button:hover{background-color:#2980b9}
-		.home-link {
-            display: block;
-            text-align: center;
-            margin-top: 25px;
-            font-weight: bold;
-            color: rgba(255, 255, 255, 0.8);
-            text-decoration: none;
-            transition: color 0.2s, transform 0.2s;
-        }
-        .home-link:hover {
-            color: #fff;
-            transform: scale(1.05);
-        }
+		
+        
     </style>
 </head>
 <body>
@@ -42,7 +38,7 @@
     <!-- --- CAMBIO AQUÍ: Envolvemos todo en el .wrapper --- -->
     <div class="wrapper">
         <div class="game-container">
-            <div class="header">Nivel: <span id="level">1</span></div>
+            <div class="header" aria-live="polite">Nivel: <span id="level">1</span></div>
             <div id="grid"></div>
             <div id="progress-bar"><div id="progress"></div></div>
         </div>
