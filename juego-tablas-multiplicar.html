@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tablas de Multiplicar: Juego de Multiplicación Online | El Más Listo</title>
+    <meta name="description" content="Practica las tablas de multiplicar del 1 al 10 contrarreloj y mejora tu cálculo mental. Juego online gratuito para niños y adultos.">
+    <link rel="canonical" href="https://elmaslisto.com/juego-tablas-multiplicar">
+    <meta property="og:title" content="Tablas de Multiplicar: Juego de Multiplicación Online">
+    <meta property="og:description" content="Practica las tablas de multiplicar del 1 al 10 contrarreloj y mejora tu cálculo mental. Juego online gratuito para niños y adultos.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://elmaslisto.com/juego-tablas-multiplicar">
+    <link rel="icon" href="img/favicon.png">
+
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        body { background-color: #e74c3c; }
+
+        .wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .contenedor{width:100%;background:white;padding:20px;border-radius:15px;box-shadow:0 6px 12px rgba(0,0,0,.15);text-align:center;box-sizing:border-box;}
+
+        .header-juego{display:flex;justify-content:space-between;font-size:1.1em;color:#555;margin-bottom:20px;font-weight:700}#operacion{font-size:2.5em;font-weight:700;min-height:80px;display:flex;align-items:center;justify-content:center;margin:20px 0;color:#2c3e50}.respuestas{display:grid;grid-template-columns:1fr 1fr;gap:10px}.boton-respuesta{padding:15px;font-size:1.5em;border:2px solid #3498db;background-color:#fff;color:#3498db;border-radius:10px;cursor:pointer;transition:background-color .2s,color .2s,transform .1s}.boton-respuesta:hover{background-color:#3498db;color:#fff;transform:translateY(-2px)}.boton-respuesta:active{transform:translateY(1px)}#fin-juego h1{font-size:2em;color:#c0392b}.puntuacion-grande{font-size:4em;font-weight:700;color:#2ecc71;margin:20px 0}#reiniciar{padding:15px 25px;font-size:1.1em;background-color:#2ecc71;color:white;border:none;border-radius:8px;cursor:pointer}.oculto{display:none}@media (min-width:768px){.contenedor{padding:30px}.header-juego{font-size:1.3em}#operacion{font-size:3.5em}#fin-juego h1{font-size:2.5em}.puntuacion-grande{font-size:4.5em}}
+
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Pantalla de juego principal -->
+        <div id="juego-activo" class="contenedor">
+            <div class="header-juego">
+                <p>Puntuación: <span id="puntuacion" aria-live="polite">0</span></p>
+                <p>Tiempo: <span id="tiempo">10</span>s</p>
+            </div>
+            <div id="operacion"></div>
+            <div class="respuestas">
+                <button id="respuesta1" class="boton-respuesta"></button>
+                <button id="respuesta2" class="boton-respuesta"></button>
+            </div>
+        </div>
+
+        <!-- Pantalla de fin de juego (inicialmente oculta) -->
+        <div id="fin-juego" class="contenedor oculto">
+            <h1>¡Fin del juego!</h1>
+            <p>Tu puntuación final es:</p>
+            <p id="puntuacion-final" class="puntuacion-grande">0</p>
+            <button id="reiniciar">Volver a jugar</button>
+        </div>
+
+        <a href="index.html" class="home-link">Volver al menú</a>
+
+        <section class="guia">
+            <div class="guia-bloque">
+                <h2>¿En qué consiste Tablas de Multiplicar?</h2>
+                <p>Es un juego de multiplicación contrarreloj: en cada ronda aparece una operación del tipo "6 × 7" junto con dos posibles resultados, y tienes 10 segundos para pulsar el correcto. Las operaciones combinan las tablas del 1 al 10, así que con el tiempo se repasan todas.</p>
+                <p>Cada acierto suma un punto y lanza una nueva operación con factores distintos; un fallo o quedarte sin tiempo termina la partida y muestra tu puntuación final. Las respuestas incorrectas no son números al azar: suelen ser el resultado de equivocarse en una tabla cercana (por ejemplo confundir 6×7 con 6×6), el mismo tipo de despiste que se comete al aprenderlas de memoria.</p>
+            </div>
+
+            <div class="guia-bloque">
+                <h2>¿Para qué edades está recomendado?</h2>
+                <p>Las tablas de multiplicar se estudian en el colegio sobre todo a partir de <strong>7-8 años</strong> (2º y 3º de primaria), así que ese es el público principal del juego. Dicho esto, también es un ejercicio muy útil para niños mayores, adolescentes y adultos que quieran repasar las tablas que tienen más oxidadas o ganar velocidad de cálculo mental.</p>
+                <p>Si las tablas ya se te dan bien y quieres seguir entrenando el cálculo, prueba también <a href="juego-mates-cadena.html">Mates en Cadena</a> o <a href="juego-sumas.html">Mates Complejas</a>, centrados en sumas y restas.</p>
+            </div>
+
+            <div class="guia-bloque">
+                <h2>¿Por qué es bueno este juego?</h2>
+                <ul>
+                    <li><strong>Memorización activa:</strong> repite las tablas de forma variada en lugar de recitarlas siempre en el mismo orden, lo que ayuda a fijarlas mejor.</li>
+                    <li><strong>Cálculo mental automático:</strong> el objetivo final es reconocer el resultado sin tener que calcularlo paso a paso, la base de una buena agilidad numérica.</li>
+                    <li><strong>Distractores con sentido:</strong> al usar errores típicos como respuesta incorrecta, ayuda a detectar y corregir las confusiones más habituales entre tablas parecidas.</li>
+                    <li><strong>Refuerzo escolar directo:</strong> complementa de forma amena uno de los contenidos más repetidos (y más trabajosos de memorizar) de primaria.</li>
+                </ul>
+            </div>
+
+            <div class="guia-bloque">
+                <h2>Preguntas frecuentes</h2>
+                <div class="faq-item">
+                    <h3>¿Qué tablas de multiplicar incluye el juego?</h3>
+                    <p>Combina las tablas del 1 al 10 de forma aleatoria, mostrando en cada ronda una multiplicación distinta junto con dos posibles resultados.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>¿Sirve para aprender las tablas desde cero o solo para repasar?</h3>
+                    <p>Funciona mejor como repaso una vez que ya se han estudiado las tablas, ya que el límite de tiempo premia reconocer el resultado rápido más que calcularlo desde cero. Para aprenderlas por primera vez conviene combinarlo con el estudio tradicional en el colegio o en casa.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>¿Cuánto tiempo tengo por operación?</h3>
+                    <p>10 segundos por operación. Si aciertas, aparece una nueva multiplicación y el tiempo se reinicia; si fallas o se agota el tiempo, termina la partida.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>¿Es gratis y funciona en el móvil?</h3>
+                    <p>Sí, es totalmente gratuito, no requiere registro y funciona igual de bien en el navegador del móvil, la tablet o el ordenador.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "¿Qué tablas de multiplicar incluye el juego?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Combina las tablas del 1 al 10 de forma aleatoria, mostrando en cada ronda una multiplicación distinta junto con dos posibles resultados."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "¿Sirve para aprender las tablas desde cero o solo para repasar?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Funciona mejor como repaso una vez que ya se han estudiado las tablas, ya que el límite de tiempo premia reconocer el resultado rápido más que calcularlo desde cero. Para aprenderlas por primera vez conviene combinarlo con el estudio tradicional en el colegio o en casa."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "¿Cuánto tiempo tengo por operación?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "10 segundos por operación. Si aciertas, aparece una nueva multiplicación y el tiempo se reinicia; si fallas o se agota el tiempo, termina la partida."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "¿Es gratis y funciona en el móvil?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Sí, es totalmente gratuito, no requiere registro y funciona igual de bien en el navegador del móvil, la tablet o el ordenador."
+                }
+            }
+        ]
+    }
+    </script>
+
+    <script src="quiz-engine.js"></script>
+    <script>
+        const operacionEl = document.getElementById('operacion');
+        const respuesta1Btn = document.getElementById('respuesta1');
+        const respuesta2Btn = document.getElementById('respuesta2');
+        let respuestaCorrecta, factorA, factorB;
+
+        function generarOperacion() {
+            factorA = Math.floor(Math.random() * 10) + 1;
+            factorB = Math.floor(Math.random() * 10) + 1;
+            respuestaCorrecta = factorA * factorB;
+            operacionEl.textContent = `${factorA} × ${factorB}`;
+        }
+
+        function generarRespuestas() {
+            const candidatos = [
+                respuestaCorrecta + factorA,
+                respuestaCorrecta - factorA,
+                respuestaCorrecta + factorB,
+                respuestaCorrecta - factorB
+            ].filter(n => n > 0 && n !== respuestaCorrecta);
+
+            const respuestaIncorrecta = candidatos.length
+                ? candidatos[Math.floor(Math.random() * candidatos.length)]
+                : respuestaCorrecta + 1;
+
+            if (Math.random() > 0.5) {
+                respuesta1Btn.textContent = respuestaCorrecta;
+                respuesta2Btn.textContent = respuestaIncorrecta;
+            } else {
+                respuesta1Btn.textContent = respuestaIncorrecta;
+                respuesta2Btn.textContent = respuestaCorrecta;
+            }
+        }
+
+        const quiz = crearQuizContrarreloj({
+            tiempoInicial: 10,
+            alIniciar() {
+                generarOperacion();
+                generarRespuestas();
+            },
+            generarRonda() {
+                generarOperacion();
+                generarRespuestas();
+            },
+            comprobarRespuesta(texto) {
+                return parseInt(texto) === respuestaCorrecta;
+            },
+        });
+        quiz.iniciar();
+    </script>
+</body>
+</html>
