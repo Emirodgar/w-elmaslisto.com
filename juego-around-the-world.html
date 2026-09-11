@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Around the World: Trivial de Geografía y Países | El Más Listo</title>
+    <meta name="description" content="Responde preguntas de geografía y cultura general y suma kilómetros por el mundo. Si fallas una pregunta, el juego termina y descubres hasta dónde has llegado en el mapa.">
+    <link rel="canonical" href="https://elmaslisto.com/juego-around-the-world">
+    <meta property="og:title" content="Around the World: Trivial de Geografía y Países">
+    <meta property="og:description" content="Responde preguntas de geografía y cultura general y suma kilómetros por el mundo. Si fallas una pregunta, el juego termina y descubres hasta dónde has llegado en el mapa.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://elmaslisto.com/juego-around-the-world">
+    <link rel="icon" href="img/favicon.png">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body { background-color: #2980b9; }
+
+        .wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 640px;
+        }
+
+        .contenedor{width:100%;background:#fff;padding:20px;border-radius:15px;box-shadow:0 6px 12px rgba(0,0,0,.15);text-align:center;box-sizing:border-box;}
+
+        .header-juego{display:flex;justify-content:space-between;gap:10px;font-size:1em;color:#555;margin-bottom:10px;font-weight:700}
+        .header-juego p{margin:0}
+        .aviso-tramo{min-height:20px;font-size:.9em;color:#16a085;font-weight:600;margin:0 0 10px}
+        #pregunta{font-size:1.3em;font-weight:500;min-height:80px;display:flex;align-items:center;justify-content:center;margin:15px 0;color:#2c3e50}
+        .respuestas{display:grid;grid-template-columns:1fr;gap:10px}
+        .boton-respuesta{padding:15px;font-size:1.1em;border:2px solid #2980b9;background-color:#fff;color:#2980b9;border-radius:10px;cursor:pointer;transition:background-color .2s,color .2s,transform .1s}
+        .boton-respuesta:hover{background-color:#2980b9;color:#fff;transform:translateY(-2px)}
+        .boton-respuesta:active{transform:translateY(1px)}
+
+        #fin-juego h1{font-size:1.8em;color:#e74c3c;margin-bottom:5px}
+        .puntuacion-grande{font-size:2.6em;font-weight:700;color:#2980b9;margin:5px 0}
+        #mensaje-destino{font-size:1.15em;font-weight:700;color:#2c3e50;margin:10px 0 5px}
+        #curiosidad-destino{font-size:.95em;color:#444;background:#f4f8fb;border-radius:10px;padding:12px;text-align:left;margin:0 0 15px}
+        .mapa-wrap{width:100%;overflow:hidden;border-radius:10px;background:#cfe9fb;margin-bottom:15px;line-height:0}
+        #mapa-mundi{width:100%;height:auto;display:block}
+        #reiniciar{padding:15px 25px;font-size:1.1em;background-color:#2ecc71;color:#fff;border:none;border-radius:8px;cursor:pointer}
+        .oculto{display:none}
+
+        @media (min-width:768px){
+            .contenedor{padding:30px}
+            .header-juego{font-size:1.15em}
+            #pregunta{font-size:1.6em;min-height:100px}
+            .boton-respuesta{padding:20px;font-size:1.2em}
+        }
+    </style>
+</head>
+<body>
+
+    <div class="wrapper">
+        <!-- Pantalla de juego principal -->
+        <div id="juego-activo" class="contenedor">
+            <div class="header-juego">
+                <p>📍 Última parada: <span id="parada-actual" aria-live="polite">Madrid, España</span></p>
+                <p>🌍 <span id="km-total">0</span> km</p>
+            </div>
+            <p id="aviso-tramo" class="aviso-tramo" aria-live="polite"></p>
+            <div id="pregunta"></div>
+            <div class="respuestas">
+                <button id="respuesta1" class="boton-respuesta"></button>
+                <button id="respuesta2" class="boton-respuesta"></button>
+            </div>
+        </div>
+
+        <!-- Pantalla de fin de juego (inicialmente oculta) -->
+        <div id="fin-juego" class="contenedor oculto">
+            <h1>¡Fin del viaje!</h1>
+            <p>Kilómetros recorridos:</p>
+            <p id="km-final" class="puntuacion-grande">0 km</p>
+            <p id="mensaje-destino"></p>
+            <p id="curiosidad-destino"></p>
+            <div class="mapa-wrap">
+                <svg id="mapa-mundi" viewBox="0 0 1000 500" xmlns="http://www.w3.org/2000/svg" overflow="hidden" role="img" aria-label="Mapa del mundo con la ruta recorrida">
+                    <rect x="0" y="0" width="1000" height="500" fill="#cfe9fb"/>
+                    <!-- Continentes decorativos (forma aproximada, no cartografía exacta) -->
+                    <g fill="#a9d8a0" opacity="0.9">
+                        <ellipse cx="541" cy="111" rx="90" ry="55"/>
+                        <ellipse cx="556" cy="236" rx="105" ry="175"/>
+                        <ellipse cx="750" cy="125" rx="225" ry="90"/>
+                        <ellipse cx="806" cy="83" rx="150" ry="48"/>
+                        <ellipse cx="750" cy="208" rx="90" ry="58"/>
+                        <ellipse cx="222" cy="125" rx="140" ry="105"/>
+                        <ellipse cx="194" cy="69" rx="110" ry="48"/>
+                        <ellipse cx="333" cy="292" rx="68" ry="155"/>
+                        <ellipse cx="875" cy="319" rx="80" ry="48"/>
+                    </g>
+                    <!-- Cuadrícula -->
+                    <g stroke="#ffffff" stroke-width="0.6" opacity="0.6">
+                        <line x1="0" y1="0" x2="0" y2="500"/>
+                        <line x1="166.7" y1="0" x2="166.7" y2="500"/>
+                        <line x1="333.3" y1="0" x2="333.3" y2="500"/>
+                        <line x1="500" y1="0" x2="500" y2="500"/>
+                        <line x1="666.7" y1="0" x2="666.7" y2="500"/>
+                        <line x1="833.3" y1="0" x2="833.3" y2="500"/>
+                        <line x1="999.5" y1="0" x2="999.5" y2="500"/>
+                        <line x1="0" y1="0" x2="1000" y2="0"/>
+                        <line x1="0" y1="125" x2="1000" y2="125"/>
+                        <line x1="0" y1="250" x2="1000" y2="250"/>
+                        <line x1="0" y1="375" x2="1000" y2="375"/>
+                        <line x1="0" y1="499.5" x2="1000" y2="499.5"/>
+                    </g>
+                    <g id="capa-ruta"></g>
+                </svg>
+            </div>
+            <button id="reiniciar">Volver a jugar</button>
+        </div>
+
+        <a href="index.html" class="home-link">Volver al menú</a>
+
+        <section class="guia">
+            <div class="guia-bloque">
+                <h2>¿En qué consiste Around the World?</h2>
+                <p>Es un trivial de geografía y cultura general sin límite de tiempo: en cada ronda aparece una pregunta con dos posibles respuestas y tú eliges la que crees correcta con la calma que necesites.</p>
+                <p>Cada acierto te hace avanzar un tramo de un itinerario real que empieza en Madrid y recorre el planeta de ciudad en ciudad: Roma, El Cairo, Nairobi, Nueva Delhi, Tokio, Sídney, Honolulu, Nueva York, Río de Janeiro... Los kilómetros de cada tramo se suman a tu distancia total. En el momento en que falles una pregunta, la partida termina y aparece un mapa con la línea roja de tu recorrido, el lugar exacto al que has llegado y una curiosidad sobre ese destino.</p>
+            </div>
+
+            <div class="guia-bloque">
+                <h2>¿Para qué edades está recomendado?</h2>
+                <p>Al tratarse de datos de geografía, capitales y curiosidades del mundo, es más adecuado a partir de <strong>10-12 años</strong>, aunque no tener límite de tiempo lo hace perfecto para jugar en familia y comentar cada pregunta con calma.</p>
+                <p>Si prefieres un trivial de cultura general más variado (historia, ciencia, arte...), prueba con <a href="juego-trivial.html">Trivial de Cultura General</a>.</p>
+            </div>
+
+            <div class="guia-bloque">
+                <h2>¿Por qué es bueno este juego?</h2>
+                <ul>
+                    <li><strong>Geografía real:</strong> el itinerario usa distancias reales entre ciudades, así que cada acierto es literalmente un salto por el mapa.</li>
+                    <li><strong>Sin presión de tiempo:</strong> puedes pensar cada respuesta con tranquilidad, ideal para aprender mientras juegas.</li>
+                    <li><strong>Curiosidades del mundo:</strong> al terminar la partida descubres un dato curioso sobre el lugar exacto al que has llegado.</li>
+                    <li><strong>Reto de precisión:</strong> como un solo fallo termina la partida, entrena la concentración y las ganas de superar tu propia distancia récord.</li>
+                </ul>
+            </div>
+
+            <div class="guia-bloque">
+                <h2>Preguntas frecuentes</h2>
+                <div class="faq-item">
+                    <h3>¿Hay límite de tiempo para responder?</h3>
+                    <p>No. A diferencia de otros juegos de El Más Listo, aquí puedes tomarte el tiempo que necesites para cada pregunta.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>¿Cómo se calculan los kilómetros?</h3>
+                    <p>Cada acierto te hace avanzar un tramo de un itinerario real que sale de Madrid y da la vuelta al mundo por ciudades como Roma, Nairobi, Tokio, Sídney o Nueva York. Los kilómetros de cada tramo se van sumando a tu distancia total.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>¿Qué pasa si fallo una pregunta?</h3>
+                    <p>La partida termina en el acto y aparece un mapa con la línea de tu recorrido, el lugar al que has llegado y una curiosidad sobre ese destino.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>¿Se puede dar la vuelta al mundo entera?</h3>
+                    <p>Sí. El itinerario completo supera los 40.000 km de la circunferencia de la Tierra, así que si aciertas muchas preguntas seguidas acabarás dando una vuelta completa al planeta... o más de una.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "¿Hay límite de tiempo para responder?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "No. A diferencia de otros juegos de El Más Listo, aquí puedes tomarte el tiempo que necesites para cada pregunta."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "¿Cómo se calculan los kilómetros?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Cada acierto te hace avanzar un tramo de un itinerario real que sale de Madrid y da la vuelta al mundo por ciudades como Roma, Nairobi, Tokio, Sídney o Nueva York. Los kilómetros de cada tramo se van sumando a tu distancia total."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "¿Qué pasa si fallo una pregunta?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "La partida termina en el acto y aparece un mapa con la línea de tu recorrido, el lugar al que has llegado y una curiosidad sobre ese destino."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "¿Se puede dar la vuelta al mundo entera?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Sí. El itinerario completo supera los 40.000 km de la circunferencia de la Tierra, así que si aciertas muchas preguntas seguidas acabarás dando una vuelta completa al planeta, o más de una."
+                }
+            }
+        ]
+    }
+    </script>
+
+    <script>
+        // Ciudad de salida
+        const salida = { ciudad: "Madrid", pais: "España", lat: 40.4, lon: -3.7,
+            curiosidad: "Madrid es, con casi 650 metros de altitud, la capital más alta de Europa Occidental." };
+
+        // Itinerario real alrededor del mundo (distancia en km desde la parada anterior)
+        const paradas = [
+            { ciudad: "Roma", pais: "Italia", lat: 41.9, lon: 12.5, distancia: 1365,
+                curiosidad: "Dentro de Roma se encuentra la Ciudad del Vaticano, el país independiente más pequeño del mundo." },
+            { ciudad: "Atenas", pais: "Grecia", lat: 37.98, lon: 23.73, distancia: 1050,
+                curiosidad: "Atenas lleva más de 3.400 años habitada, una de las ciudades más antiguas de Europa." },
+            { ciudad: "El Cairo", pais: "Egipto", lat: 30.04, lon: 31.24, distancia: 1035,
+                curiosidad: "La Gran Pirámide de Guiza, cerca de El Cairo, fue el edificio más alto del mundo durante casi 3.800 años." },
+            { ciudad: "Nairobi", pais: "Kenia", lat: -1.29, lon: 36.82, distancia: 2940,
+                curiosidad: "Nairobi es una de las pocas capitales del mundo con un parque nacional lleno de leones y jirafas dentro de su término municipal." },
+            { ciudad: "Nueva Delhi", pais: "India", lat: 28.6, lon: 77.2, distancia: 4500,
+                curiosidad: "India es el país más poblado del mundo, con más de 1.400 millones de habitantes." },
+            { ciudad: "Bangkok", pais: "Tailandia", lat: 13.75, lon: 100.5, distancia: 2950,
+                curiosidad: "El nombre oficial completo de Bangkok en tailandés es uno de los nombres de ciudad más largos del mundo." },
+            { ciudad: "Pekín", pais: "China", lat: 39.9, lon: 116.4, distancia: 3300,
+                curiosidad: "La Gran Muralla China no es una sola línea continua: sumando todas sus ramas supera los 21.000 km." },
+            { ciudad: "Tokio", pais: "Japón", lat: 35.68, lon: 139.69, distancia: 2100,
+                curiosidad: "El área metropolitana de Tokio, con más de 37 millones de personas, es la más poblada del planeta." },
+            { ciudad: "Sídney", pais: "Australia", lat: -33.87, lon: 151.21, distancia: 7800,
+                curiosidad: "Australia es a la vez un país y un continente, y es el único continente ocupado por un solo estado." },
+            { ciudad: "Auckland", pais: "Nueva Zelanda", lat: -36.85, lon: 174.76, distancia: 2160,
+                curiosidad: "Nueva Zelanda fue uno de los últimos territorios habitables en ser poblado por el ser humano, hace menos de 800 años." },
+            { ciudad: "Honolulu", pais: "Hawái (EE. UU.)", lat: 21.31, lon: -157.86, distancia: 7400,
+                curiosidad: "Hawái es el archipiélago más aislado del mundo: el punto habitado más cercano está a miles de kilómetros." },
+            { ciudad: "Los Ángeles", pais: "Estados Unidos", lat: 34.05, lon: -118.24, distancia: 4100,
+                curiosidad: "En este tramo has recorrido ya más de 40.000 km: ¡más que la circunferencia de la Tierra!" },
+            { ciudad: "Ciudad de México", pais: "México", lat: 19.43, lon: -99.13, distancia: 2500,
+                curiosidad: "Ciudad de México se construyó sobre el lago Texcoco y se hunde poco a poco cada año." },
+            { ciudad: "Nueva York", pais: "Estados Unidos", lat: 40.71, lon: -74.0, distancia: 3360,
+                curiosidad: "La Estatua de la Libertad de Nueva York fue un regalo de Francia en 1886." },
+            { ciudad: "Río de Janeiro", pais: "Brasil", lat: -22.91, lon: -43.17, distancia: 7700,
+                curiosidad: "El Cristo Redentor de Río de Janeiro mide 38 metros, casi como un edificio de 12 plantas." },
+            { ciudad: "Buenos Aires", pais: "Argentina", lat: -34.6, lon: -58.38, distancia: 1970,
+                curiosidad: "Buenos Aires tiene la librería más grande de Sudamérica, instalada en un antiguo teatro." },
+            { ciudad: "Lisboa", pais: "Portugal", lat: 38.72, lon: -9.14, distancia: 8000,
+                curiosidad: "Lisboa es, junto con Roma, una de las pocas capitales de Europa construida sobre siete colinas." },
+            { ciudad: "Madrid", pais: "España", lat: 40.4, lon: -3.7, distancia: 502,
+                curiosidad: "¡Has cerrado el círculo! Has completado una vuelta entera al mundo volviendo a Madrid." },
+        ];
+
+        const CIRCUNFERENCIA_TIERRA = 40075;
+
+        // Banco de preguntas de cultura general sobre el mundo
+        const bancoPreguntas = [
+            { pregunta: "¿Cuál es el país más grande del mundo por superficie?", respuestaCorrecta: "Rusia", respuestaFalsa: "Canadá" },
+            { pregunta: "¿Cuál es el continente más pequeño del mundo?", respuestaCorrecta: "Oceanía", respuestaFalsa: "Europa" },
+            { pregunta: "¿Cuál es la isla más grande del mundo?", respuestaCorrecta: "Groenlandia", respuestaFalsa: "Nueva Guinea" },
+            { pregunta: "¿Qué país tiene más husos horarios, contando sus territorios de ultramar?", respuestaCorrecta: "Francia", respuestaFalsa: "Rusia" },
+            { pregunta: "¿Cuál es el lago de agua dulce más grande del mundo por superficie?", respuestaCorrecta: "Lago Superior", respuestaFalsa: "Lago Victoria" },
+            { pregunta: "¿Qué país tiene más volcanes activos?", respuestaCorrecta: "Indonesia", respuestaFalsa: "Japón" },
+            { pregunta: "¿A través de cuántos países se extiende la selva amazónica?", respuestaCorrecta: "9", respuestaFalsa: "5" },
+            { pregunta: "¿Cuál es la capital a mayor altitud del mundo?", respuestaCorrecta: "La Paz", respuestaFalsa: "Quito" },
+            { pregunta: "¿Qué país tiene más islas del mundo, con más de 250.000?", respuestaCorrecta: "Suecia", respuestaFalsa: "Indonesia" },
+            { pregunta: "¿Cuál es el área metropolitana más poblada del mundo?", respuestaCorrecta: "Tokio", respuestaFalsa: "Shanghái" },
+            { pregunta: "¿Qué país abolió su ejército oficial en 1948?", respuestaCorrecta: "Costa Rica", respuestaFalsa: "Suiza" },
+            { pregunta: "¿Cuál es el país más pequeño del mundo?", respuestaCorrecta: "Ciudad del Vaticano", respuestaFalsa: "Mónaco" },
+            { pregunta: "¿Dónde está la fosa oceánica más profunda del mundo?", respuestaCorrecta: "Fosa de las Marianas", respuestaFalsa: "Fosa de Puerto Rico" },
+            { pregunta: "¿Cuál es el río más largo de Europa?", respuestaCorrecta: "Volga", respuestaFalsa: "Danubio" },
+            { pregunta: "¿Qué país tiene más pirámides que Egipto?", respuestaCorrecta: "Sudán", respuestaFalsa: "México" },
+            { pregunta: "¿En qué país se encuentra Machu Picchu?", respuestaCorrecta: "Perú", respuestaFalsa: "Bolivia" },
+            { pregunta: "¿Qué país tiene forma de bota en el mapa?", respuestaCorrecta: "Italia", respuestaFalsa: "Croacia" },
+            { pregunta: "¿Cuál es el país más largo del mundo de norte a sur?", respuestaCorrecta: "Chile", respuestaFalsa: "Argentina" },
+            { pregunta: "¿Qué país tiene tres capitales oficiales?", respuestaCorrecta: "Sudáfrica", respuestaFalsa: "Bolivia" },
+            { pregunta: "¿Cuál es la única maravilla del mundo antiguo que sigue en pie hoy?", respuestaCorrecta: "Pirámides de Guiza", respuestaFalsa: "Coliseo de Roma" },
+            { pregunta: "¿En qué país se originó el cultivo del café?", respuestaCorrecta: "Etiopía", respuestaFalsa: "Colombia" },
+            { pregunta: "¿Qué país tiene el litoral costero más largo del mundo?", respuestaCorrecta: "Canadá", respuestaFalsa: "Indonesia" },
+            { pregunta: "¿Cuál es el punto más bajo de la Tierra en tierra firme?", respuestaCorrecta: "Mar Muerto", respuestaFalsa: "Valle de la Muerte" },
+            { pregunta: "¿Cuál es la cascada más alta del mundo?", respuestaCorrecta: "Salto Ángel", respuestaFalsa: "Cataratas del Niágara" },
+            { pregunta: "¿En qué país se hablan más lenguas distintas, con más de 800?", respuestaCorrecta: "Papúa Nueva Guinea", respuestaFalsa: "India" },
+            { pregunta: "¿Cuál es la montaña más alta de África?", respuestaCorrecta: "Kilimanjaro", respuestaFalsa: "Monte Kenia" },
+            { pregunta: "¿Qué país consume más café per cápita del mundo?", respuestaCorrecta: "Finlandia", respuestaFalsa: "Brasil" },
+            { pregunta: "¿Cuál es el metro (subterráneo) más antiguo del mundo?", respuestaCorrecta: "Metro de Londres", respuestaFalsa: "Metro de París" },
+            { pregunta: "¿Cuál es el desierto cálido más grande del mundo?", respuestaCorrecta: "Sahara", respuestaFalsa: "Gobi" },
+            { pregunta: "¿Cuántos estados son actualmente miembros de la ONU?", respuestaCorrecta: "193", respuestaFalsa: "195" },
+        ];
+
+        // --- Elementos del DOM ---
+        const juegoActivoEl = document.getElementById('juego-activo');
+        const finJuegoEl = document.getElementById('fin-juego');
+        const paradaActualEl = document.getElementById('parada-actual');
+        const kmTotalEl = document.getElementById('km-total');
+        const avisoTramoEl = document.getElementById('aviso-tramo');
+        const preguntaEl = document.getElementById('pregunta');
+        const respuesta1Btn = document.getElementById('respuesta1');
+        const respuesta2Btn = document.getElementById('respuesta2');
+        const kmFinalEl = document.getElementById('km-final');
+        const mensajeDestinoEl = document.getElementById('mensaje-destino');
+        const curiosidadDestinoEl = document.getElementById('curiosidad-destino');
+        const reiniciarBtn = document.getElementById('reiniciar');
+        const capaRuta = document.getElementById('capa-ruta');
+
+        let preguntaActual;
+        let preguntasDisponibles = [];
+        let aciertos = 0;
+        let kmTotal = 0;
+        let avisoVueltaMostrado = false;
+
+        function formatoKm(km) {
+            return km.toLocaleString('es-ES');
+        }
+
+        function mostrarPregunta() {
+            if (preguntasDisponibles.length === 0) {
+                preguntasDisponibles = [...bancoPreguntas];
+            }
+            const indice = Math.floor(Math.random() * preguntasDisponibles.length);
+            preguntaActual = preguntasDisponibles.splice(indice, 1)[0];
+            preguntaEl.textContent = preguntaActual.pregunta;
+            if (Math.random() > 0.5) {
+                respuesta1Btn.textContent = preguntaActual.respuestaCorrecta;
+                respuesta2Btn.textContent = preguntaActual.respuestaFalsa;
+            } else {
+                respuesta1Btn.textContent = preguntaActual.respuestaFalsa;
+                respuesta2Btn.textContent = preguntaActual.respuestaCorrecta;
+            }
+        }
+
+        function paradaEnPosicion(numAciertos) {
+            return paradas[(numAciertos - 1) % paradas.length];
+        }
+
+        function manejarRespuesta(e) {
+            if (e.target.textContent === preguntaActual.respuestaCorrecta) {
+                aciertos++;
+                const parada = paradaEnPosicion(aciertos);
+                kmTotal += parada.distancia;
+                paradaActualEl.textContent = `${parada.ciudad}, ${parada.pais}`;
+                kmTotalEl.textContent = formatoKm(kmTotal);
+
+                let aviso = `🚩 +${formatoKm(parada.distancia)} km → Llegas a ${parada.ciudad}, ${parada.pais}`;
+                if (!avisoVueltaMostrado && kmTotal >= CIRCUNFERENCIA_TIERRA) {
+                    avisoVueltaMostrado = true;
+                    aviso += ' · 🌍 ¡Ya has recorrido más que la circunferencia de la Tierra!';
+                }
+                avisoTramoEl.textContent = aviso;
+
+                mostrarPregunta();
+            } else {
+                terminar();
+            }
+        }
+
+        function proyectar(lat, lon) {
+            return { x: (lon + 180) / 360 * 1000, y: (90 - lat) / 180 * 500 };
+        }
+
+        function svgEl(tag, attrs) {
+            const el = document.createElementNS('http://www.w3.org/2000/svg', tag);
+            for (const k in attrs) el.setAttribute(k, attrs[k]);
+            return el;
+        }
+
+        function norm360(x) {
+            return ((x % 360) + 360) % 360;
+        }
+
+        function dibujarSegmento(a, b) {
+            const delta = norm360(b.lon - a.lon + 180) - 180;
+            const lonBDesplegado = a.lon + delta;
+            const pA = proyectar(a.lat, a.lon);
+            const pB = { x: (lonBDesplegado + 180) / 360 * 1000, y: proyectar(b.lat, b.lon).y };
+            [-1000, 0, 1000].forEach(offset => {
+                capaRuta.appendChild(svgEl('line', {
+                    x1: pA.x + offset, y1: pA.y, x2: pB.x + offset, y2: pB.y,
+                    stroke: '#e74c3c', 'stroke-width': 2.5, 'stroke-dasharray': '6,4'
+                }));
+            });
+        }
+
+        function dibujarMapa() {
+            capaRuta.innerHTML = '';
+            const numVisitadas = Math.min(aciertos, paradas.length) === 0 ? 0 : aciertos;
+
+            // Puntos de todas las paradas del itinerario (tenues si no se han alcanzado)
+            paradas.forEach((p, i) => {
+                const alcanzada = i < aciertos;
+                const pt = proyectar(p.lat, p.lon);
+                capaRuta.appendChild(svgEl('circle', {
+                    cx: pt.x, cy: pt.y, r: 4,
+                    fill: alcanzada ? '#e74c3c' : '#ffffff',
+                    'fill-opacity': alcanzada ? 1 : 0.4,
+                    stroke: '#2c3e50', 'stroke-width': 0.6
+                }));
+            });
+
+            // Ruta recorrida (incluye el punto de salida)
+            const visitados = [salida];
+            for (let i = 0; i < aciertos; i++) visitados.push(paradas[i % paradas.length]);
+            for (let i = 0; i < visitados.length - 1; i++) {
+                dibujarSegmento(visitados[i], visitados[i + 1]);
+            }
+
+            // Marcador de salida
+            const inicioPt = proyectar(salida.lat, salida.lon);
+            capaRuta.appendChild(svgEl('circle', { cx: inicioPt.x, cy: inicioPt.y, r: 5, fill: '#f1c40f', stroke: '#2c3e50', 'stroke-width': 1 }));
+
+            // Marcador y etiqueta del destino final
+            const destino = visitados[visitados.length - 1];
+            const destinoPt = proyectar(destino.lat, destino.lon);
+            capaRuta.appendChild(svgEl('circle', { cx: destinoPt.x, cy: destinoPt.y, r: 6.5, fill: '#e74c3c', stroke: '#2c3e50', 'stroke-width': 1.4 }));
+            const etiqueta = svgEl('text', {
+                x: destinoPt.x, y: Math.max(14, destinoPt.y - 10), 'text-anchor': 'middle',
+                'font-size': 15, fill: '#2c3e50', 'font-weight': 'bold', 'font-family': 'sans-serif'
+            });
+            etiqueta.textContent = destino.ciudad;
+            capaRuta.appendChild(etiqueta);
+        }
+
+        function terminar() {
+            juegoActivoEl.classList.add('oculto');
+            finJuegoEl.classList.remove('oculto');
+            kmFinalEl.textContent = `${formatoKm(kmTotal)} km`;
+
+            const vueltas = Math.floor(aciertos / paradas.length);
+            if (aciertos === 0) {
+                mensajeDestinoEl.textContent = `No has llegado a salir de ${salida.ciudad}, ${salida.pais}.`;
+                curiosidadDestinoEl.textContent = `💡 ${salida.curiosidad}`;
+            } else {
+                const destino = paradaEnPosicion(aciertos);
+                mensajeDestinoEl.textContent = `Has llegado hasta ${destino.ciudad}, ${destino.pais}`
+                    + (vueltas > 0 ? ` (¡completando ${vueltas} vuelta${vueltas > 1 ? 's' : ''} al mundo!)` : '');
+                curiosidadDestinoEl.textContent = `💡 ${destino.curiosidad}`;
+            }
+
+            dibujarMapa();
+        }
+
+        function iniciar() {
+            aciertos = 0;
+            kmTotal = 0;
+            avisoVueltaMostrado = false;
+            preguntasDisponibles = [...bancoPreguntas];
+            juegoActivoEl.classList.remove('oculto');
+            finJuegoEl.classList.add('oculto');
+            paradaActualEl.textContent = `${salida.ciudad}, ${salida.pais}`;
+            kmTotalEl.textContent = '0';
+            avisoTramoEl.textContent = '';
+            mostrarPregunta();
+        }
+
+        respuesta1Btn.addEventListener('click', manejarRespuesta);
+        respuesta2Btn.addEventListener('click', manejarRespuesta);
+        reiniciarBtn.addEventListener('click', iniciar);
+
+        iniciar();
+    </script>
+
+</body>
+</html>
