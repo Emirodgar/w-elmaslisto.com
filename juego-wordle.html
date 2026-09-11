@@ -411,12 +411,6 @@
                 intento += document.getElementById(`celda-${filaActual}-${c}`).textContent;
             }
 
-            if (!listaPalabras.includes(intento)) {
-                mostrarMensaje('La palabra no está en la lista');
-                sacudirFila();
-                return;
-            }
-
             const resultado = evaluarIntento(intento, palabraSecreta);
             resultado.forEach((estado, c) => {
                 const celda = document.getElementById(`celda-${filaActual}-${c}`);
