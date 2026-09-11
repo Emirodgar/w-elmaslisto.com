@@ -97,18 +97,21 @@
             font-size: 1em;
             font-weight: bold;
         }
-        /* --- Colores de las Tarjetas --- */
-        .game-card[data-game="mates"] { background-color: #e74c3c; }
-        .game-card[data-game="simon"] { background-color: #3498db; }
-        .game-card[data-game="pares"] { background-color: #2ecc71; }
-        .game-card[data-game="diferencia"] { background-color: #9b59b6; }
-        .game-card[data-game="mates-pro"] { background-color: #f39c12; }
-        .game-card[data-game="trivial"] { background-color: #1abc9c; }
-        .game-card[data-game="wordle"] { background-color: #d35400; }
-        /* Nuevos colores para juegos de inglés */
-        .game-card[data-game="ingles-deletreo"] { background-color: #34495e; } /* Azul oscuro */
-        .game-card[data-game="ingles-vocabulario"] { background-color: #e67e22; } /* Naranja zanahoria */
-        .game-card[data-game="ingles-frases"] { background-color: #2980b9; } /* Azul más fuerte */
+        /* --- Colores de las tarjetas, por categoría --- */
+        .game-card[data-tipo="calculo"] { background-color: #e74c3c; }
+        .game-card[data-tipo="memoria"] { background-color: #3498db; }
+        .game-card[data-tipo="atencion"] { background-color: #9b59b6; }
+        .game-card[data-tipo="cultura"] { background-color: #1abc9c; }
+        .game-card[data-tipo="palabras"] { background-color: #d35400; }
+        .game-card[data-tipo="ingles"] { background-color: #27ae60; }
+
+        /* Chips de tipo: al activarse toman el color de su categoría */
+        .chip[data-tipo="calculo"].active { background-color: #e74c3c; border-color: #e74c3c; }
+        .chip[data-tipo="memoria"].active { background-color: #3498db; border-color: #3498db; }
+        .chip[data-tipo="atencion"].active { background-color: #9b59b6; border-color: #9b59b6; }
+        .chip[data-tipo="cultura"].active { background-color: #1abc9c; border-color: #1abc9c; }
+        .chip[data-tipo="palabras"].active { background-color: #d35400; border-color: #d35400; }
+        .chip[data-tipo="ingles"].active { background-color: #27ae60; border-color: #27ae60; }
 
         .hidden { display: none; }
 
@@ -163,6 +166,12 @@
             color: #888;
             padding: 30px 10px;
         }
+        .contador-resultados {
+            text-align: center;
+            color: #777;
+            font-size: 0.85em;
+            margin: 0 0 15px;
+        }
 
         @media (min-width: 768px) {
             h1 { font-size: 3em; }
@@ -212,6 +221,7 @@
             </div>
         </div>
 
+        <p id="contador-resultados" class="contador-resultados" aria-live="polite"></p>
         <p id="no-resultados" class="no-resultados hidden">No se han encontrado juegos con esos filtros. Prueba a cambiar el tipo, la edad o el texto de búsqueda.</p>
 
         <div class="game-grid" id="game-grid">
@@ -247,6 +257,8 @@
         const tipoChips = document.querySelectorAll('#filtros-tipo .chip');
         const edadChips = document.querySelectorAll('#filtros-edad .chip');
         const noResultados = document.getElementById('no-resultados');
+        const contadorResultados = document.getElementById('contador-resultados');
+        const totalJuegos = gameCards.length;
 
         let tipoActivo = 'todos';
         let edadActiva = 'todas';
@@ -264,6 +276,11 @@
                 if (visible) visibles++;
             });
             noResultados.classList.toggle('hidden', visibles > 0);
+            contadorResultados.classList.toggle('hidden', visibles === 0);
+            const palabra = visibles === 1 ? 'juego encontrado' : 'juegos encontrados';
+            contadorResultados.textContent = visibles === totalJuegos
+                ? `${totalJuegos} juegos en total`
+                : `${visibles} de ${totalJuegos} ${palabra}`;
         }
 
         function activarChip(chips, chip) {
@@ -288,6 +305,8 @@
                 aplicarFiltros();
             });
         });
+
+        aplicarFiltros();
     </script>
 </body>
 </html>
