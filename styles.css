@@ -36,3 +36,85 @@ body {
 .credit a {
     color: inherit;
 }
+
+/* --- Guías de contenido (SEO) --- */
+.guia {
+    width: 100%;
+    max-width: 700px;
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    box-sizing: border-box;
+}
+
+.guia-bloque {
+    background: #fff;
+    color: #1c1e21;
+    border-radius: 15px;
+    padding: 22px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, .15);
+    box-sizing: border-box;
+    text-align: left;
+}
+
+.guia-bloque h2 {
+    margin: 0 0 12px;
+    font-size: 1.25em;
+    color: #1c1e21;
+}
+
+.guia-bloque h3 {
+    margin: 0 0 6px;
+    font-size: 1.05em;
+    color: #1c1e21;
+}
+
+.guia-bloque p {
+    line-height: 1.65;
+    margin: 0 0 12px;
+    color: #333;
+}
+
+.guia-bloque p:last-child {
+    margin-bottom: 0;
+}
+
+.guia-bloque ul {
+    line-height: 1.65;
+    margin: 0;
+    padding-left: 20px;
+    color: #333;
+}
+
+.guia-bloque li {
+    margin-bottom: 6px;
+}
+
+.guia-bloque a {
+    color: #2980b9;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.guia-bloque a:hover {
+    text-decoration: underline;
+}
+
+.faq-item {
+    margin-bottom: 18px;
+}
+
+.faq-item:last-child {
+    margin-bottom: 0;
+}
+
+@media (min-width: 768px) {
+    .guia-bloque {
+        padding: 32px;
+    }
+
+    .guia-bloque h2 {
+        font-size: 1.5em;
+    }
+}
