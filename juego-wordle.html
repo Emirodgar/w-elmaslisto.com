@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wordle en Español: Adivina la Palabra Oculta | El Más Listo</title>
+    <meta name="description" content="Adivina la palabra secreta de 5 letras en 6 intentos. Reto diario gratis en español, al estilo Wordle, sin registro.">
+    <link rel="canonical" href="https://elmaslisto.com/juego-wordle">
+    <meta property="og:title" content="Wordle en Español: Adivina la Palabra Oculta">
+    <meta property="og:description" content="Adivina la palabra secreta de 5 letras en 6 intentos. Reto diario gratis en español, al estilo Wordle, sin registro.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://elmaslisto.com/juego-wordle">
+	<link rel="icon" href="img/favicon.png">
+
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        body { background-color: #d35400; }
+
+        .wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 420px;
+        }
+
+        .contenedor{width:100%;background:#fff;padding:20px;border-radius:15px;box-shadow:0 6px 12px rgba(0,0,0,.15);text-align:center;box-sizing:border-box;}
+
+        .header-juego{display:flex;justify-content:space-between;align-items:center;font-size:1.1em;color:#555;margin-bottom:2px;font-weight:700}
+        .header-juego h1{margin:0;font-size:1em;color:#2c3e50;}
+
+        #info-modo{margin:0 0 15px;font-size:.75em;color:#999;font-weight:400;text-align:left;}
+
+        .mensaje{min-height:22px;color:#c0392b;font-weight:700;margin-bottom:8px;font-size:.95em;}
+
+        .tablero{display:grid;grid-template-rows:repeat(6,1fr);gap:6px;max-width:280px;margin:0 auto 20px;}
+        .fila{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;}
+        .celda{aspect-ratio:1/1;border:2px solid #d3d6da;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:1.6em;font-weight:700;color:#1c1e21;text-transform:uppercase;box-sizing:border-box;}
+        .celda.rellena{border-color:#878a8c;animation:pop .1s ease;}
+        .celda.correcta{background:#2ecc71;border-color:#2ecc71;color:#fff;animation:flip .5s ease;}
+        .celda.presente{background:#f1c40f;border-color:#f1c40f;color:#fff;animation:flip .5s ease;}
+        .celda.ausente{background:#787c7e;border-color:#787c7e;color:#fff;animation:flip .5s ease;}
+        .fila.shake{animation:shake .4s ease;}
+        .tablero.sin-animar .celda{animation:none!important;}
+
+        @keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.08)}100%{transform:scale(1)}}
+        @keyframes flip{0%{transform:rotateX(0)}50%{transform:rotateX(90deg)}100%{transform:rotateX(0)}}
+        @keyframes shake{
+            10%,90%{transform:translateX(-2px)}
+            20%,80%{transform:translateX(4px)}
+            30%,50%,70%{transform:translateX(-8px)}
+            40%,60%{transform:translateX(8px)}
+        }
+
+        .teclado{display:flex;flex-direction:column;gap:6px;align-items:stretch;}
+        .fila-teclado{display:flex;gap:5px;justify-content:center;}
+        .tecla{flex:1;max-width:34px;padding:0;height:46px;background:#d3d6da;border:none;border-radius:5px;font-weight:700;font-size:.85em;color:#1c1e21;cursor:pointer;text-transform:uppercase;transition:background-color .15s;}
+        .tecla:hover{background:#bbc0c4;}
+        .tecla.grande{max-width:52px;font-size:.65em;flex:1.4;}
+        .tecla.correcta{background:#2ecc71;color:#fff;}
+        .tecla.presente{background:#f1c40f;color:#fff;}
+        .tecla.ausente{background:#787c7e;color:#fff;}
+
+        #fin-juego h1{font-size:2em;color:#d35400;}
+        .puntuacion-grande{font-size:2.2em;font-weight:700;color:#2c3e50;margin:10px 0 20px;text-transform:uppercase;}
+        #reiniciar{padding:15px 25px;font-size:1.1em;background-color:#2ecc71;color:#fff;border:none;border-radius:8px;cursor:pointer;}
+        #contador-diario{font-size:.9em;color:#888;margin:-5px 0 20px;}
+        .oculto{display:none}
+
+        .mode-toggle{margin:15px 0 0;font-size:.85em;text-align:center;}
+        .mode-toggle a{color:rgba(255,255,255,0.9);text-decoration:underline;cursor:pointer;}
+        .mode-toggle a:hover{color:#fff;}
+
+        @media (min-width:768px){
+            .contenedor{padding:30px}
+            .tablero{max-width:320px}
+            .celda{font-size:2em}
+            .tecla{height:52px;max-width:40px;font-size:1em}
+            .tecla.grande{max-width:60px;font-size:.7em}
+        }
+    </style>
+</head>
+<body>
+
+    <div class="wrapper">
+        <!-- Pantalla de juego principal -->
+        <div id="juego-activo" class="contenedor">
+            <div class="header-juego">
+                <h1>Wordle</h1>
+                <p>Intento: <span id="intento">1</span>/6</p>
+            </div>
+            <p id="info-modo"></p>
+            <div id="mensaje" class="mensaje" aria-live="polite"></div>
+            <div id="tablero" class="tablero"></div>
+            <div id="teclado" class="teclado"></div>
+        </div>
+
+        <!-- Pantalla de fin de juego (inicialmente oculta) -->
+        <div id="fin-juego" class="contenedor oculto">
+            <h1 id="fin-titulo">¡Fin del juego!</h1>
+            <p>La palabra era:</p>
+            <p id="palabra-final" class="puntuacion-grande">-----</p>
+            <p id="contador-diario" class="oculto"></p>
+            <button id="reiniciar">Jugar de nuevo</button>
+        </div>
+
+        <p class="mode-toggle"><a href="#" id="cambiar-modo">Jugar partida aleatoria</a></p>
+
+        <a href="index.html" class="home-link">Volver al menú</a>
+    </div>
+
+    <script>
+        const listaPalabras = [
+            "PERRO","GATOS","CARRO","TRIGO","PLAZA","NUBES","VERDE","FRUTA","PLATO","LIBRO",
+            "PUNTO","CIELO","ARENA","RUEDA","TORRE","FLORA","DULCE","LUCES","GRUPO","MUNDO",
+            "VIAJE","NOCHE","TARDE","MANOS","CODOS","SUEÑO","NIÑOS","BAÑOS","PIÑAS","CAMPO",
+            "FUEGO","AGUAS","NIEVE","PLAYA","BARCO","AVION","LIMON","CALOR","FRESA","BRAZO",
+            "PECHO","VIGOR","LOGRO","COCHE","RATON","LEONA","TIGRE","VACAS","TOROS","OVEJA",
+            "CERDO","RATAS","PECES","HOJAS","RAMAS","MARES","LAGOS","VALLE","NORTE","OESTE",
+            "PLATA","ACERO","PAPEL","TIZAS","REGLA","GOMAS","LAPIZ","TINTA","NOTAS","CLASE",
+            "HORAS","MESES","FECHA","LETRA","FRASE","TEXTO",
+            "ABEJA","ROJOS","NEGRO","SORDO","FELIZ","LENTO","DEBIL","ALTOS","BAJOS","GORDO",
+            "FLACO","JOVEN","VIEJO","NUEVO","SUCIO","CLARO","CALDO","SOPAS","CARNE","LECHE",
+            "QUESO","HUEVO","ARROZ","PASTA","PERAS","MELON","CACAO","CAFES","PARED","SILLA",
+            "MESAS","SOFAS","CAMAS","BANCO","BAILE","CANTO","POEMA","LUNAS","SOLES","MONTE",
+            "CUEVA","ISLAS","COSTA","ALDEA","CALLE","SELVA","RAYOS","TORTA","PIZZA","MOTOS",
+            "MOTOR","FRENO","ROCAS","METAL","COBRE","TELAS","LANAS","SEDAS","CUERO","FALDA",
+            "BOTAS","GORRA","CINTA","BOLSO","LLAVE","RELOJ","PULSO","DEDOS","CEJAS","NARIZ",
+            "LABIO","BARBA","CALVO","RUBIO","MUSLO"
+        ];
+
+        const FILAS = 6;
+        const COLUMNAS = 5;
+        const CLAVE_STORAGE = 'elmaslisto-wordle-diario';
+        const FECHA_EPOCA = new Date(2024, 0, 1);
+
+        const tableroEl = document.getElementById('tablero');
+        const tecladoEl = document.getElementById('teclado');
+        const mensajeEl = document.getElementById('mensaje');
+        const intentoEl = document.getElementById('intento');
+        const infoModoEl = document.getElementById('info-modo');
+        const juegoActivoEl = document.getElementById('juego-activo');
+        const finJuegoEl = document.getElementById('fin-juego');
+        const finTituloEl = document.getElementById('fin-titulo');
+        const palabraFinalEl = document.getElementById('palabra-final');
+        const contadorDiarioEl = document.getElementById('contador-diario');
+        const reiniciarBtn = document.getElementById('reiniciar');
+        const cambiarModoEl = document.getElementById('cambiar-modo');
+
+        const filasTeclado = [
+            ['Q','W','E','R','T','Y','U','I','O','P'],
+            ['A','S','D','F','G','H','J','K','L','Ñ'],
+            ['ENTRAR','Z','X','C','V','B','N','M','⌫']
+        ];
+
+        let palabraSecreta = '';
+        let filaActual = 0;
+        let columnaActual = 0;
+        let finalizado = false;
+        let modoDiario = true;
+        let intentosConfirmados = [];
+        let intervaloContador = null;
+
+        function medianoche(fecha) {
+            return new Date(fecha.getFullYear(), fecha.getMonth(), fecha.getDate());
+        }
+
+        function fechaISO(fecha) {
+            const y = fecha.getFullYear();
+            const m = String(fecha.getMonth() + 1).padStart(2, '0');
+            const d = String(fecha.getDate()).padStart(2, '0');
+            return `${y}-${m}-${d}`;
+        }
+
+        function fechaBonita(fecha) {
+            return new Intl.DateTimeFormat('es-ES', { day: 'numeric', month: 'long', year: 'numeric' }).format(fecha);
+        }
+
+        function indiceDelDia() {
+            const dias = Math.round((medianoche(new Date()) - medianoche(FECHA_EPOCA)) / 86400000);
+            return ((dias % listaPalabras.length) + listaPalabras.length) % listaPalabras.length;
+        }
+
+        function cargarProgresoDiario() {
+            try {
+                const raw = localStorage.getItem(CLAVE_STORAGE);
+                if (!raw) return null;
+                const datos = JSON.parse(raw);
+                if (datos.fecha !== fechaISO(new Date())) return null;
+                return datos;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function guardarProgresoDiario(terminado, gano) {
+            try {
+                localStorage.setItem(CLAVE_STORAGE, JSON.stringify({
+                    fecha: fechaISO(new Date()),
+                    intentos: intentosConfirmados,
+                    terminado,
+                    gano
+                }));
+            } catch (e) {
+                // localStorage no disponible (modo privado, etc.): seguimos sin persistir
+            }
+        }
+
+        function construirTablero() {
+            tableroEl.innerHTML = '';
+            for (let f = 0; f < FILAS; f++) {
+                const fila = document.createElement('div');
+                fila.className = 'fila';
+                fila.id = `fila-${f}`;
+                for (let c = 0; c < COLUMNAS; c++) {
+                    const celda = document.createElement('div');
+                    celda.className = 'celda';
+                    celda.id = `celda-${f}-${c}`;
+                    fila.appendChild(celda);
+                }
+                tableroEl.appendChild(fila);
+            }
+        }
+
+        function construirTeclado() {
+            tecladoEl.innerHTML = '';
+            filasTeclado.forEach(filaTeclas => {
+                const filaEl = document.createElement('div');
+                filaEl.className = 'fila-teclado';
+                filaTeclas.forEach(tecla => {
+                    const btn = document.createElement('button');
+                    btn.textContent = tecla;
+                    btn.className = 'tecla';
+                    btn.dataset.key = tecla;
+                    if (tecla === 'ENTRAR' || tecla === '⌫') btn.classList.add('grande');
+                    btn.addEventListener('click', () => manejarTecla(tecla));
+                    filaEl.appendChild(btn);
+                });
+                tecladoEl.appendChild(filaEl);
+            });
+        }
+
+        function manejarTecla(tecla) {
+            if (finalizado) return;
+            if (tecla === 'ENTRAR') {
+                comprobarFila();
+            } else if (tecla === '⌫') {
+                borrarLetra();
+            } else {
+                agregarLetra(tecla);
+            }
+        }
+
+        function agregarLetra(letra) {
+            if (columnaActual >= COLUMNAS) return;
+            const celda = document.getElementById(`celda-${filaActual}-${columnaActual}`);
+            celda.textContent = letra;
+            celda.classList.add('rellena');
+            columnaActual++;
+        }
+
+        function borrarLetra() {
+            if (columnaActual <= 0) return;
+            columnaActual--;
+            const celda = document.getElementById(`celda-${filaActual}-${columnaActual}`);
+            celda.textContent = '';
+            celda.classList.remove('rellena');
+        }
+
+        function mostrarMensaje(texto) {
+            mensajeEl.textContent = texto;
+            setTimeout(() => {
+                if (mensajeEl.textContent === texto) mensajeEl.textContent = '';
+            }, 1800);
+        }
+
+        function sacudirFila() {
+            const fila = document.getElementById(`fila-${filaActual}`);
+            fila.classList.add('shake');
+            setTimeout(() => fila.classList.remove('shake'), 400);
+        }
+
+        function actualizarTecla(letra, estado) {
+            const prioridad = { ausente: 0, presente: 1, correcta: 2 };
+            const btn = tecladoEl.querySelector(`.tecla[data-key="${letra}"]`);
+            if (!btn) return;
+            const estadoActual = ['correcta', 'presente', 'ausente'].find(e => btn.classList.contains(e));
+            if (!estadoActual || prioridad[estado] > prioridad[estadoActual]) {
+                btn.classList.remove('correcta', 'presente', 'ausente');
+                btn.classList.add(estado);
+            }
+        }
+
+        function evaluarIntento(intento, secreta) {
+            const resultado = new Array(COLUMNAS).fill('ausente');
+            const letrasRestantes = secreta.split('');
+
+            for (let c = 0; c < COLUMNAS; c++) {
+                if (intento[c] === secreta[c]) {
+                    resultado[c] = 'correcta';
+                    letrasRestantes[c] = null;
+                }
+            }
+            for (let c = 0; c < COLUMNAS; c++) {
+                if (resultado[c] === 'correcta') continue;
+                const indice = letrasRestantes.indexOf(intento[c]);
+                if (indice !== -1) {
+                    resultado[c] = 'presente';
+                    letrasRestantes[indice] = null;
+                }
+            }
+            return resultado;
+        }
+
+        function comprobarFila() {
+            if (finalizado) return;
+            if (columnaActual < COLUMNAS) {
+                mostrarMensaje('Faltan letras');
+                sacudirFila();
+                return;
+            }
+
+            let intento = '';
+            for (let c = 0; c < COLUMNAS; c++) {
+                intento += document.getElementById(`celda-${filaActual}-${c}`).textContent;
+            }
+
+            if (!listaPalabras.includes(intento)) {
+                mostrarMensaje('La palabra no está en la lista');
+                sacudirFila();
+                return;
+            }
+
+            const resultado = evaluarIntento(intento, palabraSecreta);
+            resultado.forEach((estado, c) => {
+                const celda = document.getElementById(`celda-${filaActual}-${c}`);
+                celda.style.animationDelay = `${c * 0.1}s`;
+                celda.classList.add(estado);
+                actualizarTecla(intento[c], estado);
+            });
+
+            intentosConfirmados.push(intento);
+
+            const gano = intento === palabraSecreta;
+            const eraUltimoIntento = filaActual === FILAS - 1;
+
+            if (modoDiario) guardarProgresoDiario(gano || eraUltimoIntento, gano);
+
+            setTimeout(() => {
+                if (gano) {
+                    finalizado = true;
+                    terminarJuego(true);
+                } else if (eraUltimoIntento) {
+                    finalizado = true;
+                    terminarJuego(false);
+                } else {
+                    filaActual++;
+                    columnaActual = 0;
+                    intentoEl.textContent = filaActual + 1;
+                }
+            }, COLUMNAS * 100 + 400);
+        }
+
+        function iniciarContadorDiario() {
+            pararContadorDiario();
+            const actualizar = () => {
+                const ahora = new Date();
+                const manana = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate() + 1);
+                const restante = manana - ahora;
+                const h = String(Math.floor(restante / 3600000)).padStart(2, '0');
+                const m = String(Math.floor((restante % 3600000) / 60000)).padStart(2, '0');
+                const s = String(Math.floor((restante % 60000) / 1000)).padStart(2, '0');
+                contadorDiarioEl.textContent = `Vuelve mañana para un nuevo reto (${h}:${m}:${s})`;
+            };
+            actualizar();
+            intervaloContador = setInterval(actualizar, 1000);
+        }
+
+        function pararContadorDiario() {
+            if (intervaloContador) {
+                clearInterval(intervaloContador);
+                intervaloContador = null;
+            }
+        }
+
+        function terminarJuego(gano) {
+            finTituloEl.textContent = gano ? '¡Genial, lo has conseguido!' : '¡Fin del juego!';
+            palabraFinalEl.textContent = palabraSecreta;
+            juegoActivoEl.classList.add('oculto');
+            finJuegoEl.classList.remove('oculto');
+
+            if (modoDiario) {
+                reiniciarBtn.classList.add('oculto');
+                contadorDiarioEl.classList.remove('oculto');
+                iniciarContadorDiario();
+            } else {
+                reiniciarBtn.classList.remove('oculto');
+                contadorDiarioEl.classList.add('oculto');
+                pararContadorDiario();
+            }
+        }
+
+        function repintarIntentosGuardados(intentos) {
+            tableroEl.classList.add('sin-animar');
+            intentos.forEach((intento, f) => {
+                for (let c = 0; c < COLUMNAS; c++) {
+                    document.getElementById(`celda-${f}-${c}`).textContent = intento[c];
+                }
+                const resultado = evaluarIntento(intento, palabraSecreta);
+                resultado.forEach((estado, c) => {
+                    document.getElementById(`celda-${f}-${c}`).classList.add(estado);
+                    actualizarTecla(intento[c], estado);
+                });
+            });
+            requestAnimationFrame(() => tableroEl.classList.remove('sin-animar'));
+        }
+
+        function iniciarDiario() {
+            modoDiario = true;
+            pararContadorDiario();
+            contadorDiarioEl.classList.add('oculto');
+            reiniciarBtn.classList.remove('oculto');
+            cambiarModoEl.textContent = 'Jugar partida aleatoria';
+            infoModoEl.textContent = `Reto diario · ${fechaBonita(new Date())}`;
+
+            palabraSecreta = listaPalabras[indiceDelDia()];
+            intentosConfirmados = [];
+            filaActual = 0;
+            columnaActual = 0;
+            finalizado = false;
+            mensajeEl.textContent = '';
+
+            construirTablero();
+            construirTeclado();
+            juegoActivoEl.classList.remove('oculto');
+            finJuegoEl.classList.add('oculto');
+
+            const guardado = cargarProgresoDiario();
+            if (guardado && guardado.intentos && guardado.intentos.length) {
+                intentosConfirmados = [...guardado.intentos];
+                repintarIntentosGuardados(guardado.intentos);
+                filaActual = Math.min(guardado.intentos.length, FILAS - 1);
+
+                if (guardado.terminado) {
+                    finalizado = true;
+                    terminarJuego(guardado.gano);
+                    return;
+                }
+                columnaActual = 0;
+                intentoEl.textContent = guardado.intentos.length + 1;
+                return;
+            }
+
+            intentoEl.textContent = '1';
+        }
+
+        function iniciarAleatorio() {
+            modoDiario = false;
+            pararContadorDiario();
+            contadorDiarioEl.classList.add('oculto');
+            reiniciarBtn.classList.remove('oculto');
+            cambiarModoEl.textContent = 'Volver al reto diario';
+            infoModoEl.textContent = 'Modo aleatorio (práctica libre)';
+
+            palabraSecreta = listaPalabras[Math.floor(Math.random() * listaPalabras.length)];
+            intentosConfirmados = [];
+            filaActual = 0;
+            columnaActual = 0;
+            finalizado = false;
+            mensajeEl.textContent = '';
+            intentoEl.textContent = '1';
+
+            construirTablero();
+            construirTeclado();
+            juegoActivoEl.classList.remove('oculto');
+            finJuegoEl.classList.add('oculto');
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (finalizado) return;
+            const tecla = e.key.toUpperCase();
+            if (tecla === 'ENTER') {
+                comprobarFila();
+            } else if (tecla === 'BACKSPACE') {
+                borrarLetra();
+            } else if (/^[A-ZÑ]$/.test(tecla)) {
+                agregarLetra(tecla);
+            }
+        });
+
+        reiniciarBtn.addEventListener('click', () => {
+            if (!modoDiario) iniciarAleatorio();
+        });
+
+        cambiarModoEl.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (modoDiario) {
+                iniciarAleatorio();
+            } else {
+                iniciarDiario();
+            }
+        });
+
+        iniciarDiario();
+    </script>
+
+</body>
+</html>
