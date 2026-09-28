@@ -1,7 +1,7 @@
 // Motor compartido por los juegos de "pregunta contrarreloj con 2 respuestas"
 // (mates en cadena, mates complejas, trivial). Cada juego solo aporta cómo
 // generar la siguiente ronda y cómo comprobar la respuesta elegida.
-function crearQuizContrarreloj({ tiempoInicial, alIniciar, generarRonda, comprobarRespuesta }) {
+function crearQuizContrarreloj({ tiempoInicial, alIniciar, generarRonda, comprobarRespuesta, alTerminar }) {
     const juegoActivoEl = document.getElementById('juego-activo');
     const finJuegoEl = document.getElementById('fin-juego');
     const puntuacionEl = document.getElementById('puntuacion');
@@ -53,6 +53,7 @@ function crearQuizContrarreloj({ tiempoInicial, alIniciar, generarRonda, comprob
         juegoActivoEl.classList.add('oculto');
         finJuegoEl.classList.remove('oculto');
         puntuacionFinalEl.textContent = puntuacion;
+        if (alTerminar) alTerminar(puntuacion);
     }
 
     respuesta1Btn.addEventListener('click', manejarRespuesta);

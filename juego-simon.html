@@ -95,6 +95,7 @@
                 <div class="simon-button yellow" data-color="yellow"></div>
             </div>
             <button id="start-button">Empezar</button>
+            <div id="ranking"></div>
         </div>
         <a href="index.html" class="home-link">Volver al menú</a>
 
@@ -184,6 +185,7 @@
     }
     </script>
 
+    <script src="ranking.js"></script>
     <script>
         // El JavaScript no necesita cambios
         const statusEl = document.getElementById('status');
@@ -200,6 +202,8 @@
             level = 0;
             gameSequence = [];
             startButton.style.display = 'none';
+            document.getElementById('ranking').className = '';
+            document.getElementById('ranking').innerHTML = '';
             nextLevel();
         }
 
@@ -259,6 +263,12 @@
             startButton.style.display = 'block';
             startButton.textContent = 'Jugar de nuevo';
             isPlayerTurn = false;
+
+            const rankingEl = document.getElementById('ranking');
+            rankingEl.className = 'ranking-widget';
+            Ranking.mostrar(rankingEl, 'simon', level, {
+                formatear: p => `Nivel ${p}`,
+            });
         }
 
         startButton.addEventListener('click', startGame);

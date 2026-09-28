@@ -102,6 +102,7 @@
             <p>La palabra era:</p>
             <p id="palabra-final" class="puntuacion-grande">-----</p>
             <p id="contador-diario" class="oculto"></p>
+            <div id="ranking" class="ranking-widget"></div>
             <button id="reiniciar">Jugar de nuevo</button>
         </div>
 
@@ -195,6 +196,7 @@
     }
     </script>
 
+    <script src="ranking.js"></script>
     <script>
         const listaPalabras = [
             "PERRO","GATOS","CARRO","TRIGO","PLAZA","NUBES","VERDE","FRUTA","PLATO","LIBRO",
@@ -478,6 +480,12 @@
                 contadorDiarioEl.classList.add('oculto');
                 pararContadorDiario();
             }
+
+            Ranking.mostrar(document.getElementById('ranking'), 'wordle', gano ? filaActual + 1 : null, {
+                ascendente: true,
+                formatear: p => p + (p === 1 ? ' intento' : ' intentos'),
+                claveGuardado: modoDiario ? fechaISO(new Date()) : undefined,
+            });
         }
 
         function repintarIntentosGuardados(intentos) {

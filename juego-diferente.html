@@ -130,6 +130,7 @@
     }
     </script>
 
+    <script src="ranking.js"></script>
     <script>
         // El JavaScript no necesita cambios
         const grid = document.getElementById('grid');
@@ -196,10 +197,13 @@
 
         function gameOver() {
             clearInterval(timer);
-            grid.innerHTML = `<h1>¡Fin del juego!</h1><p>Llegaste al nivel ${level}</p><button id="restart">Jugar de nuevo</button>`;
+            grid.innerHTML = `<h1>¡Fin del juego!</h1><p>Llegaste al nivel ${level}</p><button id="restart">Jugar de nuevo</button><div id="ranking" class="ranking-widget"></div>`;
             document.getElementById('restart').addEventListener('click', () => {
                 level = 1;
                 nextLevel();
+            });
+            Ranking.mostrar(document.getElementById('ranking'), 'diferente', level, {
+                formatear: p => `Nivel ${p}`,
             });
         }
 

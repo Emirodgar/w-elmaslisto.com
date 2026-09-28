@@ -108,6 +108,7 @@
                     <g id="capa-ruta"></g>
                 </svg>
             </div>
+            <div id="ranking" class="ranking-widget"></div>
             <button id="reiniciar">Volver a jugar</button>
         </div>
 
@@ -199,6 +200,7 @@
     }
     </script>
 
+    <script src="ranking.js"></script>
     <script>
         // Ciudad de salida
         const salida = { ciudad: "Madrid", pais: "España", lat: 40.4, lon: -3.7,
@@ -429,6 +431,10 @@
             }
 
             dibujarMapa();
+
+            Ranking.mostrar(document.getElementById('ranking'), 'around-the-world', kmTotal, {
+                formatear: p => `${formatoKm(p)} km`,
+            });
         }
 
         function iniciar() {

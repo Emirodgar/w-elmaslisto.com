@@ -109,6 +109,7 @@
             <h1>¡Reto completado!</h1>
             <p class="puntuacion-grande" id="estrellas-finales">0/9</p>
             <div id="resumen-palabras"></div>
+            <div id="ranking" class="ranking-widget"></div>
             <p id="contador-diario" class="oculto"></p>
             <button id="reiniciar">Jugar otra partida</button>
         </div>
@@ -203,6 +204,7 @@
     }
     </script>
 
+    <script src="ranking.js"></script>
     <script>
         const PUZZLE_SETS = [
             { pistas: [
@@ -534,6 +536,11 @@
                 contadorDiarioEl.classList.add('oculto');
                 pararContadorDiario();
             }
+
+            Ranking.mostrar(document.getElementById('ranking'), 'siete-letras', total, {
+                formatear: p => `${p}/9 estrellas`,
+                claveGuardado: modoDiario ? fechaISO(new Date()) : undefined,
+            });
         }
 
         function iniciarDiario() {

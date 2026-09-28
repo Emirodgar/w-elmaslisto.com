@@ -56,6 +56,7 @@
             <h1>¡Fin del juego!</h1>
             <p>Tu puntuación final es:</p>
             <p id="puntuacion-final" class="puntuacion-grande">0</p>
+            <div id="ranking" class="ranking-widget"></div>
             <button id="reiniciar">Volver a jugar</button>
         </div>
 
@@ -148,6 +149,7 @@
     </script>
 
     <script src="quiz-engine.js"></script>
+    <script src="ranking.js"></script>
     <script>
         const operacionEl = document.getElementById('operacion');
         const respuesta1Btn = document.getElementById('respuesta1');
@@ -186,6 +188,11 @@
             alIniciar: generarOperacion,
             generarRonda: generarOperacion,
             comprobarRespuesta: (texto) => parseInt(texto) === respuestaCorrecta,
+            alTerminar(puntuacionFinal) {
+                Ranking.mostrar(document.getElementById('ranking'), 'sumas', puntuacionFinal, {
+                    formatear: p => p + (p === 1 ? ' punto' : ' puntos'),
+                });
+            },
         });
         quiz.iniciar();
     </script>

@@ -37,6 +37,108 @@ body {
     color: inherit;
 }
 
+/* --- Ranking local de puntuaciones (por navegador, sin servidor) --- */
+.ranking-widget {
+    width: 100%;
+    margin-top: 20px;
+    padding: 16px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, .12);
+    box-sizing: border-box;
+    text-align: left;
+}
+
+.ranking-titulo {
+    margin: 0 0 10px;
+    font-size: 1em;
+    color: #2c3e50;
+    text-align: center;
+}
+
+.ranking-vacio {
+    margin: 0 0 12px;
+    font-size: 0.9em;
+    color: #777;
+    text-align: center;
+}
+
+.ranking-tabla {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9em;
+    margin-bottom: 12px;
+}
+
+.ranking-tabla th,
+.ranking-tabla td {
+    padding: 6px 8px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+    color: #333;
+}
+
+.ranking-tabla th {
+    color: #999;
+    font-weight: 700;
+    font-size: 0.8em;
+    text-transform: uppercase;
+}
+
+.ranking-puesto {
+    width: 24px;
+    color: #999;
+    font-weight: 700;
+}
+
+.ranking-puntos {
+    text-align: right;
+    font-weight: 700;
+    color: #2c3e50;
+}
+
+.ranking-tabla tr.ranking-fila-nueva {
+    background: #fff9db;
+}
+
+.ranking-form {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.ranking-input {
+    flex: 1;
+    min-width: 120px;
+    padding: 10px 12px;
+    font-size: 0.95em;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    box-sizing: border-box;
+}
+
+.ranking-guardar {
+    padding: 10px 16px;
+    font-size: 0.95em;
+    font-weight: 700;
+    background-color: #2c3e50;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.ranking-guardar:hover {
+    background-color: #1a252f;
+}
+
+.ranking-info {
+    margin: 0;
+    font-size: 0.85em;
+    color: #777;
+    text-align: center;
+}
+
 /* --- Guías de contenido (SEO) --- */
 .guia {
     width: 100%;
