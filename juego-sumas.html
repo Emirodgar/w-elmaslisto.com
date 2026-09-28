@@ -30,7 +30,7 @@
         /* --- CAMBIO AQUÍ: El contenedor ahora solo ocupa el 100% de su padre (el wrapper) --- */
         .contenedor{width:100%;background:white;padding:20px;border-radius:15px;box-shadow:0 6px 12px rgba(0,0,0,.15);text-align:center;box-sizing:border-box;}
 
-        .header-juego{display:flex;justify-content:space-between;font-size:1.1em;color:#555;margin-bottom:20px;font-weight:700}#operacion{font-size:2.5em;font-weight:700;min-height:80px;display:flex;align-items:center;justify-content:center;margin:20px 0;color:#2c3e50}.respuestas{display:grid;grid-template-columns:1fr 1fr;gap:10px}.boton-respuesta{padding:15px;font-size:1.5em;border:2px solid #3498db;background-color:#fff;color:#3498db;border-radius:10px;cursor:pointer;transition:background-color .2s,color .2s,transform .1s}.boton-respuesta:hover{background-color:#3498db;color:#fff;transform:translateY(-2px)}.boton-respuesta:active{transform:translateY(1px)}#fin-juego h1{font-size:2em;color:#c0392b}.puntuacion-grande{font-size:4em;font-weight:700;color:#2ecc71;margin:20px 0}#reiniciar{padding:15px 25px;font-size:1.1em;background-color:#2ecc71;color:white;border:none;border-radius:8px;cursor:pointer}.oculto{display:none}@media (min-width:768px){.contenedor{padding:30px}.header-juego{font-size:1.3em}#operacion{font-size:3.5em}#fin-juego h1{font-size:2.5em}.puntuacion-grande{font-size:4.5em}}
+        .header-juego{display:flex;justify-content:space-between;font-size:1.1em;color:#555;margin-bottom:20px;font-weight:700}#operacion{font-size:2.5em;font-weight:700;min-height:80px;display:flex;align-items:center;justify-content:center;margin:20px 0;color:#2c3e50}.respuestas{display:grid;grid-template-columns:1fr 1fr;gap:10px}.boton-respuesta{padding:15px;font-size:1.5em;border:2px solid #3498db;background-color:#fff;color:#3498db;border-radius:10px;cursor:pointer;transition:background-color .2s,color .2s,transform .1s}.boton-respuesta:hover{background-color:#3498db;color:#fff;transform:translateY(-2px)}.boton-respuesta:active{transform:translateY(1px)}#fin-juego h1{font-size:2em;color:#c0392b}.puntuacion-grande{font-size:4em;font-weight:700;color:#2ecc71;margin:20px 0}.curiosidad-mate{font-size:.95em;color:#444;background:#f4f8fb;border-radius:10px;padding:12px;text-align:left;margin:0 0 15px}#reiniciar{padding:15px 25px;font-size:1.1em;background-color:#2ecc71;color:white;border:none;border-radius:8px;cursor:pointer}.oculto{display:none}@media (min-width:768px){.contenedor{padding:30px}.header-juego{font-size:1.3em}#operacion{font-size:3.5em}#fin-juego h1{font-size:2.5em}.puntuacion-grande{font-size:4.5em}}
 		
         
     </style>
@@ -56,6 +56,7 @@
             <h1>¡Fin del juego!</h1>
             <p>Tu puntuación final es:</p>
             <p id="puntuacion-final" class="puntuacion-grande">0</p>
+            <p id="curiosidad-mate" class="curiosidad-mate"></p>
             <div id="ranking" class="ranking-widget"></div>
             <button id="reiniciar">Volver a jugar</button>
         </div>
@@ -156,6 +157,24 @@
         const respuesta2Btn = document.getElementById('respuesta2');
         let respuestaCorrecta;
 
+        const curiosidadesSumas = [
+            "Para sumar dos números de dos cifras, puedes sumar primero las decenas y luego las unidades: 34+28 = (30+20)+(4+8) = 62.",
+            "Redondear los números antes de calcular ayuda a estimar rápido si un resultado es razonable: 47+38 es parecido a 50+40=90.",
+            "El sistema de numeración decimal agrupa los números de dos cifras en decenas y unidades, la base del cálculo con llevadas.",
+            "Restar 'llevando' (pedir prestado) se enseña en el colegio desde hace siglos, aunque los métodos han cambiado con el tiempo.",
+            "Multiplicar o dividir entre 10 es tan simple como mover la coma decimal, gracias a nuestro sistema en base 10.",
+            "El truco de 'completar a la decena' ayuda a sumar rápido: 48+7 es más fácil si piensas 48+2+5 = 50+5 = 55.",
+            "Los números del 1 al 99 combinan todas las decenas del 0 al 9 con todas las unidades del 0 al 9.",
+            "Estimar antes de calcular es una habilidad muy útil en la vida real, por ejemplo al hacer la compra o calcular una propina.",
+            "El número 88 se lee igual del derecho que del revés, igual que otros números de dos cifras como 22, 33 o 77.",
+            "En números de dos cifras, la resta entre un número y el mismo con las cifras invertidas siempre es múltiplo de 9: por ejemplo, 52-25=27.",
+            "El cálculo mental con números grandes mejora si divides el problema en pasos más pequeños, como hacen los calculistas mentales profesionales.",
+            "El símbolo - para la resta se popularizó en Alemania a finales del siglo XV, junto con el símbolo +.",
+            "Un truco rápido para restar es pensar al revés: para saber cuánto es 82-47, calcula cuánto le falta a 47 para llegar a 82.",
+            "La propiedad conmutativa de la suma permite sumar en el orden que resulte más cómodo: 63+29 es igual que 29+63.",
+            "Practicar con números de dos cifras es un paso intermedio antes de calcular mentalmente con cientos o miles."
+        ];
+
         function generarOperacion() {
             const num1 = Math.floor(Math.random() * 99) + 1;
             const num2 = Math.floor(Math.random() * 99) + 1;
@@ -189,6 +208,8 @@
             generarRonda: generarOperacion,
             comprobarRespuesta: (texto) => parseInt(texto) === respuestaCorrecta,
             alTerminar(puntuacionFinal) {
+                const curiosidad = curiosidadesSumas[Math.floor(Math.random() * curiosidadesSumas.length)];
+                document.getElementById('curiosidad-mate').textContent = `💡 ${curiosidad}`;
                 Ranking.mostrar(document.getElementById('ranking'), 'sumas', puntuacionFinal, {
                     formatear: p => p + (p === 1 ? ' punto' : ' puntos'),
                 });

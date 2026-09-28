@@ -28,7 +28,7 @@
         /* --- CAMBIO AQUÍ: El contenedor ahora solo ocupa el 100% de su padre (el wrapper) --- */
         .contenedor{width:100%;background:#fff;padding:20px;border-radius:15px;box-shadow:0 6px 12px rgba(0,0,0,.15);text-align:center;box-sizing:border-box;}
 
-        .header-juego{display:flex;justify-content:space-between;font-size:1.1em;color:#555;margin-bottom:20px;font-weight:700}#pregunta{font-size:1.4em;font-weight:500;min-height:80px;display:flex;align-items:center;justify-content:center;margin:20px 0;color:#2c3e50}.respuestas{display:grid;grid-template-columns:1fr;gap:10px}.boton-respuesta{padding:15px;font-size:1.1em;border:2px solid #3498db;background-color:#fff;color:#3498db;border-radius:10px;cursor:pointer;transition:background-color .2s,color .2s,transform .1s}.boton-respuesta:hover{background-color:#3498db;color:#fff;transform:translateY(-2px)}.boton-respuesta:active{transform:translateY(1px)}#fin-juego h1{font-size:2em;color:#e74c3c}.puntuacion-grande{font-size:4em;font-weight:700;color:#2ecc71;margin:20px 0}#reiniciar{padding:15px 25px;font-size:1.1em;background-color:#2ecc71;color:#fff;border:none;border-radius:8px;cursor:pointer}.oculto{display:none}@media (min-width:768px){.contenedor{padding:30px}.header-juego{font-size:1.3em}#pregunta{font-size:1.8em;min-height:100px}.boton-respuesta{padding:20px;font-size:1.3em}}
+        .header-juego{display:flex;justify-content:space-between;font-size:1.1em;color:#555;margin-bottom:20px;font-weight:700}#pregunta{font-size:1.4em;font-weight:500;min-height:80px;display:flex;align-items:center;justify-content:center;margin:20px 0;color:#2c3e50}.respuestas{display:grid;grid-template-columns:1fr;gap:10px}.boton-respuesta{padding:15px;font-size:1.1em;border:2px solid #3498db;background-color:#fff;color:#3498db;border-radius:10px;cursor:pointer;transition:background-color .2s,color .2s,transform .1s}.boton-respuesta:hover{background-color:#3498db;color:#fff;transform:translateY(-2px)}.boton-respuesta:active{transform:translateY(1px)}#fin-juego h1{font-size:2em;color:#e74c3c}.puntuacion-grande{font-size:4em;font-weight:700;color:#2ecc71;margin:20px 0}#mensaje-respuesta{font-size:1.05em;font-weight:700;color:#2c3e50;margin:0 0 5px}#curiosidad-trivial{font-size:.95em;color:#444;background:#f4f8fb;border-radius:10px;padding:12px;text-align:left;margin:0 0 15px}#reiniciar{padding:15px 25px;font-size:1.1em;background-color:#2ecc71;color:#fff;border:none;border-radius:8px;cursor:pointer}.oculto{display:none}@media (min-width:768px){.contenedor{padding:30px}.header-juego{font-size:1.3em}#pregunta{font-size:1.8em;min-height:100px}.boton-respuesta{padding:20px;font-size:1.3em}}
 		
         
     </style>
@@ -55,6 +55,8 @@
             <h1>¡Fin del juego!</h1>
             <p>Tu puntuación final es:</p>
             <p id="puntuacion-final" class="puntuacion-grande">0</p>
+            <p id="mensaje-respuesta"></p>
+            <p id="curiosidad-trivial"></p>
             <div id="ranking" class="ranking-widget"></div>
             <button id="reiniciar">Volver a jugar</button>
         </div>
@@ -151,26 +153,90 @@
     <script src="ranking.js"></script>
     <script>
         const bancoPreguntas = [
-            {"pregunta": "¿Cuál es el río más largo del mundo?","respuestaCorrecta": "Amazonas","respuestaFalsa": "Nilo"},
-            {"pregunta": "¿En qué año llegó el hombre a la Luna?","respuestaCorrecta": "1969","respuestaFalsa": "1965"},
-            {"pregunta": "¿Quién escribió 'Cien años de soledad'?","respuestaCorrecta": "Gabriel García Márquez","respuestaFalsa": "Mario Vargas Llosa"},
-            {"pregunta": "¿Cuál es el océano más grande del mundo?","respuestaCorrecta": "Océano Pacífico","respuestaFalsa": "Océano Atlántico"},
-            {"pregunta": "¿Qué país tiene más habitantes actualmente?","respuestaCorrecta": "India","respuestaFalsa": "China"},
-            {"pregunta": "¿Cuál es la capital de Australia?","respuestaCorrecta": "Canberra","respuestaFalsa": "Sídney"},
-            {"pregunta": "¿Quién pintó la Mona Lisa?","respuestaCorrecta": "Leonardo da Vinci","respuestaFalsa": "Vincent van Gogh"},
-            {"pregunta": "¿Cuál es el metal más ligero?","respuestaCorrecta": "Litio","respuestaFalsa": "Aluminio"},
-            {"pregunta": "¿Cuál es la capital de Italia?","respuestaCorrecta": "Roma","respuestaFalsa": "Milán"},
-            {"pregunta": "¿Qué planeta es conocido como el 'Planeta Rojo'?","respuestaCorrecta": "Marte","respuestaFalsa": "Júpiter"},
-            {"pregunta": "¿Cuál es el animal terrestre más rápido?","respuestaCorrecta": "Guepardo","respuestaFalsa": "León"},
-            {"pregunta": "¿Quién inventó la bombilla?","respuestaCorrecta": "Thomas Edison","respuestaFalsa": "Nikola Tesla"},
-            {"pregunta": "¿Cuál es la moneda de Reino Unido?","respuestaCorrecta": "Libra esterlina","respuestaFalsa": "Euro"},
-            {"pregunta": "¿En qué continente está Egipto?","respuestaCorrecta": "África","respuestaFalsa": "Asia"},
-            {"pregunta": "¿Qué gas necesitan las plantas para la fotosíntesis?","respuestaCorrecta": "Dióxido de carbono","respuestaFalsa": "Oxígeno"},
-            {"pregunta": "¿Cuál es la capital de Canadá?","respuestaCorrecta": "Ottawa","respuestaFalsa": "Toronto"},
-            {"pregunta": "¿Qué país es famoso por el tango?","respuestaCorrecta": "Argentina","respuestaFalsa": "Brasil"},
-            {"pregunta": "¿Cuál es la montaña más alta del mundo?","respuestaCorrecta": "Monte Everest","respuestaFalsa": "K2"},
-            {"pregunta": "¿Quién fue el primer presidente de Estados Unidos?","respuestaCorrecta": "George Washington","respuestaFalsa": "Abraham Lincoln"},
-            {"pregunta": "¿Cuál es el desierto más grande del mundo?","respuestaCorrecta": "Antártida","respuestaFalsa": "Sahara"}
+            {"pregunta": "¿Cuál es el río más largo del mundo?","respuestaCorrecta": "Amazonas","respuestaFalsa": "Nilo","curiosidad": "El río Amazonas transporta más agua que los diez ríos siguientes más caudalosos del mundo juntos."},
+            {"pregunta": "¿En qué año llegó el hombre a la Luna?","respuestaCorrecta": "1969","respuestaFalsa": "1965","curiosidad": "La misión Apolo 11 alunizó el 20 de julio de 1969 con Neil Armstrong y Buzz Aldrin a bordo."},
+            {"pregunta": "¿Quién escribió 'Cien años de soledad'?","respuestaCorrecta": "Gabriel García Márquez","respuestaFalsa": "Mario Vargas Llosa","curiosidad": "Gabriel García Márquez ganó el Premio Nobel de Literatura en 1982."},
+            {"pregunta": "¿Cuál es el océano más grande del mundo?","respuestaCorrecta": "Océano Pacífico","respuestaFalsa": "Océano Atlántico","curiosidad": "El océano Pacífico es tan grande que podría contener a todos los continentes juntos."},
+            {"pregunta": "¿Qué país tiene más habitantes actualmente?","respuestaCorrecta": "India","respuestaFalsa": "China","curiosidad": "India superó a China como el país más poblado del mundo en 2023."},
+            {"pregunta": "¿Cuál es la capital de Australia?","respuestaCorrecta": "Canberra","respuestaFalsa": "Sídney","curiosidad": "Canberra fue diseñada específicamente para ser la capital, como solución de compromiso entre Sídney y Melbourne."},
+            {"pregunta": "¿Quién pintó la Mona Lisa?","respuestaCorrecta": "Leonardo da Vinci","respuestaFalsa": "Vincent van Gogh","curiosidad": "La Mona Lisa se expone en el Museo del Louvre de París desde 1797."},
+            {"pregunta": "¿Cuál es el metal más ligero?","respuestaCorrecta": "Litio","respuestaFalsa": "Aluminio","curiosidad": "El litio es tan ligero que flota en el agua, aunque reacciona violentamente con ella."},
+            {"pregunta": "¿Cuál es la capital de Italia?","respuestaCorrecta": "Roma","respuestaFalsa": "Milán","curiosidad": "Roma es conocida como la 'Ciudad Eterna' y tiene más de 2.500 años de historia."},
+            {"pregunta": "¿Qué planeta es conocido como el 'Planeta Rojo'?","respuestaCorrecta": "Marte","respuestaFalsa": "Júpiter","curiosidad": "El color rojizo de Marte se debe al óxido de hierro de su superficie."},
+            {"pregunta": "¿Cuál es el animal terrestre más rápido?","respuestaCorrecta": "Guepardo","respuestaFalsa": "León","curiosidad": "El guepardo puede alcanzar los 100 km/h en menos de tres segundos."},
+            {"pregunta": "¿Quién inventó la bombilla?","respuestaCorrecta": "Thomas Edison","respuestaFalsa": "Nikola Tesla","curiosidad": "Edison patentó su bombilla en 1879, aunque otros inventores ya habían experimentado antes con la idea."},
+            {"pregunta": "¿Cuál es la moneda de Reino Unido?","respuestaCorrecta": "Libra esterlina","respuestaFalsa": "Euro","curiosidad": "La libra esterlina es la moneda más antigua del mundo que sigue en uso."},
+            {"pregunta": "¿En qué continente está Egipto?","respuestaCorrecta": "África","respuestaFalsa": "Asia","curiosidad": "Egipto es uno de los pocos países que se extiende entre dos continentes: la península del Sinaí está en Asia."},
+            {"pregunta": "¿Qué gas necesitan las plantas para la fotosíntesis?","respuestaCorrecta": "Dióxido de carbono","respuestaFalsa": "Oxígeno","curiosidad": "Las plantas liberan oxígeno como resultado de la fotosíntesis, el gas que respiramos los animales."},
+            {"pregunta": "¿Cuál es la capital de Canadá?","respuestaCorrecta": "Ottawa","respuestaFalsa": "Toronto","curiosidad": "Ottawa fue elegida capital en 1857 por la reina Victoria, en parte por estar lejos de la frontera con EE. UU."},
+            {"pregunta": "¿Qué país es famoso por el tango?","respuestaCorrecta": "Argentina","respuestaFalsa": "Brasil","curiosidad": "El tango nació en los barrios populares de Buenos Aires a finales del siglo XIX."},
+            {"pregunta": "¿Cuál es la montaña más alta del mundo?","respuestaCorrecta": "Monte Everest","respuestaFalsa": "K2","curiosidad": "El Everest crece unos milímetros cada año debido al movimiento de las placas tectónicas."},
+            {"pregunta": "¿Quién fue el primer presidente de Estados Unidos?","respuestaCorrecta": "George Washington","respuestaFalsa": "Abraham Lincoln","curiosidad": "George Washington fue elegido por unanimidad en el primer Colegio Electoral de la historia de EE. UU."},
+            {"pregunta": "¿Cuál es el desierto más grande del mundo?","respuestaCorrecta": "Antártida","respuestaFalsa": "Sahara","curiosidad": "Contando los desiertos polares, la Antártida es el desierto más grande del mundo, no el Sahara."},
+            {"pregunta": "¿En qué año cayó el Muro de Berlín?","respuestaCorrecta": "1989","respuestaFalsa": "1991","curiosidad": "El Muro de Berlín dividió la ciudad durante 28 años, desde 1961 hasta 1989."},
+            {"pregunta": "¿Quién fue el primer emperador de Roma?","respuestaCorrecta": "Augusto","respuestaFalsa": "Julio César","curiosidad": "Augusto gobernó Roma durante más de 40 años, iniciando el periodo conocido como Pax Romana."},
+            {"pregunta": "¿En qué año comenzó la Segunda Guerra Mundial?","respuestaCorrecta": "1939","respuestaFalsa": "1914","curiosidad": "La Segunda Guerra Mundial comenzó con la invasión alemana de Polonia el 1 de septiembre de 1939."},
+            {"pregunta": "¿Quién pintó 'La noche estrellada'?","respuestaCorrecta": "Vincent van Gogh","respuestaFalsa": "Claude Monet","curiosidad": "Van Gogh pintó 'La noche estrellada' en 1889 mientras estaba internado en un sanatorio."},
+            {"pregunta": "¿En qué país nació la Revolución Industrial?","respuestaCorrecta": "Reino Unido","respuestaFalsa": "Francia","curiosidad": "La Revolución Industrial comenzó a mediados del siglo XVIII, impulsada por la máquina de vapor."},
+            {"pregunta": "¿Qué civilización construyó Machu Picchu?","respuestaCorrecta": "Inca","respuestaFalsa": "Azteca","curiosidad": "Machu Picchu se construyó en el siglo XV y permaneció oculto para los conquistadores españoles."},
+            {"pregunta": "¿En qué año se independizó Estados Unidos?","respuestaCorrecta": "1776","respuestaFalsa": "1789","curiosidad": "La Declaración de Independencia de EE. UU. se firmó el 4 de julio de 1776."},
+            {"pregunta": "¿Quién descubrió América en 1492?","respuestaCorrecta": "Cristóbal Colón","respuestaFalsa": "Américo Vespucio","curiosidad": "El continente americano recibió su nombre de Américo Vespucio, no de Colón."},
+            {"pregunta": "¿En qué siglo nació Leonardo da Vinci?","respuestaCorrecta": "Siglo XV","respuestaFalsa": "Siglo XVII","curiosidad": "Leonardo da Vinci nació en 1452 y fue pintor, inventor y científico."},
+            {"pregunta": "¿Qué imperio construyó el Coliseo de Roma?","respuestaCorrecta": "Imperio Romano","respuestaFalsa": "Imperio Bizantino","curiosidad": "El Coliseo de Roma se terminó de construir en el año 80 d.C."},
+            {"pregunta": "¿Quién fue la primera mujer en ganar un Premio Nobel?","respuestaCorrecta": "Marie Curie","respuestaFalsa": "Rosalind Franklin","curiosidad": "Marie Curie ganó dos Premios Nobel, en Física (1903) y en Química (1911)."},
+            {"pregunta": "¿En qué año terminó la Segunda Guerra Mundial?","respuestaCorrecta": "1945","respuestaFalsa": "1944","curiosidad": "La Segunda Guerra Mundial terminó en 1945 tras la rendición de Japón."},
+            {"pregunta": "¿Qué faraón egipcio es famoso por su máscara funeraria de oro?","respuestaCorrecta": "Tutankamón","respuestaFalsa": "Ramsés II","curiosidad": "La tumba de Tutankamón fue descubierta casi intacta en 1922 por Howard Carter."},
+            {"pregunta": "¿Qué país construyó la Gran Muralla?","respuestaCorrecta": "China","respuestaFalsa": "Mongolia","curiosidad": "La Gran Muralla China mide, sumando todas sus ramas, más de 21.000 km."},
+            {"pregunta": "¿En qué ciudad se firmó la Declaración de Independencia de EE. UU.?","respuestaCorrecta": "Filadelfia","respuestaFalsa": "Nueva York","curiosidad": "Filadelfia fue la capital de Estados Unidos entre 1790 y 1800."},
+            {"pregunta": "¿Cuál es el hueso más largo del cuerpo humano?","respuestaCorrecta": "Fémur","respuestaFalsa": "Húmero","curiosidad": "El fémur puede soportar hasta 30 veces el peso del cuerpo humano."},
+            {"pregunta": "¿Cuántos huesos tiene el cuerpo humano adulto?","respuestaCorrecta": "206","respuestaFalsa": "213","curiosidad": "Un bebé nace con unos 300 huesos, muchos de los cuales se fusionan con la edad."},
+            {"pregunta": "¿Cuál es el elemento químico más abundante en el universo?","respuestaCorrecta": "Hidrógeno","respuestaFalsa": "Helio","curiosidad": "El hidrógeno representa cerca del 75% de toda la materia del universo."},
+            {"pregunta": "¿Qué órgano bombea la sangre por el cuerpo?","respuestaCorrecta": "Corazón","respuestaFalsa": "Hígado","curiosidad": "El corazón humano late unas 100.000 veces al día."},
+            {"pregunta": "¿A qué velocidad viaja la luz?","respuestaCorrecta": "300.000 km/s","respuestaFalsa": "150.000 km/s","curiosidad": "La luz tarda solo 8 minutos en llegar del Sol a la Tierra."},
+            {"pregunta": "¿Qué planeta tiene más lunas conocidas actualmente?","respuestaCorrecta": "Saturno","respuestaFalsa": "Júpiter","curiosidad": "Saturno superó a Júpiter en número de lunas conocidas tras nuevos descubrimientos."},
+            {"pregunta": "¿Cuál es el animal más grande del mundo?","respuestaCorrecta": "Ballena azul","respuestaFalsa": "Elefante africano","curiosidad": "La ballena azul puede medir más de 30 metros y pesar como 30 elefantes."},
+            {"pregunta": "¿Qué gas es el más abundante en la atmósfera terrestre?","respuestaCorrecta": "Nitrógeno","respuestaFalsa": "Oxígeno","curiosidad": "El nitrógeno representa cerca del 78% de la atmósfera terrestre."},
+            {"pregunta": "¿Cuántos corazones tiene un pulpo?","respuestaCorrecta": "3","respuestaFalsa": "1","curiosidad": "Los pulpos tienen sangre azul debido a que usan hemocianina en lugar de hemoglobina."},
+            {"pregunta": "¿Cuál es el mamífero más grande en tierra firme?","respuestaCorrecta": "Elefante africano","respuestaFalsa": "Rinoceronte blanco","curiosidad": "Un elefante africano macho adulto puede pesar más de 6 toneladas."},
+            {"pregunta": "¿Qué científico formuló la teoría de la relatividad?","respuestaCorrecta": "Albert Einstein","respuestaFalsa": "Isaac Newton","curiosidad": "Einstein publicó la teoría de la relatividad especial en 1905, su llamado 'año milagroso'."},
+            {"pregunta": "¿Qué científico propuso la teoría de la evolución por selección natural?","respuestaCorrecta": "Charles Darwin","respuestaFalsa": "Gregor Mendel","curiosidad": "Darwin desarrolló su teoría tras su viaje a bordo del HMS Beagle."},
+            {"pregunta": "¿Cuál es la unidad básica de la vida?","respuestaCorrecta": "Célula","respuestaFalsa": "Átomo","curiosidad": "El cuerpo humano está formado por billones de células."},
+            {"pregunta": "¿Cuál es el metal más abundante en la corteza terrestre?","respuestaCorrecta": "Aluminio","respuestaFalsa": "Hierro","curiosidad": "El aluminio es tan abundante que representa más del 8% de la corteza terrestre."},
+            {"pregunta": "¿Qué parte del ojo regula la cantidad de luz que entra?","respuestaCorrecta": "Iris","respuestaFalsa": "Retina","curiosidad": "El iris es el responsable del color de los ojos."},
+            {"pregunta": "¿Quién escribió 'Don Quijote de la Mancha'?","respuestaCorrecta": "Miguel de Cervantes","respuestaFalsa": "Lope de Vega","curiosidad": "El Quijote se considera la primera novela moderna y una de las obras más traducidas de la historia."},
+            {"pregunta": "¿Quién compuso la Novena Sinfonía?","respuestaCorrecta": "Ludwig van Beethoven","respuestaFalsa": "Wolfgang Amadeus Mozart","curiosidad": "Beethoven compuso la Novena Sinfonía cuando ya había perdido casi por completo la audición."},
+            {"pregunta": "¿Quién pintó 'Las Meninas'?","respuestaCorrecta": "Diego Velázquez","respuestaFalsa": "Francisco de Goya","curiosidad": "'Las Meninas' se conserva en el Museo del Prado de Madrid."},
+            {"pregunta": "¿Qué escritor creó a Sherlock Holmes?","respuestaCorrecta": "Arthur Conan Doyle","respuestaFalsa": "Agatha Christie","curiosidad": "Arthur Conan Doyle era médico antes de convertirse en escritor."},
+            {"pregunta": "¿Quién escribió 'Romeo y Julieta'?","respuestaCorrecta": "William Shakespeare","respuestaFalsa": "Charles Dickens","curiosidad": "Shakespeare escribió sus obras en el Londres isabelino, a finales del siglo XVI."},
+            {"pregunta": "¿Qué pintor es famoso por cortarse una oreja?","respuestaCorrecta": "Vincent van Gogh","respuestaFalsa": "Paul Gauguin","curiosidad": "Van Gogh solo vendió un cuadro en vida, aunque hoy es uno de los pintores más valorados de la historia."},
+            {"pregunta": "¿Qué arquitecto diseñó la Sagrada Familia de Barcelona?","respuestaCorrecta": "Antoni Gaudí","respuestaFalsa": "Rafael Moneo","curiosidad": "La Sagrada Familia lleva en construcción desde 1882 y aún no está terminada."},
+            {"pregunta": "¿Quién compuso 'Las cuatro estaciones'?","respuestaCorrecta": "Antonio Vivaldi","respuestaFalsa": "Johann Sebastian Bach","curiosidad": "'Las cuatro estaciones' es uno de los conciertos para violín más interpretados del mundo."},
+            {"pregunta": "¿Quién escribió la novela '1984'?","respuestaCorrecta": "George Orwell","respuestaFalsa": "Aldous Huxley","curiosidad": "George Orwell escribió '1984' en 1948, invirtiendo las dos últimas cifras del año para el título."},
+            {"pregunta": "¿Cuál es el país más grande del mundo por superficie?","respuestaCorrecta": "Rusia","respuestaFalsa": "Canadá","curiosidad": "Rusia abarca 11 husos horarios distintos."},
+            {"pregunta": "¿Cuál es la capital de Japón?","respuestaCorrecta": "Tokio","respuestaFalsa": "Kioto","curiosidad": "Tokio es el área metropolitana más poblada del mundo, con más de 37 millones de habitantes."},
+            {"pregunta": "¿Qué país tiene más hablantes de español?","respuestaCorrecta": "México","respuestaFalsa": "España","curiosidad": "México tiene más hablantes de español que ningún otro país del mundo."},
+            {"pregunta": "¿Cuál es el punto más profundo del océano?","respuestaCorrecta": "Fosa de las Marianas","respuestaFalsa": "Fosa de Puerto Rico","curiosidad": "La Fosa de las Marianas alcanza casi 11.000 metros de profundidad."},
+            {"pregunta": "¿Cuál es la cordillera más larga del mundo?","respuestaCorrecta": "Los Andes","respuestaFalsa": "El Himalaya","curiosidad": "Los Andes recorren siete países de Sudamérica a lo largo de más de 7.000 km."},
+            {"pregunta": "¿Cuántos jugadores tiene un equipo de fútbol en el campo?","respuestaCorrecta": "11","respuestaFalsa": "10","curiosidad": "El fútbol es el deporte más popular del mundo, con miles de millones de aficionados."},
+            {"pregunta": "¿En qué país se originaron los Juegos Olímpicos?","respuestaCorrecta": "Grecia","respuestaFalsa": "Italia","curiosidad": "Los primeros Juegos Olímpicos de la era moderna se celebraron en Atenas en 1896."},
+            {"pregunta": "¿Cuál es el idioma más hablado del mundo como lengua materna?","respuestaCorrecta": "Chino mandarín","respuestaFalsa": "Inglés","curiosidad": "El chino mandarín es la lengua materna de más de 900 millones de personas."},
+            {"pregunta": "¿Qué instrumento musical tiene 88 teclas?","respuestaCorrecta": "Piano","respuestaFalsa": "Órgano","curiosidad": "El piano moderno se inventó a principios del siglo XVIII en Italia."},
+            {"pregunta": "¿Cuántos colores tiene el arcoíris según la tradición?","respuestaCorrecta": "7","respuestaFalsa": "6","curiosidad": "Isaac Newton fue quien dividió el espectro de luz en siete colores."},
+            {"pregunta": "¿Qué símbolo químico corresponde al oro?","respuestaCorrecta": "Au","respuestaFalsa": "Ag","curiosidad": "El símbolo del oro, Au, proviene de la palabra latina 'aurum'."},
+            {"pregunta": "¿Cuál es la moneda oficial de Japón?","respuestaCorrecta": "Yen","respuestaFalsa": "Won","curiosidad": "El yen japonés es una de las monedas más negociadas del mundo."},
+            {"pregunta": "¿Qué país inventó el papel?","respuestaCorrecta": "China","respuestaFalsa": "Egipto","curiosidad": "El papel se inventó en China hace más de 2.000 años, durante la dinastía Han."},
+            {"pregunta": "¿Cuál es el deporte nacional de Japón?","respuestaCorrecta": "Sumo","respuestaFalsa": "Judo","curiosidad": "El sumo tiene raíces que se remontan a más de 1.500 años en Japón."},
+            {"pregunta": "¿Qué rey de Inglaterra tuvo seis esposas?","respuestaCorrecta": "Enrique VIII","respuestaFalsa": "Carlos I","curiosidad": "Enrique VIII rompió con la Iglesia católica para poder divorciarse de su primera esposa."},
+            {"pregunta": "¿Cuál es el idioma oficial de Brasil?","respuestaCorrecta": "Portugués","respuestaFalsa": "Español","curiosidad": "Brasil es el único país de Sudamérica cuyo idioma oficial es el portugués."},
+            {"pregunta": "¿Qué pintor es conocido por ser pionero del cubismo?","respuestaCorrecta": "Pablo Picasso","respuestaFalsa": "Salvador Dalí","curiosidad": "Picasso, junto a Georges Braque, fue pionero del cubismo a principios del siglo XX."},
+            {"pregunta": "¿Qué escritor español ganó el Premio Nobel de Literatura en 1989?","respuestaCorrecta": "Camilo José Cela","respuestaFalsa": "Vicente Aleixandre","curiosidad": "Camilo José Cela es autor de 'La familia de Pascual Duarte'."},
+            {"pregunta": "¿En qué año se fundó la ONU?","respuestaCorrecta": "1945","respuestaFalsa": "1919","curiosidad": "La ONU se fundó tras el fin de la Segunda Guerra Mundial para mantener la paz mundial."},
+            {"pregunta": "¿Qué mar bañan principalmente las costas de Grecia?","respuestaCorrecta": "Mar Mediterráneo","respuestaFalsa": "Mar Negro","curiosidad": "Grecia tiene más de 6.000 islas, aunque solo unas 200 están habitadas."},
+            {"pregunta": "¿Qué volcán sepultó la ciudad de Pompeya?","respuestaCorrecta": "Vesubio","respuestaFalsa": "Etna","curiosidad": "El Vesubio sepultó Pompeya y Herculano en el año 79 d.C."},
+            {"pregunta": "¿Quién inventó el teléfono?","respuestaCorrecta": "Alexander Graham Bell","respuestaFalsa": "Guglielmo Marconi","curiosidad": "Alexander Graham Bell patentó el teléfono en 1876."},
+            {"pregunta": "¿Cuál es el idioma con más hablantes nativos en Europa?","respuestaCorrecta": "Ruso","respuestaFalsa": "Alemán","curiosidad": "El ruso es el idioma eslavo con más hablantes en el mundo."},
+            {"pregunta": "¿Qué país tiene una hoja de arce en su bandera?","respuestaCorrecta": "Canadá","respuestaFalsa": "Estados Unidos","curiosidad": "La hoja de arce se adoptó como símbolo nacional de Canadá en la bandera de 1965."},
+            {"pregunta": "¿Cuál es el instrumento musical más antiguo conocido?","respuestaCorrecta": "Flauta","respuestaFalsa": "Tambor","curiosidad": "Se han encontrado flautas de hueso de más de 40.000 años de antigüedad."}
         ];
 
         const preguntaEl = document.getElementById('pregunta');
@@ -194,6 +260,9 @@
             }
         }
 
+        const mensajeRespuestaEl = document.getElementById('mensaje-respuesta');
+        const curiosidadTrivialEl = document.getElementById('curiosidad-trivial');
+
         const quiz = crearQuizContrarreloj({
             tiempoInicial: 15,
             alIniciar() {
@@ -203,6 +272,8 @@
             generarRonda: mostrarPregunta,
             comprobarRespuesta: (texto) => texto === preguntaActual.respuestaCorrecta,
             alTerminar(puntuacionFinal) {
+                mensajeRespuestaEl.textContent = `La respuesta correcta era: ${preguntaActual.respuestaCorrecta}`;
+                curiosidadTrivialEl.textContent = `💡 ${preguntaActual.curiosidad}`;
                 Ranking.mostrar(document.getElementById('ranking'), 'trivial', puntuacionFinal, {
                     formatear: p => p + (p === 1 ? ' punto' : ' puntos'),
                 });

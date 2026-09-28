@@ -27,7 +27,7 @@
 
         .contenedor{width:100%;background:white;padding:20px;border-radius:15px;box-shadow:0 6px 12px rgba(0,0,0,.15);text-align:center;box-sizing:border-box;}
 
-        .header-juego{display:flex;justify-content:space-between;font-size:1.1em;color:#555;margin-bottom:20px;font-weight:700}#operacion{font-size:2.5em;font-weight:700;min-height:80px;display:flex;align-items:center;justify-content:center;margin:20px 0;color:#2c3e50}.respuestas{display:grid;grid-template-columns:1fr 1fr;gap:10px}.boton-respuesta{padding:15px;font-size:1.5em;border:2px solid #3498db;background-color:#fff;color:#3498db;border-radius:10px;cursor:pointer;transition:background-color .2s,color .2s,transform .1s}.boton-respuesta:hover{background-color:#3498db;color:#fff;transform:translateY(-2px)}.boton-respuesta:active{transform:translateY(1px)}#fin-juego h1{font-size:2em;color:#c0392b}.puntuacion-grande{font-size:4em;font-weight:700;color:#2ecc71;margin:20px 0}#reiniciar{padding:15px 25px;font-size:1.1em;background-color:#2ecc71;color:white;border:none;border-radius:8px;cursor:pointer}.oculto{display:none}@media (min-width:768px){.contenedor{padding:30px}.header-juego{font-size:1.3em}#operacion{font-size:3.5em}#fin-juego h1{font-size:2.5em}.puntuacion-grande{font-size:4.5em}}
+        .header-juego{display:flex;justify-content:space-between;font-size:1.1em;color:#555;margin-bottom:20px;font-weight:700}#operacion{font-size:2.5em;font-weight:700;min-height:80px;display:flex;align-items:center;justify-content:center;margin:20px 0;color:#2c3e50}.respuestas{display:grid;grid-template-columns:1fr 1fr;gap:10px}.boton-respuesta{padding:15px;font-size:1.5em;border:2px solid #3498db;background-color:#fff;color:#3498db;border-radius:10px;cursor:pointer;transition:background-color .2s,color .2s,transform .1s}.boton-respuesta:hover{background-color:#3498db;color:#fff;transform:translateY(-2px)}.boton-respuesta:active{transform:translateY(1px)}#fin-juego h1{font-size:2em;color:#c0392b}.puntuacion-grande{font-size:4em;font-weight:700;color:#2ecc71;margin:20px 0}.curiosidad-mate{font-size:.95em;color:#444;background:#f4f8fb;border-radius:10px;padding:12px;text-align:left;margin:0 0 15px}#reiniciar{padding:15px 25px;font-size:1.1em;background-color:#2ecc71;color:white;border:none;border-radius:8px;cursor:pointer}.oculto{display:none}@media (min-width:768px){.contenedor{padding:30px}.header-juego{font-size:1.3em}#operacion{font-size:3.5em}#fin-juego h1{font-size:2.5em}.puntuacion-grande{font-size:4.5em}}
 
     </style>
 </head>
@@ -51,6 +51,7 @@
             <h1>¡Fin del juego!</h1>
             <p>Tu puntuación final es:</p>
             <p id="puntuacion-final" class="puntuacion-grande">0</p>
+            <p id="curiosidad-mate" class="curiosidad-mate"></p>
             <div id="ranking" class="ranking-widget"></div>
             <button id="reiniciar">Volver a jugar</button>
         </div>
@@ -151,6 +152,24 @@
         const respuesta2Btn = document.getElementById('respuesta2');
         let respuestaCorrecta, factorA, factorB;
 
+        const curiosidadesTablas = [
+            "El truco del 9: para multiplicar por 9, multiplica por 10 y resta el número. Por ejemplo, 9×7 = 70-7 = 63.",
+            "Cualquier número multiplicado por 0 da siempre 0, sea cual sea el otro factor.",
+            "La tabla del 5 siempre termina en 0 o en 5, nunca en otro dígito.",
+            "En la tabla del 11, hasta el 9×11, basta con repetir el dígito dos veces: 3×11 = 33.",
+            "En los resultados de la tabla del 9 (del 1 al 10), la suma de sus dos cifras siempre da 9: 18→1+8=9, 27→2+7=9...",
+            "Multiplicar por 10 es tan simple como añadir un cero al número, gracias a nuestro sistema decimal.",
+            "La propiedad conmutativa dice que el orden de los factores no altera el producto: 6×7 es igual que 7×6.",
+            "Las tablas de multiplicar se estudiaron ya en la antigua Babilonia, hace más de 4.000 años, aunque con un sistema numérico en base 60.",
+            "Para multiplicar por 4, puedes duplicar el número dos veces seguidas: 4×6 = (6×2)×2 = 24.",
+            "El símbolo × para la multiplicación se empezó a usar en el siglo XVII, introducido por el matemático inglés William Oughtred.",
+            "Para multiplicar por 5, puedes multiplicar por 10 y dividir entre 2: 5×8 = 80/2 = 40.",
+            "Los antiguos egipcios multiplicaban usando solo sumas y duplicaciones sucesivas, sin memorizar tablas.",
+            "En japonés, aprender las tablas de multiplicar se llama 'kuku', y los escolares las memorizan cantando.",
+            "12×12 = 144 es el último resultado de las tablas clásicas del 1 al 12 que se estudiaban antes en muchos países.",
+            "Multiplicar por 2 es lo mismo que sumar el número consigo mismo: 2×9 = 9+9."
+        ];
+
         function generarOperacion() {
             factorA = Math.floor(Math.random() * 10) + 1;
             factorB = Math.floor(Math.random() * 10) + 1;
@@ -193,6 +212,8 @@
                 return parseInt(texto) === respuestaCorrecta;
             },
             alTerminar(puntuacionFinal) {
+                const curiosidad = curiosidadesTablas[Math.floor(Math.random() * curiosidadesTablas.length)];
+                document.getElementById('curiosidad-mate').textContent = `💡 ${curiosidad}`;
                 Ranking.mostrar(document.getElementById('ranking'), 'tablas-multiplicar', puntuacionFinal, {
                     formatear: p => p + (p === 1 ? ' punto' : ' puntos'),
                 });

@@ -204,46 +204,121 @@
     <script>
         // Ciudad de salida
         const salida = { ciudad: "Madrid", pais: "España", lat: 40.4, lon: -3.7,
-            curiosidad: "Madrid es, con casi 650 metros de altitud, la capital más alta de Europa Occidental." };
+            curiosidades: [
+                "Madrid es, con casi 650 metros de altitud, la capital más alta de Europa Occidental.",
+                "El Museo del Prado de Madrid alberga una de las mayores colecciones de pintura europea del mundo.",
+                "El Parque del Retiro de Madrid fue en su origen un jardín privado de los reyes de España."
+            ] };
 
         // Itinerario real alrededor del mundo (distancia en km desde la parada anterior)
         const paradas = [
             { ciudad: "Roma", pais: "Italia", lat: 41.9, lon: 12.5, distancia: 1365,
-                curiosidad: "Dentro de Roma se encuentra la Ciudad del Vaticano, el país independiente más pequeño del mundo." },
+                curiosidades: [
+                    "Dentro de Roma se encuentra la Ciudad del Vaticano, el país independiente más pequeño del mundo.",
+                    "El Coliseo de Roma podía albergar a más de 50.000 espectadores en la Antigüedad.",
+                    "Roma es conocida como 'la Ciudad Eterna' y tiene más de 2.500 años de historia."
+                ] },
             { ciudad: "Atenas", pais: "Grecia", lat: 37.98, lon: 23.73, distancia: 1050,
-                curiosidad: "Atenas lleva más de 3.400 años habitada, una de las ciudades más antiguas de Europa." },
+                curiosidades: [
+                    "Atenas lleva más de 3.400 años habitada, una de las ciudades más antiguas de Europa.",
+                    "El Partenón de Atenas se construyó en el siglo V a.C. en honor a la diosa Atenea.",
+                    "Atenas dio origen a la democracia como sistema de gobierno."
+                ] },
             { ciudad: "El Cairo", pais: "Egipto", lat: 30.04, lon: 31.24, distancia: 1035,
-                curiosidad: "La Gran Pirámide de Guiza, cerca de El Cairo, fue el edificio más alto del mundo durante casi 3.800 años." },
+                curiosidades: [
+                    "La Gran Pirámide de Guiza, cerca de El Cairo, fue el edificio más alto del mundo durante casi 3.800 años.",
+                    "El Cairo es la ciudad más poblada de África.",
+                    "El río Nilo, el más largo de África, atraviesa El Cairo de sur a norte."
+                ] },
             { ciudad: "Nairobi", pais: "Kenia", lat: -1.29, lon: 36.82, distancia: 2940,
-                curiosidad: "Nairobi es una de las pocas capitales del mundo con un parque nacional lleno de leones y jirafas dentro de su término municipal." },
+                curiosidades: [
+                    "Nairobi es una de las pocas capitales del mundo con un parque nacional lleno de leones y jirafas dentro de su término municipal.",
+                    "Nairobi se encuentra a más de 1.600 metros de altitud, lo que le da un clima templado todo el año.",
+                    "Kenia es uno de los países con más safaris fotográficos del mundo."
+                ] },
             { ciudad: "Nueva Delhi", pais: "India", lat: 28.6, lon: 77.2, distancia: 4500,
-                curiosidad: "India es el país más poblado del mundo, con más de 1.400 millones de habitantes." },
+                curiosidades: [
+                    "India es el país más poblado del mundo, con más de 1.400 millones de habitantes.",
+                    "El Taj Mahal, uno de los monumentos más visitados del mundo, está a pocas horas de Nueva Delhi.",
+                    "En India se hablan oficialmente 22 lenguas distintas."
+                ] },
             { ciudad: "Bangkok", pais: "Tailandia", lat: 13.75, lon: 100.5, distancia: 2950,
-                curiosidad: "El nombre oficial completo de Bangkok en tailandés es uno de los nombres de ciudad más largos del mundo." },
+                curiosidades: [
+                    "El nombre oficial completo de Bangkok en tailandés es uno de los nombres de ciudad más largos del mundo.",
+                    "Bangkok tiene más de 400 templos budistas repartidos por la ciudad.",
+                    "Tailandia es el único país del sudeste asiático que nunca fue colonizado por una potencia europea."
+                ] },
             { ciudad: "Pekín", pais: "China", lat: 39.9, lon: 116.4, distancia: 3300,
-                curiosidad: "La Gran Muralla China no es una sola línea continua: sumando todas sus ramas supera los 21.000 km." },
+                curiosidades: [
+                    "La Gran Muralla China no es una sola línea continua: sumando todas sus ramas supera los 21.000 km.",
+                    "La Ciudad Prohibida de Pekín tiene más de 9.000 habitaciones.",
+                    "Pekín ha sido sede de los Juegos Olímpicos de verano (2008) y de invierno (2022)."
+                ] },
             { ciudad: "Tokio", pais: "Japón", lat: 35.68, lon: 139.69, distancia: 2100,
-                curiosidad: "El área metropolitana de Tokio, con más de 37 millones de personas, es la más poblada del planeta." },
+                curiosidades: [
+                    "El área metropolitana de Tokio, con más de 37 millones de personas, es la más poblada del planeta.",
+                    "Tokio tiene más restaurantes con estrellas Michelin que ninguna otra ciudad del mundo.",
+                    "El cruce de Shibuya en Tokio es uno de los pasos de peatones más transitados del planeta."
+                ] },
             { ciudad: "Sídney", pais: "Australia", lat: -33.87, lon: 151.21, distancia: 7800,
-                curiosidad: "Australia es a la vez un país y un continente, y es el único continente ocupado por un solo estado." },
+                curiosidades: [
+                    "Australia es a la vez un país y un continente, y es el único continente ocupado por un solo estado.",
+                    "La Ópera de Sídney tardó más de 14 años en construirse.",
+                    "Australia tiene más canguros que habitantes."
+                ] },
             { ciudad: "Auckland", pais: "Nueva Zelanda", lat: -36.85, lon: 174.76, distancia: 2160,
-                curiosidad: "Nueva Zelanda fue uno de los últimos territorios habitables en ser poblado por el ser humano, hace menos de 800 años." },
+                curiosidades: [
+                    "Nueva Zelanda fue uno de los últimos territorios habitables en ser poblado por el ser humano, hace menos de 800 años.",
+                    "Auckland se construyó sobre unos 50 volcanes, la mayoría inactivos.",
+                    "En Nueva Zelanda hay más ovejas que personas."
+                ] },
             { ciudad: "Honolulu", pais: "Hawái (EE. UU.)", lat: 21.31, lon: -157.86, distancia: 7400,
-                curiosidad: "Hawái es el archipiélago más aislado del mundo: el punto habitado más cercano está a miles de kilómetros." },
+                curiosidades: [
+                    "Hawái es el archipiélago más aislado del mundo: el punto habitado más cercano está a miles de kilómetros.",
+                    "Hawái es el único estado de EE. UU. formado enteramente por islas.",
+                    "El volcán Kilauea, en Hawái, es uno de los más activos del mundo."
+                ] },
             { ciudad: "Los Ángeles", pais: "Estados Unidos", lat: 34.05, lon: -118.24, distancia: 4100,
-                curiosidad: "En este tramo has recorrido ya más de 40.000 km: ¡más que la circunferencia de la Tierra!" },
+                curiosidades: [
+                    "En este tramo has recorrido ya más de 40.000 km: ¡más que la circunferencia de la Tierra!",
+                    "Los Ángeles es la sede de Hollywood, la meca del cine mundial.",
+                    "En Los Ángeles se hablan más de 140 idiomas distintos."
+                ] },
             { ciudad: "Ciudad de México", pais: "México", lat: 19.43, lon: -99.13, distancia: 2500,
-                curiosidad: "Ciudad de México se construyó sobre el lago Texcoco y se hunde poco a poco cada año." },
+                curiosidades: [
+                    "Ciudad de México se construyó sobre el lago Texcoco y se hunde poco a poco cada año.",
+                    "Ciudad de México es una de las ciudades más pobladas del mundo, con más de 21 millones de habitantes en su área metropolitana.",
+                    "Bajo el centro histórico de Ciudad de México se encuentran las ruinas del Templo Mayor azteca."
+                ] },
             { ciudad: "Nueva York", pais: "Estados Unidos", lat: 40.71, lon: -74.0, distancia: 3360,
-                curiosidad: "La Estatua de la Libertad de Nueva York fue un regalo de Francia en 1886." },
+                curiosidades: [
+                    "La Estatua de la Libertad de Nueva York fue un regalo de Francia en 1886.",
+                    "Central Park, en Nueva York, es más grande que el país de Mónaco.",
+                    "El metro de Nueva York tiene más de 470 estaciones, uno de los sistemas más extensos del mundo."
+                ] },
             { ciudad: "Río de Janeiro", pais: "Brasil", lat: -22.91, lon: -43.17, distancia: 7700,
-                curiosidad: "El Cristo Redentor de Río de Janeiro mide 38 metros, casi como un edificio de 12 plantas." },
+                curiosidades: [
+                    "El Cristo Redentor de Río de Janeiro mide 38 metros, casi como un edificio de 12 plantas.",
+                    "Río de Janeiro fue la capital de Brasil hasta 1960, cuando se trasladó a Brasilia.",
+                    "El Carnaval de Río es una de las mayores fiestas populares del mundo."
+                ] },
             { ciudad: "Buenos Aires", pais: "Argentina", lat: -34.6, lon: -58.38, distancia: 1970,
-                curiosidad: "Buenos Aires tiene la librería más grande de Sudamérica, instalada en un antiguo teatro." },
+                curiosidades: [
+                    "Buenos Aires tiene la librería más grande de Sudamérica, instalada en un antiguo teatro.",
+                    "Buenos Aires es conocida como 'la París de Sudamérica' por su arquitectura europea.",
+                    "El tango nació en los barrios populares de Buenos Aires a finales del siglo XIX."
+                ] },
             { ciudad: "Lisboa", pais: "Portugal", lat: 38.72, lon: -9.14, distancia: 8000,
-                curiosidad: "Lisboa es, junto con Roma, una de las pocas capitales de Europa construida sobre siete colinas." },
+                curiosidades: [
+                    "Lisboa es, junto con Roma, una de las pocas capitales de Europa construida sobre siete colinas.",
+                    "Lisboa es una de las capitales más antiguas de Europa, más antigua que Roma según algunas fuentes.",
+                    "El puente 25 de Abril de Lisboa se parece al Golden Gate de San Francisco."
+                ] },
             { ciudad: "Madrid", pais: "España", lat: 40.4, lon: -3.7, distancia: 502,
-                curiosidad: "¡Has cerrado el círculo! Has completado una vuelta entera al mundo volviendo a Madrid." },
+                curiosidades: [
+                    "¡Has cerrado el círculo! Has completado una vuelta entera al mundo volviendo a Madrid.",
+                    "Si sigues jugando, empezarás una nueva vuelta al mundo desde Madrid."
+                ] },
         ];
 
         const CIRCUNFERENCIA_TIERRA = 40075;
@@ -280,6 +355,63 @@
             { pregunta: "¿Cuál es el metro (subterráneo) más antiguo del mundo?", respuestaCorrecta: "Metro de Londres", respuestaFalsa: "Metro de París" },
             { pregunta: "¿Cuál es el desierto cálido más grande del mundo?", respuestaCorrecta: "Sahara", respuestaFalsa: "Gobi" },
             { pregunta: "¿Cuántos estados son actualmente miembros de la ONU?", respuestaCorrecta: "193", respuestaFalsa: "195" },
+            { pregunta: "¿Cuál es la capital de Australia?", respuestaCorrecta: "Canberra", respuestaFalsa: "Sídney" },
+            { pregunta: "¿Cuál es la capital de Canadá?", respuestaCorrecta: "Ottawa", respuestaFalsa: "Toronto" },
+            { pregunta: "¿Cuál es la capital de Brasil?", respuestaCorrecta: "Brasilia", respuestaFalsa: "Río de Janeiro" },
+            { pregunta: "¿Cuál es la capital de Turquía?", respuestaCorrecta: "Ankara", respuestaFalsa: "Estambul" },
+            { pregunta: "¿Cuál es la capital de Estados Unidos?", respuestaCorrecta: "Washington D.C.", respuestaFalsa: "Nueva York" },
+            { pregunta: "¿Cuál es la capital de Egipto?", respuestaCorrecta: "El Cairo", respuestaFalsa: "Alejandría" },
+            { pregunta: "¿Cuál es la capital de Rusia?", respuestaCorrecta: "Moscú", respuestaFalsa: "San Petersburgo" },
+            { pregunta: "¿Cuál es la capital de Alemania?", respuestaCorrecta: "Berlín", respuestaFalsa: "Múnich" },
+            { pregunta: "¿Cuál es la capital de Italia?", respuestaCorrecta: "Roma", respuestaFalsa: "Milán" },
+            { pregunta: "¿Cuál es la capital de Portugal?", respuestaCorrecta: "Lisboa", respuestaFalsa: "Oporto" },
+            { pregunta: "¿Cuál es la capital administrativa (ejecutiva) de Sudáfrica?", respuestaCorrecta: "Pretoria", respuestaFalsa: "Ciudad del Cabo" },
+            { pregunta: "¿Cuál es la capital de Marruecos?", respuestaCorrecta: "Rabat", respuestaFalsa: "Casablanca" },
+            { pregunta: "¿Cuál es la capital de Perú?", respuestaCorrecta: "Lima", respuestaFalsa: "Cusco" },
+            { pregunta: "¿Cuál es la capital de Colombia?", respuestaCorrecta: "Bogotá", respuestaFalsa: "Medellín" },
+            { pregunta: "¿Cuál es la capital de Vietnam?", respuestaCorrecta: "Hanói", respuestaFalsa: "Ciudad Ho Chi Minh" },
+            { pregunta: "¿Cuál es la capital de Indonesia?", respuestaCorrecta: "Yakarta", respuestaFalsa: "Bali" },
+            { pregunta: "¿Cuál es la capital de Corea del Sur?", respuestaCorrecta: "Seúl", respuestaFalsa: "Busan" },
+            { pregunta: "¿Cuál es la capital de Nigeria?", respuestaCorrecta: "Abuya", respuestaFalsa: "Lagos" },
+            { pregunta: "¿Cuál es el océano más grande del mundo?", respuestaCorrecta: "Pacífico", respuestaFalsa: "Atlántico" },
+            { pregunta: "¿Cuál es la montaña más alta del mundo?", respuestaCorrecta: "Everest", respuestaFalsa: "K2" },
+            { pregunta: "¿Qué país es actualmente el más poblado del mundo?", respuestaCorrecta: "India", respuestaFalsa: "China" },
+            { pregunta: "¿En qué país está la Torre Eiffel?", respuestaCorrecta: "Francia", respuestaFalsa: "Bélgica" },
+            { pregunta: "¿En qué país está el Big Ben?", respuestaCorrecta: "Reino Unido", respuestaFalsa: "Irlanda" },
+            { pregunta: "¿En qué país está el Taj Mahal?", respuestaCorrecta: "India", respuestaFalsa: "Pakistán" },
+            { pregunta: "¿En qué país está la Gran Muralla?", respuestaCorrecta: "China", respuestaFalsa: "Mongolia" },
+            { pregunta: "¿En qué país está el Coliseo?", respuestaCorrecta: "Italia", respuestaFalsa: "Grecia" },
+            { pregunta: "¿En qué país está la Torre de Pisa?", respuestaCorrecta: "Italia", respuestaFalsa: "España" },
+            { pregunta: "¿Qué río atraviesa la ciudad de El Cairo?", respuestaCorrecta: "Nilo", respuestaFalsa: "Éufrates" },
+            { pregunta: "¿Qué continente tiene más países?", respuestaCorrecta: "África", respuestaFalsa: "Asia" },
+            { pregunta: "¿Cuál es el país más grande de Sudamérica por superficie?", respuestaCorrecta: "Brasil", respuestaFalsa: "Argentina" },
+            { pregunta: "¿Cuál es el idioma oficial de Brasil?", respuestaCorrecta: "Portugués", respuestaFalsa: "Español" },
+            { pregunta: "¿Cuál es la moneda oficial de Japón?", respuestaCorrecta: "Yen", respuestaFalsa: "Won" },
+            { pregunta: "¿Cuál es la moneda oficial del Reino Unido?", respuestaCorrecta: "Libra esterlina", respuestaFalsa: "Euro" },
+            { pregunta: "¿Cuál es la lengua materna más hablada del mundo?", respuestaCorrecta: "Chino mandarín", respuestaFalsa: "Inglés" },
+            { pregunta: "¿Cuál es el continente más poblado del mundo?", respuestaCorrecta: "Asia", respuestaFalsa: "África" },
+            { pregunta: "¿Cuál es la selva tropical más grande del mundo?", respuestaCorrecta: "Amazonas", respuestaFalsa: "Congo" },
+            { pregunta: "¿Qué estrecho separa España de Marruecos?", respuestaCorrecta: "Estrecho de Gibraltar", respuestaFalsa: "Estrecho del Bósforo" },
+            { pregunta: "¿Qué canal une el mar Mediterráneo con el mar Rojo?", respuestaCorrecta: "Canal de Suez", respuestaFalsa: "Canal de Panamá" },
+            { pregunta: "¿Qué canal une el océano Atlántico con el Pacífico?", respuestaCorrecta: "Canal de Panamá", respuestaFalsa: "Canal de Suez" },
+            { pregunta: "¿Qué país da nombre a la línea del Ecuador?", respuestaCorrecta: "Ecuador", respuestaFalsa: "Colombia" },
+            { pregunta: "¿En qué país está el Aconcagua, el pico más alto de Sudamérica?", respuestaCorrecta: "Argentina", respuestaFalsa: "Chile" },
+            { pregunta: "¿Entre qué dos países se encuentran las Cataratas del Iguazú?", respuestaCorrecta: "Argentina y Brasil", respuestaFalsa: "Argentina y Chile" },
+            { pregunta: "¿Entre qué dos países se encuentran las Cataratas Victoria?", respuestaCorrecta: "Zambia y Zimbabue", respuestaFalsa: "Sudáfrica y Namibia" },
+            { pregunta: "¿Qué países bordean el Lago Victoria?", respuestaCorrecta: "Kenia, Uganda y Tanzania", respuestaFalsa: "Etiopía, Sudán y Egipto" },
+            { pregunta: "¿En qué país nació el tango?", respuestaCorrecta: "Argentina", respuestaFalsa: "Brasil" },
+            { pregunta: "¿En qué país nació el flamenco?", respuestaCorrecta: "España", respuestaFalsa: "Portugal" },
+            { pregunta: "¿En qué país nació el reggae?", respuestaCorrecta: "Jamaica", respuestaFalsa: "Cuba" },
+            { pregunta: "¿En qué país se originó el tequila?", respuestaCorrecta: "México", respuestaFalsa: "España" },
+            { pregunta: "¿En qué país se originó el sushi?", respuestaCorrecta: "Japón", respuestaFalsa: "China" },
+            { pregunta: "¿En qué país nació la pizza tal y como la conocemos hoy?", respuestaCorrecta: "Italia", respuestaFalsa: "Grecia" },
+            { pregunta: "¿En qué país se encuentra la Gran Barrera de Coral?", respuestaCorrecta: "Australia", respuestaFalsa: "Indonesia" },
+            { pregunta: "¿En qué país se encuentra el desierto de Atacama?", respuestaCorrecta: "Chile", respuestaFalsa: "Perú" },
+            { pregunta: "¿Qué país fue anfitrión de los primeros Juegos Olímpicos modernos (1896)?", respuestaCorrecta: "Grecia", respuestaFalsa: "Francia" },
+            { pregunta: "¿Qué país tiene más lagos que ningún otro en el mundo?", respuestaCorrecta: "Canadá", respuestaFalsa: "Finlandia" },
+            { pregunta: "¿Qué dos países comparten el Lago Titicaca?", respuestaCorrecta: "Perú y Bolivia", respuestaFalsa: "Perú y Ecuador" },
+            { pregunta: "¿A qué continente pertenece Madagascar?", respuestaCorrecta: "África", respuestaFalsa: "Asia" },
+            { pregunta: "¿Cuál es el desierto más grande del mundo si se cuentan los desiertos polares?", respuestaCorrecta: "Antártida", respuestaFalsa: "Sahara" },
         ];
 
         // --- Elementos del DOM ---
@@ -325,6 +457,11 @@
 
         function paradaEnPosicion(numAciertos) {
             return paradas[(numAciertos - 1) % paradas.length];
+        }
+
+        function curiosidadAleatoria(lugar) {
+            const lista = lugar.curiosidades;
+            return lista[Math.floor(Math.random() * lista.length)];
         }
 
         function manejarRespuesta(e) {
@@ -422,12 +559,12 @@
             const vueltas = Math.floor(aciertos / paradas.length);
             if (aciertos === 0) {
                 mensajeDestinoEl.textContent = `No has llegado a salir de ${salida.ciudad}, ${salida.pais}.`;
-                curiosidadDestinoEl.textContent = `💡 ${salida.curiosidad}`;
+                curiosidadDestinoEl.textContent = `💡 ${curiosidadAleatoria(salida)}`;
             } else {
                 const destino = paradaEnPosicion(aciertos);
                 mensajeDestinoEl.textContent = `Has llegado hasta ${destino.ciudad}, ${destino.pais}`
                     + (vueltas > 0 ? ` (¡completando ${vueltas} vuelta${vueltas > 1 ? 's' : ''} al mundo!)` : '');
-                curiosidadDestinoEl.textContent = `💡 ${destino.curiosidad}`;
+                curiosidadDestinoEl.textContent = `💡 ${curiosidadAleatoria(destino)}`;
             }
 
             dibujarMapa();
