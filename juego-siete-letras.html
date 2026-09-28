@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>7 Letras: Adivina 3 Palabras con las Mismas Letras | El Más Listo</title>
+    <meta name="description" content="Cada día recibes 7 letras y 3 pistas: forma las tres palabras ocultas usando solo esas letras, tocando o escribiendo las fichas. Reto diario gratis en español, sin registro.">
+    <link rel="canonical" href="https://elmaslisto.com/juego-siete-letras">
+    <meta property="og:title" content="7 Letras: Adivina 3 Palabras con las Mismas Letras">
+    <meta property="og:description" content="Cada día recibes 7 letras y 3 pistas: forma las tres palabras ocultas usando solo esas letras, tocando o escribiendo las fichas.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://elmaslisto.com/juego-siete-letras">
+    <link rel="icon" href="img/favicon.png">
+
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        body { background-color: #8e44ad; }
+
+        .wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 460px;
+        }
+
+        .contenedor{width:100%;background:#fff;padding:20px;border-radius:15px;box-shadow:0 6px 12px rgba(0,0,0,.15);text-align:center;box-sizing:border-box;}
+
+        .header-juego{display:flex;justify-content:space-between;align-items:center;font-size:1.1em;color:#555;margin-bottom:2px;font-weight:700}
+        .header-juego h1{margin:0;font-size:1em;color:#2c3e50;}
+        #estrellas-totales{color:#f1c40f;font-size:.85em;}
+
+        #info-modo{margin:0 0 12px;font-size:.75em;color:#999;font-weight:400;text-align:left;}
+
+        .instrucciones{font-size:.8em;color:#777;margin:0 0 14px;}
+
+        #alfabeto-dia{display:flex;justify-content:center;gap:6px;margin:0 0 18px;flex-wrap:wrap;}
+        .letra-dia{width:28px;height:28px;background:#f4eaf8;border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:700;color:#8e44ad;font-size:.85em;}
+
+        .puzzle-card{border:2px solid transparent;border-radius:12px;padding:12px 10px;margin-bottom:14px;background:#faf5fc;transition:border-color .2s, background-color .2s;cursor:pointer;}
+        .puzzle-card.activo{border-color:#8e44ad;}
+        .puzzle-card.resuelto{background:#eafaf1;cursor:default;}
+
+        .pista-texto{font-size:.92em;color:#2c3e50;margin:0 0 10px;text-align:left;line-height:1.3;}
+        .pista-num{display:inline-flex;align-items:center;justify-content:center;background:#8e44ad;color:#fff;border-radius:50%;width:20px;height:20px;font-size:.7em;margin-right:6px;font-weight:700;flex-shrink:0;}
+        .puzzle-card.resuelto .pista-num{background:#2ecc71;}
+
+        .blancos{display:flex;justify-content:center;gap:4px;flex-wrap:wrap;margin:0 0 10px;}
+        .celda-blanco{width:32px;height:32px;border:2px solid #d3d6da;border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.05em;text-transform:uppercase;box-sizing:border-box;color:#1c1e21;}
+        .celda-blanco.rellena{border-color:#8e44ad;}
+        .celda-blanco.correcta{background:#2ecc71;border-color:#2ecc71;color:#fff;}
+        .blancos.shake{animation:shake .4s ease;}
+
+        @keyframes shake{
+            10%,90%{transform:translateX(-2px)}
+            20%,80%{transform:translateX(4px)}
+            30%,50%,70%{transform:translateX(-8px)}
+            40%,60%{transform:translateX(8px)}
+        }
+
+        .bandeja{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:0 0 10px;}
+        .ficha{position:relative;min-width:36px;height:36px;padding:0 6px;background:#8e44ad;color:#fff;border:none;border-radius:6px;font-weight:700;font-size:.95em;cursor:pointer;text-transform:uppercase;transition:opacity .15s, transform .1s;}
+        .ficha:active{transform:scale(.94);}
+        .ficha:disabled{opacity:.2;cursor:default;}
+        .ficha .contador{position:absolute;top:-6px;right:-6px;background:#fff;color:#8e44ad;border-radius:50%;width:15px;height:15px;font-size:.62em;display:flex;align-items:center;justify-content:center;font-weight:700;box-shadow:0 1px 3px rgba(0,0,0,.2);}
+
+        .acciones{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:4px;}
+        .btn-accion{background:#fff;border:1px solid #ccc;border-radius:20px;padding:5px 12px;cursor:pointer;color:#555;font-size:.8em;}
+        .btn-accion:hover{background:#f0f0f0;}
+        .estrellas-mini{color:#f1c40f;letter-spacing:1px;font-size:.95em;}
+
+        #fin-juego h1{font-size:1.6em;color:#8e44ad;}
+        .puntuacion-grande{font-size:2.4em;font-weight:700;color:#2c3e50;margin:10px 0 16px;}
+        #resumen-palabras p{margin:4px 0;font-size:.95em;color:#555;}
+        #resumen-palabras strong{color:#2c3e50;letter-spacing:1px;}
+        #reiniciar{padding:15px 25px;font-size:1.1em;background-color:#2ecc71;color:#fff;border:none;border-radius:8px;cursor:pointer;margin-top:10px;}
+        #contador-diario{font-size:.9em;color:#888;margin:10px 0 0;}
+        .oculto{display:none}
+
+        .mode-toggle{margin:15px 0 0;font-size:.85em;text-align:center;}
+        .mode-toggle a{color:rgba(255,255,255,0.9);text-decoration:underline;cursor:pointer;}
+        .mode-toggle a:hover{color:#fff;}
+
+        @media (min-width:768px){
+            .contenedor{padding:30px}
+            .celda-blanco{width:38px;height:38px;font-size:1.2em}
+            .ficha{min-width:42px;height:42px;font-size:1.05em}
+        }
+    </style>
+</head>
+<body>
+
+    <div class="wrapper">
+        <!-- Pantalla de juego principal -->
+        <div id="juego-activo" class="contenedor">
+            <div class="header-juego">
+                <h1>7 Letras</h1>
+                <span id="estrellas-totales">⭐ 0/9</span>
+            </div>
+            <p id="info-modo"></p>
+            <p class="instrucciones">Toca las fichas o escribe con el teclado para formar cada palabra, en el orden correcto.</p>
+            <div id="alfabeto-dia"></div>
+            <div id="puzzles-container"></div>
+        </div>
+
+        <!-- Pantalla de fin de juego (inicialmente oculta) -->
+        <div id="fin-juego" class="contenedor oculto">
+            <h1>¡Reto completado!</h1>
+            <p class="puntuacion-grande" id="estrellas-finales">0/9</p>
+            <div id="resumen-palabras"></div>
+            <p id="contador-diario" class="oculto"></p>
+            <button id="reiniciar">Jugar otra partida</button>
+        </div>
+
+        <p class="mode-toggle"><a href="#" id="cambiar-modo">Jugar partida aleatoria</a></p>
+
+        <a href="index.html" class="home-link">Volver al menú</a>
+
+        <section class="guia">
+            <div class="guia-bloque">
+                <h2>¿En qué consiste 7 Letras?</h2>
+                <p>Cada día el juego elige un banco de <strong>7 letras</strong> y te propone <strong>3 pistas</strong>. La respuesta a cada pista es una palabra que se forma únicamente con letras de ese banco de 7 (repitiendo alguna letra si hace falta). Debajo de cada pista aparecen las fichas necesarias: tócalas en el orden correcto, o escríbelas directamente con el teclado, para ir rellenando los huecos.</p>
+                <p>Si colocas todas las fichas pero en el orden equivocado, vuelven a la bandeja y puedes intentarlo de nuevo sin penalización, salvo por las pistas (💡) que uses: cada pista revela la siguiente letra correcta a cambio de una estrella. Consigues hasta 3 estrellas por palabra, y 9 en total si resuelves las tres sin pedir ninguna ayuda.</p>
+            </div>
+
+            <div class="guia-bloque">
+                <h2>¿Para qué edades está recomendado?</h2>
+                <p>Al igual que otros juegos de palabras, está pensado a partir de <strong>10-11 años</strong>, cuando el vocabulario en español ya está consolidado, aunque su público principal son adolescentes y adultos que buscan un reto breve de lógica y vocabulario cada día.</p>
+                <p>Si te gusta este formato, prueba también con el <a href="juego-wordle.html">Wordle en Español</a> o con el <a href="juego-trivial.html">Trivial de Cultura General</a> para otro tipo de reto diario.</p>
+            </div>
+
+            <div class="guia-bloque">
+                <h2>¿Por qué es bueno este juego?</h2>
+                <ul>
+                    <li><strong>Vocabulario y ortografía:</strong> obliga a pensar en varias palabras válidas formadas con el mismo grupo de letras.</li>
+                    <li><strong>Pensamiento lateral:</strong> combina la pista (el significado) con el conteo de letras disponibles para deducir la palabra.</li>
+                    <li><strong>Sin presión de tiempo ni fallos definitivos:</strong> puedes reordenar las fichas todas las veces que necesites, sin perder la partida.</li>
+                    <li><strong>Rutina mental diaria:</strong> el reto diario invita a volver cada día a resolver un nuevo trío de palabras.</li>
+                </ul>
+            </div>
+
+            <div class="guia-bloque">
+                <h2>Preguntas frecuentes</h2>
+                <div class="faq-item">
+                    <h3>¿Cómo funciona el reto diario?</h3>
+                    <p>Cada día hay un mismo banco de 7 letras y las mismas 3 pistas para todos los jugadores. Tu progreso se guarda en el navegador, así que si cierras la página puedes seguir donde lo dejaste.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>¿Qué pasa si coloco las letras en el orden equivocado?</h3>
+                    <p>Las fichas vuelven automáticamente a la bandeja para que lo intentes de nuevo. No hay límite de intentos: puedes reordenarlas todas las veces que quieras.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>¿Para qué sirven las pistas (💡)?</h3>
+                    <p>Cada pista revela la siguiente letra correcta de la palabra, pero cuesta una estrella. Sin usar ninguna pista consigues las 3 estrellas de esa palabra; con una pista consigues 2, y así sucesivamente.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>¿Puedo jugar más de una vez al día?</h3>
+                    <p>El reto diario solo tiene un banco de letras por día, pero puedes cambiar al "modo aleatorio" desde el enlace debajo del tablero para jugar partidas ilimitadas de práctica.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "¿Cómo funciona el reto diario?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Cada día hay un mismo banco de 7 letras y las mismas 3 pistas para todos los jugadores. Tu progreso se guarda en el navegador, así que si cierras la página puedes seguir donde lo dejaste."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "¿Qué pasa si coloco las letras en el orden equivocado?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Las fichas vuelven automáticamente a la bandeja para que lo intentes de nuevo. No hay límite de intentos: puedes reordenarlas todas las veces que quieras."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "¿Para qué sirven las pistas (💡)?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Cada pista revela la siguiente letra correcta de la palabra, pero cuesta una estrella. Sin usar ninguna pista consigues las 3 estrellas de esa palabra; con una pista consigues 2, y así sucesivamente."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "¿Puedo jugar más de una vez al día?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "El reto diario solo tiene un banco de letras por día, pero puedes cambiar al \"modo aleatorio\" desde el enlace debajo del tablero para jugar partidas ilimitadas de práctica."
+                }
+            }
+        ]
+    }
+    </script>
+
+    <script>
+        const PUZZLE_SETS = [
+            { pistas: [
+                { pista: "Lo que buscan los piratas en una isla desierta", respuesta: "TESORO" },
+                { pista: "La usas en la cocina para freír un huevo", respuesta: "SARTEN" },
+                { pista: "Lo que hace un despertador, o el aparato que usan los submarinos para orientarse", respuesta: "SONAR" }
+            ]},
+            { pistas: [
+                { pista: "Lonchas de cerdo que se fríen para el desayuno", respuesta: "TOCINO" },
+                { pista: "Lo que celebras el día de tu nombre en el calendario", respuesta: "SANTO" },
+                { pista: "La línea donde el mar se encuentra con la tierra", respuesta: "COSTA" }
+            ]},
+            { pistas: [
+                { pista: "Ave blanca que simboliza la paz", respuesta: "PALOMA" },
+                { pista: "Donde sirves la comida en la mesa", respuesta: "PLATO" },
+                { pista: "Diminutivo de \"palo\", como el de un polo o un helado", respuesta: "PALITO" }
+            ]},
+            { pistas: [
+                { pista: "Lo contrario de estar encerrado o atado", respuesta: "LIBRE" },
+                { pista: "Los tienes en una estantería, llenos de páginas", respuesta: "LIBROS" },
+                { pista: "Donde metes una carta antes de enviarla por correo", respuesta: "SOBRE" }
+            ]},
+            { pistas: [
+                { pista: "La preparas con verduras y caldo caliente", respuesta: "SOPA" },
+                { pista: "Lo que tienes cuando llegas tarde a algún sitio", respuesta: "PRISA" },
+                { pista: "Insecto de alas coloridas que antes fue una oruga", respuesta: "MARIPOSA" }
+            ]},
+            { pistas: [
+                { pista: "Lo que ganas trabajando y usas para comprar cosas", respuesta: "DINERO" },
+                { pista: "Donde los pájaros ponen sus huevos, hechos de ramitas", respuesta: "NIDOS" },
+                { pista: "La cantidad exacta de medicina que debes tomar", respuesta: "DOSIS" }
+            ]},
+            { pistas: [
+                { pista: "Mascota felina que maúlla y caza ratones", respuesta: "GATO" },
+                { pista: "Cuerpo celeste, como una estrella o un planeta", respuesta: "ASTRO" },
+                { pista: "Baile apasionado originario de Argentina", respuesta: "TANGO" }
+            ]}
+        ];
+
+        const CLAVE_STORAGE = 'elmaslisto-7letras-diario';
+        const FECHA_EPOCA = new Date(2024, 0, 1);
+
+        const juegoActivoEl = document.getElementById('juego-activo');
+        const finJuegoEl = document.getElementById('fin-juego');
+        const infoModoEl = document.getElementById('info-modo');
+        const alfabetoEl = document.getElementById('alfabeto-dia');
+        const puzzlesContainerEl = document.getElementById('puzzles-container');
+        const estrellasTotalesEl = document.getElementById('estrellas-totales');
+        const estrellasFinalesEl = document.getElementById('estrellas-finales');
+        const resumenEl = document.getElementById('resumen-palabras');
+        const contadorDiarioEl = document.getElementById('contador-diario');
+        const reiniciarBtn = document.getElementById('reiniciar');
+        const cambiarModoEl = document.getElementById('cambiar-modo');
+
+        let ESTADOS = [];
+        let puzzleActivo = 0;
+        let modoDiario = true;
+        let intervaloContador = null;
+
+        function contarLetras(str) {
+            const m = {};
+            for (const ch of str) m[ch] = (m[ch] || 0) + 1;
+            return m;
+        }
+
+        function letrasDisponibles(estado) {
+            const total = contarLetras(estado.respuesta);
+            const usadas = contarLetras(estado.relleno.filter(Boolean).join(''));
+            const resultado = {};
+            Object.keys(total).forEach(l => { resultado[l] = total[l] - (usadas[l] || 0); });
+            return resultado;
+        }
+
+        function letrasDelSet(set) {
+            const todas = set.pistas.map(p => p.respuesta).join('');
+            return [...new Set(todas.split(''))].sort();
+        }
+
+        function renderEstrellas(hintsUsados) {
+            const llenas = Math.max(0, 3 - hintsUsados);
+            return Array.from({ length: 3 }, (_, i) => i < llenas ? '★' : '☆').join('');
+        }
+
+        function crearEstados(set) {
+            return set.pistas.map(p => ({
+                pista: p.pista,
+                respuesta: p.respuesta,
+                relleno: Array(p.respuesta.length).fill(null),
+                resuelto: false,
+                hintsUsados: 0,
+                estrellas: 0
+            }));
+        }
+
+        function medianoche(fecha) {
+            return new Date(fecha.getFullYear(), fecha.getMonth(), fecha.getDate());
+        }
+
+        function fechaISO(fecha) {
+            const y = fecha.getFullYear();
+            const m = String(fecha.getMonth() + 1).padStart(2, '0');
+            const d = String(fecha.getDate()).padStart(2, '0');
+            return `${y}-${m}-${d}`;
+        }
+
+        function fechaBonita(fecha) {
+            return new Intl.DateTimeFormat('es-ES', { day: 'numeric', month: 'long', year: 'numeric' }).format(fecha);
+        }
+
+        function indiceDelDia() {
+            const dias = Math.round((medianoche(new Date()) - medianoche(FECHA_EPOCA)) / 86400000);
+            return ((dias % PUZZLE_SETS.length) + PUZZLE_SETS.length) % PUZZLE_SETS.length;
+        }
+
+        function cargarProgreso() {
+            try {
+                const raw = localStorage.getItem(CLAVE_STORAGE);
+                if (!raw) return null;
+                const datos = JSON.parse(raw);
+                if (datos.fecha !== fechaISO(new Date())) return null;
+                return datos;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function guardarProgreso() {
+            if (!modoDiario) return;
+            try {
+                localStorage.setItem(CLAVE_STORAGE, JSON.stringify({
+                    fecha: fechaISO(new Date()),
+                    estados: ESTADOS.map(e => ({ relleno: e.relleno, resuelto: e.resuelto, hintsUsados: e.hintsUsados, estrellas: e.estrellas }))
+                }));
+            } catch (e) {
+                // localStorage no disponible (modo privado, etc.): seguimos sin persistir
+            }
+        }
+
+        function renderAlfabeto(set) {
+            alfabetoEl.innerHTML = letrasDelSet(set).map(l => `<span class="letra-dia">${l}</span>`).join('');
+        }
+
+        function construirPuzzles() {
+            puzzlesContainerEl.innerHTML = '';
+            ESTADOS.forEach((estado, i) => {
+                const card = document.createElement('div');
+                card.className = 'puzzle-card';
+                card.id = `puzzle-${i}`;
+                card.innerHTML = `
+                    <p class="pista-texto"><span class="pista-num">${i + 1}</span>${estado.pista}</p>
+                    <div class="blancos" id="blancos-${i}"></div>
+                    <div class="bandeja" id="bandeja-${i}"></div>
+                    <div class="acciones">
+                        <button type="button" class="btn-accion" id="pista-btn-${i}">💡 Pista</button>
+                        <button type="button" class="btn-accion" id="borrar-btn-${i}">⌫ Borrar</button>
+                        <span class="estrellas-mini" id="estrellas-${i}"></span>
+                    </div>
+                `;
+                card.addEventListener('click', () => { puzzleActivo = i; renderTodo(); });
+                puzzlesContainerEl.appendChild(card);
+                document.getElementById(`pista-btn-${i}`).addEventListener('click', (e) => { e.stopPropagation(); usarPista(i); });
+                document.getElementById(`borrar-btn-${i}`).addEventListener('click', (e) => { e.stopPropagation(); borrarUltima(i); });
+            });
+
+            puzzlesContainerEl.addEventListener('click', (e) => {
+                const btn = e.target.closest('.ficha');
+                if (!btn || btn.disabled) return;
+                e.stopPropagation();
+                const i = Number(btn.dataset.puzzle);
+                puzzleActivo = i;
+                colocarLetra(i, btn.dataset.letra);
+            });
+
+            renderTodo();
+        }
+
+        function renderTodo() {
+            let total = 0;
+            ESTADOS.forEach((estado, i) => {
+                total += estado.estrellas;
+                renderPuzzle(i);
+            });
+            estrellasTotalesEl.textContent = `⭐ ${total}/9`;
+        }
+
+        function renderPuzzle(i) {
+            const estado = ESTADOS[i];
+            const cardEl = document.getElementById(`puzzle-${i}`);
+            const blancosEl = document.getElementById(`blancos-${i}`);
+            const bandejaEl = document.getElementById(`bandeja-${i}`);
+            const pistaBtn = document.getElementById(`pista-btn-${i}`);
+            const borrarBtn = document.getElementById(`borrar-btn-${i}`);
+            const estrellasEl = document.getElementById(`estrellas-${i}`);
+
+            blancosEl.innerHTML = estado.relleno.map(l =>
+                `<div class="celda-blanco ${l ? 'rellena' : ''} ${estado.resuelto ? 'correcta' : ''}">${l || ''}</div>`
+            ).join('');
+
+            if (estado.resuelto) {
+                bandejaEl.innerHTML = '';
+                pistaBtn.style.display = 'none';
+                borrarBtn.style.display = 'none';
+            } else {
+                const disponibles = letrasDisponibles(estado);
+                bandejaEl.innerHTML = Object.keys(disponibles).sort().map(letra => {
+                    const cnt = disponibles[letra];
+                    return `<button type="button" class="ficha" data-letra="${letra}" data-puzzle="${i}" ${cnt <= 0 ? 'disabled' : ''}>${letra}${cnt > 1 ? `<span class="contador">${cnt}</span>` : ''}</button>`;
+                }).join('');
+                pistaBtn.style.display = '';
+                borrarBtn.style.display = '';
+                borrarBtn.disabled = estado.relleno.every(v => !v);
+            }
+
+            estrellasEl.textContent = renderEstrellas(estado.hintsUsados);
+            cardEl.classList.toggle('resuelto', estado.resuelto);
+            cardEl.classList.toggle('activo', i === puzzleActivo && !estado.resuelto);
+        }
+
+        function colocarLetra(i, letra) {
+            const estado = ESTADOS[i];
+            if (estado.resuelto) return;
+            const k = estado.relleno.indexOf(null);
+            if (k === -1) return;
+            const disponibles = letrasDisponibles(estado);
+            if (!disponibles[letra] || disponibles[letra] <= 0) return;
+            estado.relleno[k] = letra;
+            renderTodo();
+            if (estado.relleno.every(Boolean)) {
+                comprobarPuzzle(i);
+            } else {
+                guardarProgreso();
+            }
+        }
+
+        function borrarUltima(i) {
+            const estado = ESTADOS[i];
+            if (estado.resuelto) return;
+            let realIdx = -1;
+            for (let j = estado.relleno.length - 1; j >= 0; j--) {
+                if (estado.relleno[j]) { realIdx = j; break; }
+            }
+            if (realIdx === -1) return;
+            estado.relleno[realIdx] = null;
+            puzzleActivo = i;
+            renderTodo();
+            guardarProgreso();
+        }
+
+        function usarPista(i) {
+            const estado = ESTADOS[i];
+            if (estado.resuelto) return;
+            const k = estado.relleno.indexOf(null);
+            if (k === -1) return;
+            estado.relleno[k] = estado.respuesta[k];
+            estado.hintsUsados++;
+            puzzleActivo = i;
+            renderTodo();
+            if (estado.relleno.every(Boolean)) {
+                comprobarPuzzle(i);
+            } else {
+                guardarProgreso();
+            }
+        }
+
+        function comprobarPuzzle(i) {
+            const estado = ESTADOS[i];
+            const formado = estado.relleno.join('');
+            if (formado === estado.respuesta) {
+                estado.resuelto = true;
+                estado.estrellas = Math.max(0, 3 - estado.hintsUsados);
+                renderTodo();
+                guardarProgreso();
+                if (ESTADOS.every(e => e.resuelto)) {
+                    setTimeout(terminarJuego, 500);
+                } else {
+                    const siguiente = ESTADOS.findIndex(e => !e.resuelto);
+                    if (siguiente !== -1) { puzzleActivo = siguiente; renderTodo(); }
+                }
+            } else {
+                const blancosEl = document.getElementById(`blancos-${i}`);
+                blancosEl.classList.add('shake');
+                setTimeout(() => {
+                    blancosEl.classList.remove('shake');
+                    estado.relleno = Array(estado.respuesta.length).fill(null);
+                    renderTodo();
+                    guardarProgreso();
+                }, 500);
+            }
+        }
+
+        function iniciarContadorDiario() {
+            pararContadorDiario();
+            const actualizar = () => {
+                const ahora = new Date();
+                const manana = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate() + 1);
+                const restante = manana - ahora;
+                const h = String(Math.floor(restante / 3600000)).padStart(2, '0');
+                const m = String(Math.floor((restante % 3600000) / 60000)).padStart(2, '0');
+                const s = String(Math.floor((restante % 60000) / 1000)).padStart(2, '0');
+                contadorDiarioEl.textContent = `Vuelve mañana para un nuevo reto (${h}:${m}:${s})`;
+            };
+            actualizar();
+            intervaloContador = setInterval(actualizar, 1000);
+        }
+
+        function pararContadorDiario() {
+            if (intervaloContador) {
+                clearInterval(intervaloContador);
+                intervaloContador = null;
+            }
+        }
+
+        function terminarJuego() {
+            juegoActivoEl.classList.add('oculto');
+            finJuegoEl.classList.remove('oculto');
+
+            const total = ESTADOS.reduce((s, e) => s + e.estrellas, 0);
+            estrellasFinalesEl.textContent = `${total}/9`;
+            resumenEl.innerHTML = ESTADOS.map(e =>
+                `<p><strong>${e.respuesta}</strong> — ${renderEstrellas(e.hintsUsados)}</p>`
+            ).join('');
+
+            if (modoDiario) {
+                reiniciarBtn.classList.add('oculto');
+                contadorDiarioEl.classList.remove('oculto');
+                iniciarContadorDiario();
+            } else {
+                reiniciarBtn.classList.remove('oculto');
+                contadorDiarioEl.classList.add('oculto');
+                pararContadorDiario();
+            }
+        }
+
+        function iniciarDiario() {
+            modoDiario = true;
+            pararContadorDiario();
+            contadorDiarioEl.classList.add('oculto');
+            reiniciarBtn.classList.remove('oculto');
+            cambiarModoEl.textContent = 'Jugar partida aleatoria';
+            infoModoEl.textContent = `Reto diario · ${fechaBonita(new Date())}`;
+
+            const set = PUZZLE_SETS[indiceDelDia()];
+            ESTADOS = crearEstados(set);
+            puzzleActivo = 0;
+
+            juegoActivoEl.classList.remove('oculto');
+            finJuegoEl.classList.add('oculto');
+            renderAlfabeto(set);
+            construirPuzzles();
+
+            const guardado = cargarProgreso();
+            if (guardado && guardado.estados) {
+                guardado.estados.forEach((g, i) => {
+                    if (ESTADOS[i]) {
+                        ESTADOS[i].relleno = g.relleno;
+                        ESTADOS[i].resuelto = g.resuelto;
+                        ESTADOS[i].hintsUsados = g.hintsUsados;
+                        ESTADOS[i].estrellas = g.estrellas;
+                    }
+                });
+                renderTodo();
+                if (ESTADOS.every(e => e.resuelto)) {
+                    terminarJuego();
+                }
+            }
+        }
+
+        function iniciarAleatorio() {
+            modoDiario = false;
+            pararContadorDiario();
+            contadorDiarioEl.classList.add('oculto');
+            reiniciarBtn.classList.remove('oculto');
+            cambiarModoEl.textContent = 'Volver al reto diario';
+            infoModoEl.textContent = 'Modo aleatorio (práctica libre)';
+
+            const set = PUZZLE_SETS[Math.floor(Math.random() * PUZZLE_SETS.length)];
+            ESTADOS = crearEstados(set);
+            puzzleActivo = 0;
+
+            juegoActivoEl.classList.remove('oculto');
+            finJuegoEl.classList.add('oculto');
+            renderAlfabeto(set);
+            construirPuzzles();
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (!finJuegoEl.classList.contains('oculto')) return;
+            const tecla = e.key.toUpperCase();
+            if (tecla === 'BACKSPACE') {
+                borrarUltima(puzzleActivo);
+            } else if (/^[A-ZÑ]$/.test(tecla)) {
+                colocarLetra(puzzleActivo, tecla);
+            }
+        });
+
+        reiniciarBtn.addEventListener('click', () => {
+            if (!modoDiario) iniciarAleatorio();
+        });
+
+        cambiarModoEl.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (modoDiario) {
+                iniciarAleatorio();
+            } else {
+                iniciarDiario();
+            }
+        });
+
+        iniciarDiario();
+    </script>
+
+</body>
+</html>
