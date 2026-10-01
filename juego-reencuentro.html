@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reencuentro: Crucigrama de Letras con Dos Amigos | El Más Listo</title>
+    <meta name="description" content="Arrastra letras y animales para formar palabras en todas las filas y columnas, y reúne al perro y al gato. Reto diario gratis en español, con estrellas según tus movimientos.">
+    <link rel="canonical" href="https://elmaslisto.com/juego-reencuentro">
+    <meta property="og:title" content="Reencuentro: Crucigrama de Letras con Dos Amigos">
+    <meta property="og:description" content="Arrastra letras y animales para formar palabras en todas las filas y columnas, y reúne al perro y al gato.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://elmaslisto.com/juego-reencuentro">
+    <link rel="icon" href="img/favicon.png">
+
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        body { background-color: #16a085; }
+
+        .wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 460px;
+        }
+
+        .contenedor{width:100%;background:#fff;padding:20px;border-radius:15px;box-shadow:0 6px 12px rgba(0,0,0,.15);text-align:center;box-sizing:border-box;}
+
+        .header-juego{display:flex;justify-content:space-between;align-items:center;font-size:1.1em;color:#555;margin-bottom:2px;font-weight:700}
+        .header-juego h1{margin:0;font-size:1em;color:#2c3e50;}
+        #contador-movs{color:#16a085;font-size:.85em;}
+
+        #info-modo{margin:0 0 10px;font-size:.75em;color:#999;font-weight:400;text-align:left;}
+        .instrucciones{font-size:.8em;color:#777;margin:0 0 12px;}
+
+        .leyenda{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;font-size:.72em;color:#777;margin:0 0 12px;}
+        .leyenda span{display:inline-flex;align-items:center;gap:4px;}
+        .leyenda i{display:inline-block;width:14px;height:14px;border-radius:4px;border:2px solid #d3d6da;box-sizing:border-box;}
+        .leyenda i.verde{background:#2ecc71;border-color:#2ecc71;}
+        .leyenda i.amarillo{background:#f1c40f;border-color:#f1c40f;}
+
+        #tablero{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;width:100%;max-width:340px;margin:0 auto 14px;touch-action:none;user-select:none;-webkit-user-select:none;}
+        .celda{aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;border:2px solid #d3d6da;border-radius:8px;background:#fff;color:#1c1e21;font-weight:700;font-size:1.5em;cursor:grab;box-sizing:border-box;position:relative;transition:background-color .2s, border-color .2s, box-shadow .15s;}
+        .celda.verde{background:#2ecc71;border-color:#2ecc71;color:#fff;}
+        .celda.amarillo{background:#f1c40f;border-color:#f1c40f;color:#fff;}
+        .celda.animal{background:#f4eaf8;border-color:#e3cdee;font-size:1.7em;}
+        .celda.seleccionada{box-shadow:0 0 0 3px #16a085;}
+        .celda.objetivo{box-shadow:0 0 0 3px #f39c12;}
+        .celda.arrastrando{z-index:10;cursor:grabbing;box-shadow:0 8px 16px rgba(0,0,0,.3);transition:none;}
+        #tablero.ganado .celda{cursor:default;}
+        #tablero.ganado .celda:not(.animal){background:#2ecc71;border-color:#2ecc71;color:#fff;}
+
+        .acciones{display:flex;align-items:center;justify-content:center;gap:8px;}
+        .btn-accion{background:#fff;border:1px solid #ccc;border-radius:20px;padding:5px 14px;cursor:pointer;color:#555;font-size:.8em;}
+        .btn-accion:hover{background:#f0f0f0;}
+        .objetivo-estrellas{font-size:.75em;color:#999;margin:10px 0 0;}
+
+        #fin-juego h1{font-size:1.6em;color:#16a085;}
+        .puntuacion-grande{font-size:2.4em;font-weight:700;color:#f1c40f;margin:10px 0 4px;letter-spacing:4px;}
+        .detalle-final{font-size:.95em;color:#555;margin:0 0 16px;}
+        #reiniciar{padding:15px 25px;font-size:1.1em;background-color:#2ecc71;color:#fff;border:none;border-radius:8px;cursor:pointer;margin-top:10px;}
+        #contador-diario{font-size:.9em;color:#888;margin:10px 0 0;}
+        .oculto{display:none}
+
+        .mode-toggle{margin:15px 0 0;font-size:.85em;text-align:center;}
+        .mode-toggle a{color:rgba(255,255,255,0.9);text-decoration:underline;cursor:pointer;}
+        .mode-toggle a:hover{color:#fff;}
+
+        @media (min-width:768px){
+            .contenedor{padding:30px}
+            #tablero{max-width:380px}
+        }
+    </style>
+</head>
+<body>
+
+    <div class="wrapper">
+        <!-- Pantalla de juego principal -->
+        <div id="juego-activo" class="contenedor">
+            <div class="header-juego">
+                <h1>Reencuentro</h1>
+                <span id="contador-movs">Movimientos: 0</span>
+            </div>
+            <p id="info-modo"></p>
+            <p class="instrucciones">Arrastra (o toca dos fichas) para intercambiarlas. Forma palabras de 3 o más letras en cada fila y columna, y reúne a 🐶 y 🐱.</p>
+            <div class="leyenda">
+                <span><i class="verde"></i> En su sitio</span>
+                <span><i class="amarillo"></i> Va en otra casilla de su fila o columna</span>
+                <span><i></i> No hace falta aquí</span>
+            </div>
+            <div id="tablero" role="grid" aria-label="Tablero de letras"></div>
+            <div class="acciones">
+                <button type="button" class="btn-accion" id="reempezar">↺ Empezar de nuevo</button>
+            </div>
+            <p class="objetivo-estrellas" id="objetivo-estrellas"></p>
+        </div>
+
+        <!-- Pantalla de fin de juego (inicialmente oculta) -->
+        <div id="fin-juego" class="contenedor oculto">
+            <h1>¡Se han reencontrado! 🐶🐱</h1>
+            <p class="puntuacion-grande" id="estrellas-finales">★★★</p>
+            <p class="detalle-final" id="detalle-final"></p>
+            <div id="ranking" class="ranking-widget"></div>
+            <p id="contador-diario" class="oculto"></p>
+            <button id="reiniciar">Jugar otra partida</button>
+        </div>
+
+        <p class="mode-toggle"><a href="#" id="cambiar-modo">Jugar partida aleatoria</a></p>
+
+        <a href="index.html" class="home-link">Volver al menú</a>
+
+        <section class="guia">
+            <div class="guia-bloque">
+                <h2>¿En qué consiste Reencuentro?</h2>
+                <p>Es un crucigrama que llega desordenado: las letras y dos animales, un <strong>perro</strong> y un <strong>gato</strong>, están mezclados en un tablero de 5×5. Tu misión es <strong>intercambiar fichas</strong> (arrastrándolas, o tocando una y luego otra) hasta que cada fila y cada columna sin interrupciones forme una palabra de al menos tres letras.</p>
+                <p>Los animales funcionan como separadores: si uno queda en medio de una fila o columna, la divide en dos palabras distintas. Cuando todas las letras se ponen en verde, el perro y el gato quedan juntos en algún punto del tablero, ya sea en horizontal, en vertical o en diagonal.</p>
+                <p>Una ficha <strong>verde</strong> está en su casilla correcta. Una ficha <strong>amarilla</strong> pertenece a otra casilla de esa misma fila o columna. Una ficha <strong>blanca</strong> no hace falta en esa fila ni en esa columna. Los animales nunca cambian de color. Cuantos menos movimientos uses, más estrellas ganas (hasta 3).</p>
+            </div>
+
+            <div class="guia-bloque">
+                <h2>¿Para qué edades está recomendado?</h2>
+                <p>Está pensado a partir de <strong>10-11 años</strong>, cuando el vocabulario ya permite reconocer palabras de tres a cinco letras sin mucha ayuda. Para adolescentes y adultos es un rompecabezas breve que mezcla vocabulario y lógica.</p>
+                <p>Si te gustan los juegos de palabras, prueba también el <a href="juego-siete-letras.html">7 Letras</a> o el <a href="juego-wordle.html">Wordle en Español</a>.</p>
+            </div>
+
+            <div class="guia-bloque">
+                <h2>¿Por qué es bueno este juego?</h2>
+                <ul>
+                    <li><strong>Vocabulario y ortografía:</strong> obliga a reconocer palabras cruzadas en dos direcciones a la vez.</li>
+                    <li><strong>Planificación:</strong> cada movimiento cuenta, así que conviene pensar qué intercambio acerca más fichas a su sitio.</li>
+                    <li><strong>Pensamiento lógico:</strong> las fichas amarillas dan pistas que hay que combinar para deducir la solución.</li>
+                    <li><strong>Sin presión de tiempo:</strong> no hay cronómetro; solo cuentas movimientos.</li>
+                </ul>
+            </div>
+
+            <div class="guia-bloque">
+                <h2>Preguntas frecuentes</h2>
+                <div class="faq-item">
+                    <h3>¿Cómo funcionan las fichas amarillas?</h3>
+                    <p>Una ficha amarilla es una letra que sí se necesita en esa fila o columna, pero en otra casilla. Puede pasar de amarilla a blanca (o al revés) aunque muevas otra ficha, porque lo que hace falta en cada palabra cambia a medida que colocas letras.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>¿Qué hacen el perro y el gato?</h3>
+                    <p>Se mueven como cualquier otra ficha y sirven de separador entre palabras. Al terminar el tablero, siempre quedan uno junto al otro, en horizontal, vertical o diagonal.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>¿Cómo se consiguen las estrellas?</h3>
+                    <p>Cuantos menos movimientos hagas, más estrellas. Debajo del tablero verás el número de movimientos con el que consigues las tres estrellas. Siempre puedes empezar de nuevo con el contador a cero.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>¿Puedo jugar más de una vez al día?</h3>
+                    <p>El reto diario es un único tablero por día, igual para todos. Con el enlace "Jugar partida aleatoria" debajo del tablero puedes practicar sin límite.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "¿Cómo funcionan las fichas amarillas?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Una ficha amarilla es una letra que sí se necesita en esa fila o columna, pero en otra casilla. Puede pasar de amarilla a blanca (o al revés) aunque muevas otra ficha, porque lo que hace falta en cada palabra cambia a medida que colocas letras."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "¿Qué hacen el perro y el gato?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Se mueven como cualquier otra ficha y sirven de separador entre palabras. Al terminar el tablero, siempre quedan uno junto al otro, en horizontal, vertical o diagonal."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "¿Cómo se consiguen las estrellas?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Cuantos menos movimientos hagas, más estrellas. Debajo del tablero verás el número de movimientos con el que consigues las tres estrellas. Siempre puedes empezar de nuevo con el contador a cero."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "¿Puedo jugar más de una vez al día?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "El reto diario es un único tablero por día, igual para todos. Con el enlace \"Jugar partida aleatoria\" debajo del tablero puedes practicar sin límite."
+                }
+            }
+        ]
+    }
+    </script>
+
+    <script src="ranking.js"></script>
+    <script>
+        // '*' marca las casillas de los dos animales en la solución.
+        const PUZZLES = ["BORDOODIASRITMODAMA*OSOS*","CLAVELUCESACEROVERASESO**","NEGROEUROSGRUPOROPASOSO**","RITMOIDEASTEXTOMATASOSO**","TIGREIDEASGESTORATA*ESOS*","LAVARACABOSACAS*BAJA*ESOS","LAVARATACASACAR*DABA*OSOS","USADOSABERABAJODEJE*OSOS*","SUPERENANODIRAS*CENA*OSOS","UNAS*SACA*ACABEBEBERARENA","USABANACERACABESABEN**ESA"];
+
+        // Palabras válidas (3-5 letras): permiten aceptar cualquier tablero correcto, no solo el previsto.
+        const DICCIONARIO = new Set("AAH AARON ABAJO ABBY ABRA ABRAN ABRE ABRIL ABRIO ABRIR ABUSO ACA ACABA ACABE ACABO ACASO ACERO ACIDO ACTO ACTOR ACTOS ACTUA ADAM ADAMS ADIOS ADN ADORA ADORO AEREA AEREO AGUA AGUAS AGUJA AHH AHI AHORA AIRE AIRES AJA ALA ALAN ALAS ALBUM ALDEA ALEC ALEX ALFA ALGO ALGUN ALI ALICE ALL ALLA ALLEN ALLI ALMA ALMAS ALTA ALTAS ALTO ALTOS AMA AMABA AMADA AMADO AMAN AMAR AMAS AMBAS AMBER AMBOS AMEN AMIGA AMIGO AMO AMOR AMY ANA AND ANDA ANDAR ANDAS ANDY ANGEL ANIMO ANN ANNA ANNE ANNIE ANTE ANTES APAGA APOYO APRIL AQUEL AQUI ARBOL ARCO AREA ARENA ARMA ARMAS ARROZ ARTE ARTES ASCO ASI ASILO ASUMO ATACA ATACO ATADO ATAUD ATRAS AUN AUTO AUTOR AUTOS AVE AVES AVION AVISO AYER AYUDA AYUDE AYUDO AZAR AZUL BABY BAHIA BAILA BAILE BAJA BAJAR BAJAS BAJE BAJEN BAJO BAJOS BAKER BALA BALAS BALON BANCO BANDA BANG BAR BARBA BARCO BARON BARRA BARRO BARRY BART BASE BASTA BEACH BEBE BEBER BEBES BEBO BECA BECKY BELL BELLA BELLO BEN BENNY BESAR BESO BESOS BETH BETTY BICHO BIEN BIG BILL BILLY BINGO BLA BLACK BLAIR BLAKE BLUE BOB BOBBY BOBO BOCA BODA BODAS BOLA BOLAS BOLSA BOLSO BOMBA BOOM BOOTH BORDE BORDO BOTAS BOTE BOTON BOY BOYD BRAD BRAVO BRAZO BREVE BRIAN BROMA BROWN BRUCE BRUJA BRUNO BUD BUEN BUENA BUENO BURKE BURRO BUS BUSCA BUSCO CABE CABLE CABO CABRA CACA CADA CAE CAEN CAER CAFE CAI CAIDA CAIDO CAIGA CAJA CAJAS CAJON CAL CALEB CALLA CALLE CALMA CALOR CAMA CAMAS CAMPO CAN CANAL CANTA CANTO CAOS CAPA CAPAZ CARA CARAS CARAY CARGA CARGO CARL CARLA CARNE CARO CAROL CARRO CARTA CASA CASAR CASAS CASCO CASE CASEY CASI CASO CASOS CAUSA CAUSO CAYO CAZA CAZAR CELDA CELOS CENA CENAR CERCA CERDO CERO CERRO CESAR CHAN CHASE CHEF CHICA CHICO CHINA CHINO CHIP CHLOE CHOI CHRIS CHUCK CIA CIEGA CIEGO CIELO CIEN CIMA CINCO CINDY CINE CINTA CIRCO CITA CITAS CITY CIVIL CLAN CLARA CLARK CLARO CLASE CLAVE CLAY CLIMA CLUB CLYDE COBRA COCA COCHE COCO COGE COGER COGI COGIO COJA COJO COLA COLE COLIN COLOR COMA COME COMEN COMER COMES COMI COMIO COMO COMUN CON CONDE CONTE CONTO COPA COPAS COPIA COREA CORO CORRE CORTA CORTE CORTO COSA COSAS COSTA COSTO CRAIG CRANE CREA CREAN CREAR CREAS CRECE CRECI CREE CREEN CREER CREES CREI CREIA CREMA CREO CREYO CRIAR CRUCE CRUEL CRUZ CUAL CUAN CUBA CUBO CUBRE CUERO CUEVA CUIDA CUIDE CULO CULPA CULPO CURA CURAR CURSO CURVA CUYA CUYO DABA DADA DADO DAISY DALE DAMA DAMAS DAME DAMON DAMOS DAN DANA DANDO DANNY DANOS DANZA DAR DARA DARAN DARAS DARE DARIA DARLE DARME DARSE DARTE DAS DATE DATOS DAVE DAVID DAVIS DEAN DEBA DEBAS DEBE DEBEN DEBER DEBES DEBI DEBIA DEBIL DEBIO DEBO DECIA DECIR DEDO DEDOS DEJA DEJAD DEJAN DEJAR DEJAS DEJE DEJEN DEJES DEJO DEL DEMAS DEME DEMOS DEN DEREK DES DESDE DESEA DESEE DESEO DEUDA DIA DIANA DIANE DIAS DICE DICEN DICES DICHO DICK DIEGO DIERA DIETA DIEZ DIGA DIGAN DIGAS DIGNO DIGO DIJE DIJO DILE DILES DILO DIME DIMOS DINOS DIO DIOS DIOSA DIRA DIRAN DIRAS DIRE DIRIA DISCO DISTE DOBLE DOC DOCE DOLAR DOLOR DON DONDE DONG DONNA DORMI DOS DOSIS DOUG DOY DOYLE DRAKE DRAMA DREW DROGA DUCHA DUDA DUDAS DUDO DUELE DUELO DUKE DULCE DUQUE DURA DURAR DURO DUROS DYLAN EARL ECHA ECHAR ECHAS ECHE ECHO EDAD EDDIE EEUU EGO ELEGI ELENA ELI ELIGE ELLA ELLAS ELLEN ELLIE ELLO ELLOS EMILY EMMA ENANO ENERO ENTRA ENTRE ENTRO ENVIA ENVIE ENVIO EPOCA ERA ERAN ERAS ERES ERIC ERICA ERROR ESA ESAS ESE ESO ESOS ESPIA EST ESTA ESTAN ESTAR ESTAS ESTE ESTEN ESTES ESTO ESTOS ESTOY ETAPA ETHAN EUROS EVA EVAN EVANS EVE EXITO EXTRA FACIL FALDA FALLA FALLO FALSA FALSO FALTA FAMA FAN FANS FASE FATAL FAVOR FBI FEA FECHA FELIZ FEO FERIA FIEL FILA FIN FINAL FINES FINN FIONA FIRMA FIRME FLASH FLOR FLOTA FLUJO FONDO FOR FORD FORMA FOTO FOTOS FOX FRANK FRASE FRED FRIA FRIO FRUTA FUE FUEGO FUERA FUESE FUGA FUI FUMAR FURIA GAFAS GANA GANAN GANAR GANAS GANE GANO GARY GAS GATO GATOS GAY GAYS GENE GENIO GENTE GESTO GIBBS GINA GIRA GIRAR GIRO GLENN GLOBO GOLF GOLPE GOMA GORDA GORDO GORRA GOTA GPS GRACE GRADO GRAN GRANO GRANT GRASA GRAVE GREEN GREG GREY GRIPE GRIS GRITA GRITO GRUPO GUAPA GUAPO GUAU GUAY GUIA GUION GUS GUSTA GUSTE GUSTO GUY GWEN HABER HABIA HABLA HABLE HABLO HABRA HACE HACEN HACER HACES HACHA HACIA HADAS HAGA HAGAN HAGAS HAGO HAL HALL HAN HANK HANNA HANS HARA HARAN HARAS HARE HARIA HARRY HARTA HARTO HAS HASTA HAY HAYA HAYAN HAYAS HAZ HAZLO HAZME HAZTE HECHA HECHO HELEN HEMOS HENRY HERIR HEROE HEY HICE HIELO HIJA HIJAS HIJO HIJOS HILL HILO HIZO HMM HOGAR HOJA HOJAS HOLA HOLLY HONG HONOR HORA HORAS HORNO HOTEL HOUSE HOY HOYO HUBO HUECO HUELE HUELO HUESO HUEVO HUGO HUH HUIR HUMO HUMOR HUYO IAN IAS IBA IBAN IBAS IDA IDEA IDEAL IDEAS IDO IDOLO IGUAL INDIA INDIO IOS IRA IRAK IRAN IRAS IRE IRENE IRIA IRIS IRME IRNOS IRSE IRTE ISAAC ISLA ISLAS JABON JACK JACOB JAKE JAMAS JAMES JAMIE JAMON JAN JANE JANET JAPON JASON JAULA JAY JAZZ JEAN JEFA JEFE JEFES JEFF JEN JENNA JENNY JERRY JESS JESSE JESUS JILL JIM JIMMY JIN JOAN JODAN JODAS JODER JOE JOEL JOEY JOHN JON JONES JOSE JOSH JOVEN JOY JOYAS JUAN JUDIO JUDY JUEGA JUEGO JUEZ JUGAR JUGO JULES JULIA JULIE JULIO JUNG JUNIO JUNTA JUNTO JURO JUSTA JUSTO KANG KAREN KARL KATE KATHY KATIE KEITH KELLY KEN KENNY KENT KEVIN KHAN KILOS KIM KING KIRK KIT KITTY KONG KURT KYLE LADO LADOS LADY LAGO LANA LANCE LANE LANZA LAPIZ LARGA LARGO LARRY LAS LATA LAURA LAVAR LEA LEAL LECHE LEE LEER LEES LEGAL LEI LEIDO LEJOS LENNY LENTA LENTO LEO LEON LES LETRA LEWIS LEX LEY LEYES LIAM LIBRE LIBRO LICOR LIDER LIGA LILY LIMON LINDA LINDO LINEA LIO LIRAS LISA LISTA LISTO LIZ LLAMA LLAME LLAMO LLAVE LLEGA LLEGO LLENA LLENO LLEVA LLEVE LLEVO LLORA LLOYD LOBO LOBOS LOCA LOCAL LOCAS LOCO LOCOS LOGAN LOGRE LOGRO LOIS LOLA LONG LORD LOS LOU LOUIS LOVE LUCAS LUCE LUCES LUCHA LUCY LUEGO LUGAR LUIS LUJO LUKE LUNA LUNES LUZ LYDIA MAC MACHO MADRE MAFIA MAGIA MAGO MAIZ MAL MALA MALAS MALO MALOS MAMA MAMI MAN MANDA MANDO MANNY MANO MANOS MANTA MAPA MAR MARCA MARCO MARGE MARIA MARIE MARIO MARK MARTA MARTE MARTY MARY MARZO MAS MASA MASON MATA MATAN MATAR MATAS MATE MATEN MATES MATO MATT MAX MAY MAYA MAYO MAYOR MCGEE MEDIA MEDIO MEG MEGAN MEJOR MEL MENOR MENOS MENTE MENTI MENU MES MESA MESES META METAL METAS METE METER METES METI METIO METRO MIA MIAMI MIAS MICK MIEDO MIEL MIKE MIKEY MIL MILES MIN MINA MINAS MIO MIOS MIRA MIRAD MIRAN MIRAR MIRAS MIRE MIREN MIRES MIRO MIS MISA MISMA MISMO MISS MITAD MITCH MMM MODA MODO MODOS MOLLY MONA MONO MONOS MONTE MORAL MORIR MOSCA MOSCU MOTEL MOTO MOTOR MOVER MOVIL MUCHA MUCHO MUDO MUERA MUERE MUERO MUEVA MUEVE MUJER MULTA MUNDO MURIO MURO MUSEO MUY NACER NACI NACIO NADA NADAR NADIE NANCY NAOMI NARIZ NATE NAVE NAVES NAZI NAZIS NEAL NED NEGAR NEGO NEGRA NEGRO NEIL NENA NENE NEW NICK NICKY NIDO NIEGA NIEGO NIETO NIEVE NIKKI NINA NIVEL NOAH NOBLE NOCHE NOEL NORA NORMA NORTE NOS NOTA NOTAS NOVIA NOVIO NUBE NUBES NUEVA NUEVE NUEVO NUNCA OBRA OBRAS OBVIO OCHO OCUPA OCUPO ODIA ODIAN ODIAS ODIO OESTE OHH OIDO OIDOS OIGA OIGAN OIGO OIR OIRLO OIRME OIRTE OISTE OJALA OJO OJOS OKAY OLA OLAS OLER OLOR ONCE ONDA ONE OOH OPERA OPINA ORDEN OREJA ORINA ORO OSCAR OSO OSOS OTRA OTRAS OTRO OTROS OWEN OYE OYES OYO PABLO PACTO PADRE PAGA PAGAN PAGAR PAGAS PAGO PAGUE PAIGE PAIS PALO PAM PAN PAPA PAPAS PAPEL PAPI PAR PARA PARAR PARE PARED PAREN PARES PARIS PARK PARO PARTE PARTO PASA PASAN PASAR PASAS PASE PASEN PASEO PASES PASO PASOS PASTA PAT PATA PATAS PATIO PATO PATTY PAUL PAULA PAUSA PAVO PAVOS PAZ PECES PECHO PEDI PEDIR PEDRO PEGA PEGAR PEGGY PEGO PELEA PELO PELOS PENA PENE PENNY PENSE PENSO PEOR PERDI PERO PERRA PERRO PERRY PESA PESAR PESCA PESO PETE PETER PEZ PHIL PIANO PICO PIDA PIDE PIDEN PIDES PIDIO PIDO PIE PIEL PIES PIEZA PILA PILLO PINTA PIS PISO PISOS PISTA PIZZA PLACA PLAN PLANO PLATA PLATO PLAYA PLAZA PLAZO PLENA PLUMA POBRE POCA POCAS POCO POCOS PODER PODIA PODRA PODRE POEMA POETA POLI POLIS POLLA POLLO POLO POLVO PON PONE PONEN PONER PONES PONGA PONGO PONIA PONLO PONTE POP POR PORNO POSEE POZO PRESA PRESO PRIMA PRIMO PRISA PUDE PUDO PUEDA PUEDE PUEDO PUES PULSO PUNTA PUNTO PURA PURO PUSE PUSO PUTA PUTAS PUTO PUTOS QUE QUEDA QUEDE QUEDO QUEJA QUEMA QUESO QUIEN QUINN QUISE QUISO QUITA QUITE QUITO QUIZA RABIA RADAR RADIO RAJ RALPH RAMA RANA RANDY RANGO RARA RARAS RARO RAROS RATA RATAS RATO RATON RAY RAYA RAYO RAYOS RAZA RAZON REAL RED REED REGLA REHEN REINA REINO REIR RELOJ RENTA RESTO RETO REVES REX REY REYES REZAR RICA RICK RICKY RICO RICOS RIE RIES RIFLE RILEY RIO RISA RISAS RITA RITMO ROB ROBA ROBAR ROBE ROBIN ROBO ROBOT ROCA ROCAS ROCK ROCKY ROGER ROJA ROJAS ROJO ROJOS ROLL ROLLO ROMA ROMEO ROMPE ROMPI RON RONDA ROPA ROPAS RORY ROSA ROSAS ROSE ROSIE ROSS ROTA ROTO ROY RUBIA RUBIO RUBY RUEDA RUEGO RUIDO RUMBO RUMOR RUSA RUSIA RUSO RUSOS RUTA RUTH RYAN SABE SABEN SABER SABES SABIA SABIO SABOR SABRA SABRE SACA SACAR SACAS SACO SAL SALA SALE SALEN SALES SALGA SALGO SALI SALIA SALIO SALIR SALLY SALON SALSA SALTA SALTO SALUD SALVA SALVE SALVO SAM SAMMY SAN SANA SANDY SANO SANTA SANTO SAQUE SARA SARAH SCOTT SEA SEAN SEAS SECA SECO SED SEDA SEGUI SEGUN SEIS SELLO SELVA SENTI SEPA SEPAN SEPAS SER SERA SERAN SERAS SERE SERES SERIA SERIE SERIO SERLO SET SETH SEXO SEXTO SEXY SHANE SHAW SHAWN SHH SHOCK SHOW SID SIDO SIETE SIGA SIGAN SIGAS SIGLO SIGNO SIGO SIGUE SILLA SIMON SIN SINO SIP SIR SIRVE SITIO SMITH SOBRA SOBRE SOCIO SOFA SOIS SOL SOLA SOLAR SOLAS SOLIA SOLO SOLOS SOMOS SON SONAR SONNY SOO SOPA SORDO SOS SOY SRA SRTA STAN STAR STARK STEVE STONE SUAVE SUBA SUBAN SUBE SUBIO SUBIR SUCIA SUCIO SUE SUELE SUELO SUENA SUFRE SUITE SUIZA SUMA SUPE SUPER SUPO SUR SUS SUSAN SUSTO SUYA SUYAS SUYO SUYOS TABLA TAL TALES TALLA TAN TANTA TANTO TAPA TARA TARDE TAREA TARTA TAXI TAZA TECHO TED TEDDY TELA TELE TEMA TEMAS TEME TEMER TEMIA TEMO TEMOR TEN TENER TENGA TENGO TENIA TENIS TERRY TESS TEST TETAS TEXAS TEXTO THAT THE THIS TIA TIENE TIGRE TIM TIMES TINA TIO TIOS TIPO TIPOS TIRA TIRAR TIRE TIRO TIROS TOBY TOCA TOCAR TOCAS TOCO TODA TODAS TODD TODO TODOS TOKIO TOM TOMA TOMAN TOMAR TOMAS TOME TOMEN TOMES TOMMY TOMO TONI TONO TONTA TONTO TONY TOP TOQUE TORO TORPE TORRE TORTA TOTAL TRACY TRAE TRAEN TRAER TRAES TRAGO TRAJE TRAJO TRAS TRATA TRATE TRATO TREN TRES TRIBU TRONO TROY TROZO TRUCO TUBO TUMBA TUMOR TUNEL TURNO TUS TUVE TUVO TUYA TUYAS TUYO TUYOS TYLER UNA UNAS UNICA UNICO UNIDO UNION UNO UNOS USA USABA USADO USAN USAR USAS USE USO USTED UTIL VACA VACAS VACIA VACIO VAGO VAIS VALE VALEN VALLE VALOR VAMOS VAN VANO VAPOR VAS VASO VASOS VAYA VAYAN VAYAS VEA VEAN VEAS VECES VEGAS VEIA VEIS VELA VELAS VEMOS VEN VENDE VENDO VENGA VENGO VENIA VENID VENIR VENTA VEO VER VERA VERAN VERAS VERDE VERE VERIA VERLA VERLE VERLO VERME VERSE VERTE VES VETE VEZ VIA VIAJE VIAS VIC VIDA VIDAS VIDEO VIEJA VIEJO VIENE VIERA VILLA VIMOS VINCE VINE VINO VIO VIRUS VISTA VISTE VISTO VITAL VIUDA VIVA VIVAS VIVE VIVEN VIVES VIVIA VIVIO VIVIR VIVO VIVOS VOCES VODKA VOLAR VOLVI VON VOS VOTAR VOTO VOTOS VOY VOZ VUELA VUELO WADE WALT WAYNE WEB WENDY WEST WHAT WHITE WHOA WILL WITH WON WOO WOW WYATT YANG YEAH YENDO YORK YOU YOUNG YOUR ZACH ZACK ZOE ZONA ZORRA ZORRO".split(' '));
+
+        const N = 5;
+        const ANIMALES = { A1: '🐶', A2: '🐱' };
+        const PAREJAS_MEZCLA = 8; // pares de fichas intercambiadas al mezclar = movimientos mínimos
+        const CLAVE_STORAGE = 'elmaslisto-reencuentro-diario';
+        const FECHA_EPOCA = new Date(2024, 0, 1);
+
+        const juegoActivoEl = document.getElementById('juego-activo');
+        const finJuegoEl = document.getElementById('fin-juego');
+        const infoModoEl = document.getElementById('info-modo');
+        const tableroEl = document.getElementById('tablero');
+        const contadorMovsEl = document.getElementById('contador-movs');
+        const objetivoEl = document.getElementById('objetivo-estrellas');
+        const estrellasFinalesEl = document.getElementById('estrellas-finales');
+        const detalleFinalEl = document.getElementById('detalle-final');
+        const contadorDiarioEl = document.getElementById('contador-diario');
+        const reiniciarBtn = document.getElementById('reiniciar');
+        const reempezarBtn = document.getElementById('reempezar');
+        const cambiarModoEl = document.getElementById('cambiar-modo');
+
+        let solucion = [];     // 25 fichas: letra o 'A1'/'A2'
+        let inicial = [];      // tablero tras mezclar
+        let tablero = [];      // tablero actual
+        let movimientos = 0;
+        let ganado = false;
+        let seleccion = null;
+        let modoDiario = true;
+        let intervaloContador = null;
+        let segmentos = [];    // tramos (filas y columnas) de la solución con 3+ letras
+        let segFila = [];
+        let segCol = [];
+
+        function esAnimal(f) { return f === 'A1' || f === 'A2'; }
+
+        function mulberry32(a) {
+            return function () {
+                a |= 0; a = a + 0x6D2B79F5 | 0;
+                let t = Math.imul(a ^ a >>> 15, 1 | a);
+                t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+                return ((t ^ t >>> 14) >>> 0) / 4294967296;
+            };
+        }
+
+        function medianoche(fecha) { return new Date(fecha.getFullYear(), fecha.getMonth(), fecha.getDate()); }
+
+        function fechaISO(fecha) {
+            const y = fecha.getFullYear();
+            const m = String(fecha.getMonth() + 1).padStart(2, '0');
+            const d = String(fecha.getDate()).padStart(2, '0');
+            return `${y}-${m}-${d}`;
+        }
+
+        function fechaBonita(fecha) {
+            return new Intl.DateTimeFormat('es-ES', { day: 'numeric', month: 'long', year: 'numeric' }).format(fecha);
+        }
+
+        function diasDesdeEpoca() {
+            return Math.round((medianoche(new Date()) - medianoche(FECHA_EPOCA)) / 86400000);
+        }
+
+        function indiceDelDia() {
+            const n = PUZZLES.length;
+            return ((diasDesdeEpoca() % n) + n) % n;
+        }
+
+        function parsearSolucion(texto) {
+            let animales = 0;
+            return texto.split('').map(c => c === '*' ? 'A' + (++animales) : c);
+        }
+
+        // Recorre filas y columnas y devuelve los tramos de fichas-letra consecutivas.
+        function tramos(cartas) {
+            const res = [];
+            for (let r = 0; r < N; r++) {
+                let actual = [];
+                for (let c = 0; c <= N; c++) {
+                    if (c < N && !esAnimal(cartas[r * N + c])) actual.push(r * N + c);
+                    else { if (actual.length) res.push({ idx: actual, dir: 'f' }); actual = []; }
+                }
+            }
+            for (let c = 0; c < N; c++) {
+                let actual = [];
+                for (let r = 0; r <= N; r++) {
+                    if (r < N && !esAnimal(cartas[r * N + c])) actual.push(r * N + c);
+                    else { if (actual.length) res.push({ idx: actual, dir: 'c' }); actual = []; }
+                }
+            }
+            return res;
+        }
+
+        function prepararSolucion() {
+            segmentos = tramos(solucion).filter(t => t.idx.length >= 3);
+            segFila = Array(N * N).fill(null);
+            segCol = Array(N * N).fill(null);
+            segmentos.forEach(s => s.idx.forEach(i => { (s.dir === 'f' ? segFila : segCol)[i] = s; }));
+        }
+
+        function mezclar(rand) {
+            const t = solucion.slice();
+            const usados = new Set();
+            const todos = Array.from({ length: N * N }, (_, i) => i);
+            const barajar = (arr) => { for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(rand() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; } return arr; };
+            const parejas = [];
+            const intentarPar = (a, b) => {
+                if (a === b || usados.has(a) || usados.has(b) || t[a] === t[b]) return false;
+                [t[a], t[b]] = [t[b], t[a]];
+                usados.add(a); usados.add(b);
+                parejas.push([a, b]);
+                return true;
+            };
+            // Los dos animales siempre cambian de sitio
+            ['A1', 'A2'].forEach(an => {
+                const pos = t.indexOf(an);
+                const candidatos = barajar(todos.slice());
+                for (const c of candidatos) { if (intentarPar(pos, c)) break; }
+            });
+            const resto = barajar(todos.slice());
+            for (let i = 0; i < resto.length && parejas.length < PAREJAS_MEZCLA; i++) {
+                for (let j = i + 1; j < resto.length && parejas.length < PAREJAS_MEZCLA; j++) {
+                    if (intentarPar(resto[i], resto[j])) break;
+                }
+            }
+            return t;
+        }
+
+        function estrellasPara(movs) {
+            const par = PAREJAS_MEZCLA;
+            if (movs <= par + 2) return 3;
+            if (movs <= par + 6) return 2;
+            return 1;
+        }
+
+        function textoEstrellas(n) {
+            return '★'.repeat(n) + '☆'.repeat(3 - n);
+        }
+
+        // Verde / amarillo / blanco al estilo Wordle, calculado sobre la solución prevista.
+        function colores() {
+            const col = Array(N * N).fill('');
+            const verde = tablero.map((f, i) => !esAnimal(f) && f === solucion[i]);
+            verde.forEach((v, i) => { if (v) col[i] = 'verde'; });
+            segmentos.forEach(s => {
+                const restantes = {};
+                s.idx.forEach(i => { if (!verde[i]) restantes[solucion[i]] = (restantes[solucion[i]] || 0) + 1; });
+                s.idx.forEach(i => {
+                    const f = tablero[i];
+                    if (verde[i] || esAnimal(f)) return;
+                    if (restantes[f] > 0) { restantes[f]--; col[i] = 'amarillo'; }
+                });
+            });
+            return col;
+        }
+
+        function animalesJuntos(cartas) {
+            const i1 = cartas.indexOf('A1'), i2 = cartas.indexOf('A2');
+            return Math.max(Math.abs(Math.floor(i1 / N) - Math.floor(i2 / N)), Math.abs((i1 % N) - (i2 % N))) === 1;
+        }
+
+        // Un tablero también gana si todos sus tramos son palabras válidas y los animales están juntos.
+        function esGanador() {
+            if (tablero.every((f, i) => f === solucion[i])) return true;
+            if (!animalesJuntos(tablero)) return false;
+            return tramos(tablero).every(t => t.idx.length >= 3 && DICCIONARIO.has(t.idx.map(i => tablero[i]).join('')));
+        }
+
+        function render() {
+            const col = ganado ? [] : colores();
+            tableroEl.classList.toggle('ganado', ganado);
+            tableroEl.innerHTML = tablero.map((f, i) => {
+                const animal = esAnimal(f);
+                const clases = ['celda'];
+                if (animal) clases.push('animal');
+                else if (col[i]) clases.push(col[i]);
+                if (seleccion === i) clases.push('seleccionada');
+                return `<div class="${clases.join(' ')}" data-i="${i}" role="gridcell">${animal ? ANIMALES[f] : f}</div>`;
+            }).join('');
+            contadorMovsEl.textContent = `Movimientos: ${movimientos}`;
+            objetivoEl.textContent = `★★★ con ${PAREJAS_MEZCLA + 2} movimientos o menos · ★★ con ${PAREJAS_MEZCLA + 6} o menos`;
+        }
+
+        function cargarTablero(textoSolucion, semilla) {
+            solucion = parsearSolucion(textoSolucion);
+            prepararSolucion();
+            const rand = mulberry32(semilla);
+            do { inicial = mezclar(rand); } while (animalesJuntos(inicial));
+            empezarDeNuevo();
+        }
+
+        function empezarDeNuevo() {
+            tablero = inicial.slice();
+            movimientos = 0;
+            ganado = false;
+            seleccion = null;
+            render();
+            guardarProgreso();
+        }
+
+        function intercambiar(a, b) {
+            [tablero[a], tablero[b]] = [tablero[b], tablero[a]];
+            movimientos++;
+            seleccion = null;
+            if (esGanador()) {
+                ganado = true;
+                render();
+                guardarProgreso();
+                setTimeout(terminarJuego, 1000);
+            } else {
+                render();
+                guardarProgreso();
+            }
+        }
+
+        function tocar(i) {
+            if (seleccion === null) seleccion = i;
+            else if (seleccion === i) seleccion = null;
+            else { intercambiar(seleccion, i); return; }
+            render();
+        }
+
+        // --- Arrastrar y soltar (ratón y táctil) ---
+        let arrastre = null;
+
+        function indiceEn(x, y) {
+            const r = tableroEl.getBoundingClientRect();
+            if (x < r.left || x > r.right || y < r.top || y > r.bottom) return -1;
+            const c = Math.min(N - 1, Math.floor((x - r.left) / (r.width / N)));
+            const f = Math.min(N - 1, Math.floor((y - r.top) / (r.height / N)));
+            return f * N + c;
+        }
+
+        function resaltarObjetivo(j) {
+            tableroEl.querySelectorAll('.objetivo').forEach(e => e.classList.remove('objetivo'));
+            if (j >= 0 && arrastre && j !== arrastre.idx) {
+                const el = tableroEl.querySelector(`[data-i="${j}"]`);
+                if (el) el.classList.add('objetivo');
+            }
+        }
+
+        tableroEl.addEventListener('pointerdown', (e) => {
+            if (ganado) return;
+            const el = e.target.closest('.celda');
+            if (!el) return;
+            arrastre = { idx: Number(el.dataset.i), x0: e.clientX, y0: e.clientY, movido: false, el };
+            el.setPointerCapture(e.pointerId);
+        });
+
+        tableroEl.addEventListener('pointermove', (e) => {
+            if (!arrastre) return;
+            const dx = e.clientX - arrastre.x0, dy = e.clientY - arrastre.y0;
+            if (!arrastre.movido && Math.hypot(dx, dy) > 6) {
+                arrastre.movido = true;
+                arrastre.el.classList.add('arrastrando');
+            }
+            if (arrastre.movido) {
+                arrastre.el.style.transform = `translate(${dx}px, ${dy}px) scale(1.1)`;
+                resaltarObjetivo(indiceEn(e.clientX, e.clientY));
+            }
+        });
+
+        tableroEl.addEventListener('pointerup', (e) => {
+            if (!arrastre) return;
+            const { idx, movido } = arrastre;
+            const destino = indiceEn(e.clientX, e.clientY);
+            arrastre = null;
+            if (movido) {
+                if (destino >= 0 && destino !== idx) intercambiar(idx, destino);
+                else render();
+            } else {
+                tocar(idx);
+            }
+        });
+
+        tableroEl.addEventListener('pointercancel', () => {
+            if (!arrastre) return;
+            arrastre = null;
+            render();
+        });
+
+        // --- Progreso diario ---
+        function cargarProgreso() {
+            try {
+                const raw = localStorage.getItem(CLAVE_STORAGE);
+                if (!raw) return null;
+                const datos = JSON.parse(raw);
+                if (datos.fecha !== fechaISO(new Date())) return null;
+                return datos;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function guardarProgreso() {
+            if (!modoDiario) return;
+            try {
+                localStorage.setItem(CLAVE_STORAGE, JSON.stringify({
+                    fecha: fechaISO(new Date()),
+                    tablero, movimientos, ganado
+                }));
+            } catch (e) {
+                // localStorage no disponible (modo privado, etc.): seguimos sin persistir
+            }
+        }
+
+        function iniciarContadorDiario() {
+            pararContadorDiario();
+            const actualizar = () => {
+                const ahora = new Date();
+                const manana = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate() + 1);
+                const restante = manana - ahora;
+                const h = String(Math.floor(restante / 3600000)).padStart(2, '0');
+                const m = String(Math.floor((restante % 3600000) / 60000)).padStart(2, '0');
+                const s = String(Math.floor((restante % 60000) / 1000)).padStart(2, '0');
+                contadorDiarioEl.textContent = `Vuelve mañana para un nuevo reto (${h}:${m}:${s})`;
+            };
+            actualizar();
+            intervaloContador = setInterval(actualizar, 1000);
+        }
+
+        function pararContadorDiario() {
+            if (intervaloContador) {
+                clearInterval(intervaloContador);
+                intervaloContador = null;
+            }
+        }
+
+        function terminarJuego() {
+            juegoActivoEl.classList.add('oculto');
+            finJuegoEl.classList.remove('oculto');
+
+            estrellasFinalesEl.textContent = textoEstrellas(estrellasPara(movimientos));
+            detalleFinalEl.textContent = `Lo has resuelto en ${movimientos} movimientos.`;
+
+            if (modoDiario) {
+                reiniciarBtn.classList.add('oculto');
+                contadorDiarioEl.classList.remove('oculto');
+                iniciarContadorDiario();
+            } else {
+                reiniciarBtn.classList.remove('oculto');
+                contadorDiarioEl.classList.add('oculto');
+                pararContadorDiario();
+            }
+
+            Ranking.mostrar(document.getElementById('ranking'), 'reencuentro', movimientos, {
+                ascendente: true,
+                formatear: p => `${p} movimientos`,
+                claveGuardado: modoDiario ? fechaISO(new Date()) : undefined,
+            });
+        }
+
+        function mostrarJuego() {
+            juegoActivoEl.classList.remove('oculto');
+            finJuegoEl.classList.add('oculto');
+        }
+
+        function iniciarDiario() {
+            modoDiario = true;
+            pararContadorDiario();
+            contadorDiarioEl.classList.add('oculto');
+            reiniciarBtn.classList.remove('oculto');
+            cambiarModoEl.textContent = 'Jugar partida aleatoria';
+            infoModoEl.textContent = `Reto diario · ${fechaBonita(new Date())}`;
+            mostrarJuego();
+
+            const g = cargarProgreso();
+            cargarTablero(PUZZLES[indiceDelDia()], diasDesdeEpoca() + 1);
+            if (g && Array.isArray(g.tablero) && g.tablero.length === N * N
+                && [...g.tablero].sort().join() === [...solucion].sort().join()) {
+                tablero = g.tablero;
+                movimientos = g.movimientos || 0;
+                ganado = !!g.ganado;
+                render();
+                if (ganado) terminarJuego();
+            }
+        }
+
+        function iniciarAleatorio() {
+            modoDiario = false;
+            pararContadorDiario();
+            contadorDiarioEl.classList.add('oculto');
+            reiniciarBtn.classList.remove('oculto');
+            cambiarModoEl.textContent = 'Volver al reto diario';
+            infoModoEl.textContent = 'Modo aleatorio (práctica libre)';
+            mostrarJuego();
+
+            cargarTablero(PUZZLES[Math.floor(Math.random() * PUZZLES.length)], Math.floor(Math.random() * 1e9));
+        }
+
+        reempezarBtn.addEventListener('click', empezarDeNuevo);
+
+        reiniciarBtn.addEventListener('click', () => {
+            if (!modoDiario) iniciarAleatorio();
+        });
+
+        cambiarModoEl.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (modoDiario) iniciarAleatorio();
+            else iniciarDiario();
+        });
+
+        iniciarDiario();
+    </script>
+
+</body>
+</html>
