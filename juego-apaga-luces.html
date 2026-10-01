@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apaga las Luces: Juego de Lógica Gratis con Reto Diario | El Más Listo</title>
+    <meta name="description" content="Apaga todas las luces del tablero, pero cuidado: cada pulsación cambia también las vecinas. Juego de lógica gratis en español con reto diario, tres tamaños, estrellas y ranking.">
+    <link rel="canonical" href="https://elmaslisto.com/juego-apaga-luces">
+    <meta property="og:title" content="Apaga las Luces: Juego de Lógica con Reto Diario">
+    <meta property="og:description" content="Apaga todas las luces del tablero. Cada pulsación cambia también las vecinas. Reto diario, tres tamaños y ranking.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://elmaslisto.com/juego-apaga-luces">
+    <link rel="icon" href="img/favicon.png">
+
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        body { background-color: #8e44ad; }
+
+        .wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 460px;
+        }
+
+        .contenedor{width:100%;background:#fff;padding:20px;border-radius:15px;box-shadow:0 6px 12px rgba(0,0,0,.15);text-align:center;box-sizing:border-box;}
+
+        .header-juego{display:flex;justify-content:space-between;align-items:center;font-size:1.1em;color:#555;margin-bottom:2px;font-weight:700}
+        .header-juego h1{margin:0;font-size:1em;color:#2c3e50;}
+        #contador-movs{color:#8e44ad;font-size:.85em;}
+
+        #info-modo{margin:0 0 10px;font-size:.75em;color:#999;font-weight:400;text-align:left;}
+        .instrucciones{font-size:.8em;color:#777;margin:0 0 12px;}
+
+        .niveles{display:flex;justify-content:center;gap:6px;margin:0 0 12px;}
+        .nivel{background:#fff;border:1px solid #ccc;border-radius:20px;padding:4px 14px;cursor:pointer;color:#555;font-size:.8em;font-family:inherit;}
+        .nivel.activo{background:#8e44ad;border-color:#8e44ad;color:#fff;}
+        .nivel:hover:not(.activo){background:#f0f0f0;}
+
+        #tablero{display:grid;gap:7px;width:100%;max-width:340px;margin:0 auto 14px;padding:10px;background:#2c3e50;border-radius:12px;box-sizing:border-box;user-select:none;-webkit-user-select:none;}
+        .luz{aspect-ratio:1/1;border:none;border-radius:10px;background:#3b4f63;cursor:pointer;padding:0;transition:background-color .15s, box-shadow .15s, transform .1s;}
+        .luz:hover{background:#4a6178;}
+        .luz.on{background:#f1c40f;box-shadow:0 0 14px 2px rgba(241,196,15,.7);}
+        .luz.on:hover{background:#f4d03f;}
+        .luz.pista{outline:3px solid #2ecc71;outline-offset:1px;}
+        .luz:active{transform:scale(.94);}
+        #tablero.ganado .luz{cursor:default;}
+
+        .acciones{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;}
+        .btn-accion{background:#fff;border:1px solid #ccc;border-radius:20px;padding:5px 14px;cursor:pointer;color:#555;font-size:.8em;font-family:inherit;}
+        .btn-accion:hover{background:#f0f0f0;}
+        .objetivo-estrellas{font-size:.75em;color:#999;margin:10px 0 0;}
+
+        #fin-juego h1{font-size:1.6em;color:#8e44ad;}
+        .puntuacion-grande{font-size:2.4em;font-weight:700;color:#f1c40f;margin:10px 0 4px;letter-spacing:4px;}
+        .detalle-final{font-size:.95em;color:#555;margin:0 0 16px;}
+        #reiniciar{padding:15px 25px;font-size:1.1em;background-color:#2ecc71;color:#fff;border:none;border-radius:8px;cursor:pointer;margin-top:10px;}
+        #contador-diario{font-size:.9em;color:#888;margin:10px 0 0;}
+        .oculto{display:none}
+
+        .mode-toggle{margin:15px 0 0;font-size:.85em;text-align:center;}
+        .mode-toggle a{color:rgba(255,255,255,0.9);text-decoration:underline;cursor:pointer;}
+        .mode-toggle a:hover{color:#fff;}
+
+        @media (min-width:768px){
+            .contenedor{padding:30px}
+            #tablero{max-width:380px}
+        }
+    </style>
+</head>
+<body>
+
+    <div class="wrapper">
+        <!-- Pantalla de juego principal -->
+        <div id="juego-activo" class="contenedor">
+            <div class="header-juego">
+                <h1>Apaga las Luces</h1>
+                <span id="contador-movs">Movimientos: 0</span>
+            </div>
+            <p id="info-modo"></p>
+            <p class="instrucciones">Toca una luz para cambiarla a ella y a sus 4 vecinas (arriba, abajo, izquierda y derecha). Apágalas todas.</p>
+            <div class="niveles oculto" id="niveles">
+                <button type="button" class="nivel" data-n="4">Fácil 4×4</button>
+                <button type="button" class="nivel" data-n="5">Medio 5×5</button>
+                <button type="button" class="nivel" data-n="6">Difícil 6×6</button>
+            </div>
+            <div id="tablero" role="grid" aria-label="Tablero de luces"></div>
+            <div class="acciones">
+                <button type="button" class="btn-accion" id="reempezar">↺ Empezar de nuevo</button>
+                <button type="button" class="btn-accion" id="btn-pista">💡 Pista (+2 movimientos)</button>
+            </div>
+            <p class="objetivo-estrellas" id="objetivo-estrellas"></p>
+        </div>
+
+        <!-- Pantalla de fin de juego (inicialmente oculta) -->
+        <div id="fin-juego" class="contenedor oculto">
+            <h1>¡Todo apagado! 💡</h1>
+            <p class="puntuacion-grande" id="estrellas-finales">★★★</p>
+            <p class="detalle-final" id="detalle-final"></p>
+            <div id="ranking" class="ranking-widget"></div>
+            <p id="contador-diario" class="oculto"></p>
+            <button id="reiniciar">Jugar otra partida</button>
+        </div>
+
+        <p class="mode-toggle"><a href="#" id="cambiar-modo">Jugar partida aleatoria</a></p>
+
+        <a href="index.html" class="home-link">Volver al menú</a>
+
+        <section class="guia">
+            <div class="guia-bloque">
+                <h2>¿En qué consiste Apaga las Luces?</h2>
+                <p>Es un tablero de luces, unas encendidas y otras apagadas. Tu objetivo es <strong>dejarlas todas apagadas</strong>. La trampa: al tocar una luz, no solo cambia ella, también cambian sus cuatro vecinas (la de arriba, la de abajo, la de la izquierda y la de la derecha). Lo que estaba encendido se apaga y lo que estaba apagado se enciende.</p>
+                <p>Por eso apagar una luz suele encender otra, y hay que pensar en el orden. Un truco habitual es ir fila por fila: apaga las luces de la primera fila tocando las de la fila de debajo, y así sucesivamente hasta la última fila.</p>
+                <p>Todos los tableros tienen solución. Cuantos menos movimientos uses, más estrellas ganas (hasta 3).</p>
+            </div>
+
+            <div class="guia-bloque">
+                <h2>¿Para qué edades está recomendado?</h2>
+                <p>El tablero fácil de 4×4 funciona bien desde los <strong>8 años</strong>. Los tamaños 5×5 y 6×6 plantean un reto de razonamiento para adolescentes y adultos.</p>
+                <p>Si te gustan los juegos de lógica, prueba también el <a href="juego-sudoku.html">Sudoku</a> o <a href="juego-reencuentro.html">Reencuentro</a>.</p>
+            </div>
+
+            <div class="guia-bloque">
+                <h2>¿Por qué es bueno este juego?</h2>
+                <ul>
+                    <li><strong>Pensamiento lógico:</strong> hay que anticipar cómo afecta cada pulsación a varias luces a la vez.</li>
+                    <li><strong>Planificación:</strong> el orden de los movimientos importa y se puede optimizar.</li>
+                    <li><strong>Reconocimiento de patrones:</strong> con la práctica se ven combinaciones que se repiten.</li>
+                    <li><strong>Sin presión de tiempo:</strong> no hay cronómetro; solo cuentas movimientos.</li>
+                </ul>
+            </div>
+
+            <div class="guia-bloque">
+                <h2>Preguntas frecuentes</h2>
+                <div class="faq-item">
+                    <h3>¿Siempre tiene solución?</h3>
+                    <p>Sí. Cada tablero se crea a partir de un tablero apagado, pulsando luces al azar, así que siempre existe un camino de vuelta.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>¿Importa el orden en que toco las luces?</h3>
+                    <p>No para el resultado final: el efecto de cada luz es el mismo sin importar cuándo la toques. Lo importante es qué luces tocas. Y tocar la misma dos veces equivale a no tocarla, así que nunca hace falta pulsar una luz más de una vez.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>¿Cómo se consiguen las estrellas?</h3>
+                    <p>Cada tablero tiene un número mínimo de movimientos. Con ese mínimo (o muy cerca) consigues las tres estrellas. Debajo del tablero verás los límites exactos.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>¿Puedo jugar más de una vez al día?</h3>
+                    <p>El reto diario es un único tablero por día, igual para todos. Con "Jugar partida aleatoria" puedes practicar sin límite en tres tamaños.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "¿Siempre tiene solución?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Sí. Cada tablero se crea a partir de un tablero apagado, pulsando luces al azar, así que siempre existe un camino de vuelta."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "¿Importa el orden en que toco las luces?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "No para el resultado final: el efecto de cada luz es el mismo sin importar cuándo la toques. Lo importante es qué luces tocas. Y tocar la misma dos veces equivale a no tocarla, así que nunca hace falta pulsar una luz más de una vez."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "¿Cómo se consiguen las estrellas?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Cada tablero tiene un número mínimo de movimientos. Con ese mínimo (o muy cerca) consigues las tres estrellas. Debajo del tablero verás los límites exactos."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "¿Puedo jugar más de una vez al día?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "El reto diario es un único tablero por día, igual para todos. Con \"Jugar partida aleatoria\" puedes practicar sin límite en tres tamaños."
+                }
+            }
+        ]
+    }
+    </script>
+
+    <script src="ranking.js"></script>
+    <script>
+        const CLAVE_STORAGE = 'elmaslisto-apaga-luces-diario';
+        const FECHA_EPOCA = new Date(2024, 0, 1);
+        const PENALIZACION_PISTA = 2;
+        const PULSACIONES = { 4: 7, 5: 9, 6: 12 }; // luces pulsadas al azar al crear cada tablero
+
+        const juegoActivoEl = document.getElementById('juego-activo');
+        const finJuegoEl = document.getElementById('fin-juego');
+        const infoModoEl = document.getElementById('info-modo');
+        const nivelesEl = document.getElementById('niveles');
+        const tableroEl = document.getElementById('tablero');
+        const contadorMovsEl = document.getElementById('contador-movs');
+        const objetivoEl = document.getElementById('objetivo-estrellas');
+        const estrellasFinalesEl = document.getElementById('estrellas-finales');
+        const detalleFinalEl = document.getElementById('detalle-final');
+        const contadorDiarioEl = document.getElementById('contador-diario');
+        const reiniciarBtn = document.getElementById('reiniciar');
+        const reempezarBtn = document.getElementById('reempezar');
+        const pistaBtn = document.getElementById('btn-pista');
+        const cambiarModoEl = document.getElementById('cambiar-modo');
+
+        let N = 5;
+        let inicial = [];     // luces del tablero al empezar (1 = encendida)
+        let luces = [];       // estado actual
+        let minimo = 0;       // movimientos mínimos para resolver el tablero inicial
+        let movimientos = 0;  // pulsaciones + penalizaciones por pistas
+        let pistas = 0;
+        let pistaIdx = -1;
+        let ganado = false;
+        let modoDiario = true;
+        let intervaloContador = null;
+
+        function mulberry32(a) {
+            return function () {
+                a |= 0; a = a + 0x6D2B79F5 | 0;
+                let t = Math.imul(a ^ a >>> 15, 1 | a);
+                t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+                return ((t ^ t >>> 14) >>> 0) / 4294967296;
+            };
+        }
+
+        function medianoche(fecha) { return new Date(fecha.getFullYear(), fecha.getMonth(), fecha.getDate()); }
+
+        function fechaISO(fecha) {
+            const y = fecha.getFullYear();
+            const m = String(fecha.getMonth() + 1).padStart(2, '0');
+            const d = String(fecha.getDate()).padStart(2, '0');
+            return `${y}-${m}-${d}`;
+        }
+
+        function fechaBonita(fecha) {
+            return new Intl.DateTimeFormat('es-ES', { day: 'numeric', month: 'long', year: 'numeric' }).format(fecha);
+        }
+
+        function diasDesdeEpoca() {
+            return Math.round((medianoche(new Date()) - medianoche(FECHA_EPOCA)) / 86400000);
+        }
+
+        // Aplica una pulsación en la casilla i sobre el estado "est".
+        function pulsar(est, i) {
+            const f = Math.floor(i / N), c = i % N;
+            est[i] ^= 1;
+            if (f > 0) est[i - N] ^= 1;
+            if (f < N - 1) est[i + N] ^= 1;
+            if (c > 0) est[i - 1] ^= 1;
+            if (c < N - 1) est[i + 1] ^= 1;
+        }
+
+        // "Persecución de luces": fijada la primera fila de pulsaciones, el resto queda determinado.
+        // Con las 2^N primeras filas posibles se obtienen todas las soluciones (en 5x5 son 1, 2 o 4 según el tablero).
+        // Devuelve la solución con menos pulsaciones (array de 0/1), o null si no hay.
+        function mejorSolucion(estado) {
+            let mejor = null, mejorCuenta = Infinity;
+            for (let mask = 0; mask < (1 << N); mask++) {
+                const p = Array(N * N).fill(0);
+                const sim = estado.slice();
+                for (let c = 0; c < N; c++) if (mask & (1 << c)) { p[c] = 1; pulsar(sim, c); }
+                for (let f = 1; f < N; f++) {
+                    for (let c = 0; c < N; c++) {
+                        if (sim[(f - 1) * N + c]) { p[f * N + c] = 1; pulsar(sim, f * N + c); }
+                    }
+                }
+                if (sim.every(v => !v)) {
+                    const cuenta = p.reduce((a, b) => a + b, 0);
+                    if (cuenta < mejorCuenta) { mejorCuenta = cuenta; mejor = p; }
+                }
+            }
+            return mejor;
+        }
+
+        function generar(tam, semilla) {
+            N = tam;
+            const rand = mulberry32(semilla);
+            let est;
+            do {
+                est = Array(N * N).fill(0);
+                const idx = Array.from({ length: N * N }, (_, i) => i);
+                for (let i = idx.length - 1; i > 0; i--) { const j = Math.floor(rand() * (i + 1)); [idx[i], idx[j]] = [idx[j], idx[i]]; }
+                idx.slice(0, PULSACIONES[N]).forEach(i => pulsar(est, i));
+            } while (est.every(v => !v));
+            return est;
+        }
+
+        function estrellasPara(movs) {
+            if (movs <= minimo + 1) return 3;
+            if (movs <= minimo + 5) return 2;
+            return 1;
+        }
+
+        function textoEstrellas(n) { return '★'.repeat(n) + '☆'.repeat(3 - n); }
+
+        function render() {
+            tableroEl.style.gridTemplateColumns = `repeat(${N}, 1fr)`;
+            tableroEl.classList.toggle('ganado', ganado);
+            tableroEl.innerHTML = luces.map((v, i) =>
+                `<button type="button" class="luz${v ? ' on' : ''}${i === pistaIdx ? ' pista' : ''}" data-i="${i}" role="gridcell" aria-label="Fila ${Math.floor(i / N) + 1}, columna ${i % N + 1}, ${v ? 'encendida' : 'apagada'}"></button>`
+            ).join('');
+            contadorMovsEl.textContent = `Movimientos: ${movimientos}`;
+            objetivoEl.textContent = `★★★ con ${minimo + 1} movimientos o menos · ★★ con ${minimo + 5} o menos`;
+        }
+
+        function cargarTablero(tam, semilla) {
+            inicial = generar(tam, semilla);
+            minimo = mejorSolucion(inicial).reduce((a, b) => a + b, 0);
+            empezarDeNuevo();
+        }
+
+        function empezarDeNuevo() {
+            luces = inicial.slice();
+            movimientos = 0;
+            pistas = 0;
+            pistaIdx = -1;
+            ganado = false;
+            render();
+            guardarProgreso();
+        }
+
+        function tocar(i) {
+            if (ganado) return;
+            pulsar(luces, i);
+            movimientos++;
+            pistaIdx = -1;
+            if (luces.every(v => !v)) {
+                ganado = true;
+                render();
+                guardarProgreso();
+                setTimeout(terminarJuego, 900);
+            } else {
+                render();
+                guardarProgreso();
+            }
+        }
+
+        // La pista señala una luz de la mejor solución desde el estado actual.
+        function pedirPista() {
+            if (ganado) return;
+            const sol = mejorSolucion(luces);
+            if (!sol) return;
+            const candidatas = sol.map((v, i) => v ? i : -1).filter(i => i >= 0);
+            pistaIdx = candidatas[0];
+            movimientos += PENALIZACION_PISTA;
+            pistas++;
+            render();
+            guardarProgreso();
+        }
+
+        tableroEl.addEventListener('click', (e) => {
+            const el = e.target.closest('.luz');
+            if (el) tocar(Number(el.dataset.i));
+        });
+
+        reempezarBtn.addEventListener('click', empezarDeNuevo);
+        pistaBtn.addEventListener('click', pedirPista);
+
+        nivelesEl.addEventListener('click', (e) => {
+            const b = e.target.closest('.nivel');
+            if (!b || modoDiario) return;
+            iniciarAleatorio(Number(b.dataset.n));
+        });
+
+        // --- Progreso diario ---
+        function cargarProgreso() {
+            try {
+                const raw = localStorage.getItem(CLAVE_STORAGE);
+                if (!raw) return null;
+                const datos = JSON.parse(raw);
+                if (datos.fecha !== fechaISO(new Date())) return null;
+                return datos;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function guardarProgreso() {
+            if (!modoDiario) return;
+            try {
+                localStorage.setItem(CLAVE_STORAGE, JSON.stringify({
+                    fecha: fechaISO(new Date()),
+                    luces, movimientos, pistas, ganado
+                }));
+            } catch (e) {
+                // localStorage no disponible (modo privado, etc.): seguimos sin persistir
+            }
+        }
+
+        function iniciarContadorDiario() {
+            pararContadorDiario();
+            const actualizar = () => {
+                const ahora = new Date();
+                const manana = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate() + 1);
+                const restante = manana - ahora;
+                const h = String(Math.floor(restante / 3600000)).padStart(2, '0');
+                const m = String(Math.floor((restante % 3600000) / 60000)).padStart(2, '0');
+                const s = String(Math.floor((restante % 60000) / 1000)).padStart(2, '0');
+                contadorDiarioEl.textContent = `Vuelve mañana para un nuevo reto (${h}:${m}:${s})`;
+            };
+            actualizar();
+            intervaloContador = setInterval(actualizar, 1000);
+        }
+
+        function pararContadorDiario() {
+            if (intervaloContador) { clearInterval(intervaloContador); intervaloContador = null; }
+        }
+
+        function terminarJuego() {
+            juegoActivoEl.classList.add('oculto');
+            finJuegoEl.classList.remove('oculto');
+
+            estrellasFinalesEl.textContent = textoEstrellas(estrellasPara(movimientos));
+            detalleFinalEl.textContent = `Tablero de ${N}×${N} resuelto en ${movimientos} movimientos (el mínimo posible era ${minimo})` +
+                (pistas ? `, incluyendo ${pistas} ${pistas === 1 ? 'pista' : 'pistas'}.` : '.');
+
+            if (modoDiario) {
+                reiniciarBtn.classList.add('oculto');
+                contadorDiarioEl.classList.remove('oculto');
+                iniciarContadorDiario();
+            } else {
+                reiniciarBtn.classList.remove('oculto');
+                contadorDiarioEl.classList.add('oculto');
+                pararContadorDiario();
+            }
+
+            Ranking.mostrar(document.getElementById('ranking'), 'apaga-luces-' + N, movimientos, {
+                ascendente: true,
+                formatear: p => `${p} movimientos`,
+                claveGuardado: modoDiario ? fechaISO(new Date()) : undefined,
+            });
+        }
+
+        function mostrarJuego() {
+            juegoActivoEl.classList.remove('oculto');
+            finJuegoEl.classList.add('oculto');
+        }
+
+        function iniciarDiario() {
+            modoDiario = true;
+            pararContadorDiario();
+            contadorDiarioEl.classList.add('oculto');
+            reiniciarBtn.classList.remove('oculto');
+            nivelesEl.classList.add('oculto');
+            cambiarModoEl.textContent = 'Jugar partida aleatoria';
+            infoModoEl.textContent = `Reto diario · 5×5 · ${fechaBonita(new Date())}`;
+            mostrarJuego();
+
+            const g = cargarProgreso();
+            cargarTablero(5, diasDesdeEpoca() + 11);
+            if (g && Array.isArray(g.luces) && g.luces.length === N * N) {
+                luces = g.luces;
+                movimientos = g.movimientos || 0;
+                pistas = g.pistas || 0;
+                ganado = !!g.ganado;
+                render();
+                if (ganado) terminarJuego();
+            }
+        }
+
+        function iniciarAleatorio(tam) {
+            modoDiario = false;
+            pararContadorDiario();
+            contadorDiarioEl.classList.add('oculto');
+            reiniciarBtn.classList.remove('oculto');
+            nivelesEl.classList.remove('oculto');
+            tam = tam || 4;
+            nivelesEl.querySelectorAll('.nivel').forEach(b => b.classList.toggle('activo', Number(b.dataset.n) === tam));
+            cambiarModoEl.textContent = 'Volver al reto diario';
+            infoModoEl.textContent = 'Modo aleatorio (práctica libre)';
+            mostrarJuego();
+
+            cargarTablero(tam, Math.floor(Math.random() * 1e9));
+        }
+
+        reiniciarBtn.addEventListener('click', () => {
+            if (!modoDiario) iniciarAleatorio(N);
+        });
+
+        cambiarModoEl.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (modoDiario) iniciarAleatorio(4);
+            else iniciarDiario();
+        });
+
+        iniciarDiario();
+    </script>
+
+</body>
+</html>
