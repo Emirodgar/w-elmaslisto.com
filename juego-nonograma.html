@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nonograma Online Gratis (Picross): Reto Diario y 3 Tamaños | El Más Listo</title>
+    <meta name="description" content="Resuelve nonogramas online gratis: rellena la cuadrícula siguiendo las pistas numéricas de filas y columnas. Reto diario, tres tamaños, pistas y ranking de tiempos en español.">
+    <link rel="canonical" href="https://elmaslisto.com/juego-nonograma">
+    <meta property="og:title" content="Nonograma Online Gratis (Picross): Reto Diario y 3 Tamaños">
+    <meta property="og:description" content="Rellena la cuadrícula siguiendo las pistas numéricas de filas y columnas. Reto diario, tres tamaños y ranking de tiempos.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://elmaslisto.com/juego-nonograma">
+    <link rel="icon" href="img/favicon.png">
+
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        body { background-color: #e67e22; }
+
+        .wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 460px;
+        }
+
+        .contenedor{width:100%;background:#fff;padding:20px;border-radius:15px;box-shadow:0 6px 12px rgba(0,0,0,.15);text-align:center;box-sizing:border-box;}
+
+        .header-juego{display:flex;justify-content:space-between;align-items:center;font-size:1.1em;color:#555;margin-bottom:2px;font-weight:700}
+        .header-juego h1{margin:0;font-size:1em;color:#2c3e50;}
+        #cronometro{color:#e67e22;font-size:.85em;font-variant-numeric:tabular-nums;}
+
+        #info-modo{margin:0 0 10px;font-size:.75em;color:#999;font-weight:400;text-align:left;}
+        .instrucciones{font-size:.8em;color:#777;margin:0 0 12px;}
+
+        .niveles{display:flex;justify-content:center;gap:6px;margin:0 0 12px;flex-wrap:wrap;}
+        .nivel{background:#fff;border:1px solid #ccc;border-radius:20px;padding:4px 14px;cursor:pointer;color:#555;font-size:.8em;font-family:inherit;}
+        .nivel.activo{background:#e67e22;border-color:#e67e22;color:#fff;}
+        .nivel:hover:not(.activo){background:#f0f0f0;}
+
+        #tablero{display:grid;width:100%;max-width:380px;margin:0 auto 12px;touch-action:none;user-select:none;-webkit-user-select:none;font-size:14px;}
+        .pista-col,.pista-fila{display:flex;color:#2c3e50;font-weight:700;line-height:1.1;}
+        .pista-col{flex-direction:column;justify-content:flex-end;align-items:center;padding-bottom:4px;}
+        .pista-fila{flex-direction:row;justify-content:flex-end;align-items:center;gap:.4em;padding-right:6px;}
+        .pista-col.hecha,.pista-fila.hecha{color:#bbb;}
+        .celda{aspect-ratio:1/1;background:#fff;border:1px solid #cfd4d9;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#95a5a6;font-weight:700;}
+        .celda.lleno{background:#2c3e50;border-color:#2c3e50;}
+        .celda.marca::after{content:'✕';font-size:.9em;}
+        .celda.borde-d{border-right:2px solid #2c3e50;}
+        .celda.borde-b{border-bottom:2px solid #2c3e50;}
+        .celda.lleno.borde-d{border-right-color:#7f8c8d;}
+        .celda.lleno.borde-b{border-bottom-color:#7f8c8d;}
+        #tablero.ganado .celda{cursor:default;}
+        #tablero.ganado .celda.marca::after{content:'';}
+
+        .herramientas{display:flex;justify-content:center;gap:6px;margin:0 0 10px;}
+        .herr{background:#fff;border:1px solid #ccc;border-radius:20px;padding:5px 14px;cursor:pointer;color:#555;font-size:.8em;font-family:inherit;}
+        .herr.activo{background:#2c3e50;border-color:#2c3e50;color:#fff;}
+
+        .acciones{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;}
+        .btn-accion{background:#fff;border:1px solid #ccc;border-radius:20px;padding:5px 14px;cursor:pointer;color:#555;font-size:.8em;font-family:inherit;}
+        .btn-accion:hover{background:#f0f0f0;}
+        .aviso-pistas{font-size:.75em;color:#999;margin:10px 0 0;}
+
+        #fin-juego h1{font-size:1.6em;color:#e67e22;}
+        #imagen-final{display:grid;gap:0;width:140px;margin:10px auto 0;border:2px solid #2c3e50;border-radius:4px;overflow:hidden;}
+        #imagen-final i{aspect-ratio:1/1;background:#fff;}
+        #imagen-final i.on{background:#2c3e50;}
+        .puntuacion-grande{font-size:2.4em;font-weight:700;color:#f1c40f;margin:10px 0 4px;letter-spacing:4px;}
+        .detalle-final{font-size:.95em;color:#555;margin:0 0 16px;}
+        #reiniciar{padding:15px 25px;font-size:1.1em;background-color:#2ecc71;color:#fff;border:none;border-radius:8px;cursor:pointer;margin-top:10px;}
+        #contador-diario{font-size:.9em;color:#888;margin:10px 0 0;}
+        .oculto{display:none}
+
+        .mode-toggle{margin:15px 0 0;font-size:.85em;text-align:center;}
+        .mode-toggle a{color:rgba(255,255,255,0.9);text-decoration:underline;cursor:pointer;}
+        .mode-toggle a:hover{color:#fff;}
+
+        @media (min-width:768px){
+            .contenedor{padding:30px}
+            #tablero{max-width:420px}
+        }
+    </style>
+</head>
+<body>
+
+    <div class="wrapper">
+        <!-- Pantalla de juego principal -->
+        <div id="juego-activo" class="contenedor">
+            <div class="header-juego">
+                <h1>Nonograma</h1>
+                <span id="cronometro">00:00</span>
+            </div>
+            <p id="info-modo"></p>
+            <p class="instrucciones">Los números indican cuántas casillas seguidas van rellenas en esa fila o columna. Toca (o arrastra) para rellenar.</p>
+            <div class="niveles oculto" id="niveles">
+                <button type="button" class="nivel" data-n="5">Fácil 5×5</button>
+                <button type="button" class="nivel" data-n="7">Medio 7×7</button>
+                <button type="button" class="nivel" data-n="10">Difícil 10×10</button>
+            </div>
+            <div id="tablero" aria-label="Tablero de nonograma"></div>
+            <div class="herramientas">
+                <button type="button" class="herr activo" id="herr-rellenar">■ Rellenar</button>
+                <button type="button" class="herr" id="herr-marcar">✕ Marcar vacía</button>
+            </div>
+            <div class="acciones">
+                <button type="button" class="btn-accion" id="reempezar">↺ Empezar de nuevo</button>
+                <button type="button" class="btn-accion" id="btn-pista">💡 Pista</button>
+            </div>
+            <p class="aviso-pistas">Cada pista suma 30 segundos a tu tiempo final.</p>
+        </div>
+
+        <!-- Pantalla de fin de juego (inicialmente oculta) -->
+        <div id="fin-juego" class="contenedor oculto">
+            <h1>¡Dibujo descubierto! 🎨</h1>
+            <div id="imagen-final"></div>
+            <p class="puntuacion-grande" id="tiempo-final">00:00</p>
+            <p class="detalle-final" id="detalle-final"></p>
+            <div id="ranking" class="ranking-widget"></div>
+            <p id="contador-diario" class="oculto"></p>
+            <button id="reiniciar">Jugar otra partida</button>
+        </div>
+
+        <p class="mode-toggle"><a href="#" id="cambiar-modo">Jugar partida aleatoria</a></p>
+
+        <a href="index.html" class="home-link">Volver al menú</a>
+
+        <section class="guia">
+            <div class="guia-bloque">
+                <h2>¿En qué consiste el nonograma?</h2>
+                <p>El nonograma (también llamado Picross o Griddlers) es un puzle de lógica en el que hay que descubrir un dibujo escondido en una cuadrícula. Cada fila y cada columna tiene unos números: indican <strong>cuántas casillas seguidas están rellenas</strong> y en qué orden. Por ejemplo, "3 1" significa un bloque de tres casillas, al menos un hueco, y después una casilla suelta.</p>
+                <p>Hay que deducir qué casillas rellenar combinando las pistas de filas y columnas. Usa el botón <strong>Marcar vacía</strong> para anotar las casillas que seguro no van rellenas; son útiles para razonar. Cuando una fila o columna ya cumple su pista, sus números se ponen en gris.</p>
+                <p>Se puede jugar con el ratón o con el dedo: toca una casilla o arrastra para rellenar varias de golpe.</p>
+            </div>
+
+            <div class="guia-bloque">
+                <h2>¿Para qué edades está recomendado?</h2>
+                <p>El tamaño <strong>5×5</strong> es un buen comienzo a partir de <strong>8-9 años</strong>. Los tableros de 7×7 y 10×10 requieren más paciencia y son un reto para adolescentes y adultos.</p>
+                <p>Si te gustan los juegos de lógica, prueba también el <a href="juego-sudoku.html">Sudoku</a> o <a href="juego-apaga-luces.html">Apaga las Luces</a>.</p>
+            </div>
+
+            <div class="guia-bloque">
+                <h2>¿Por qué es bueno este juego?</h2>
+                <ul>
+                    <li><strong>Deducción lógica:</strong> cada casilla se decide razonando, combinando filas y columnas.</li>
+                    <li><strong>Concentración:</strong> hay que mantener varias pistas en mente a la vez.</li>
+                    <li><strong>Visualización:</strong> entrenas la capacidad de imaginar cómo encajan los bloques en una línea.</li>
+                    <li><strong>Sin lenguaje:</strong> solo números, apto para cualquier idioma.</li>
+                </ul>
+            </div>
+
+            <div class="guia-bloque">
+                <h2>Preguntas frecuentes</h2>
+                <div class="faq-item">
+                    <h3>¿Por dónde empiezo?</h3>
+                    <p>Busca primero las líneas con pistas grandes. En una fila de 10 casillas con la pista "8", por ejemplo, las casillas centrales están rellenas con seguridad. Después ve cruzando filas y columnas.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>¿Hace falta adivinar?</h3>
+                    <p>Casi nunca. Los tableros se resuelven con deducción. Si te atascas, usa una pista: corrige o completa una casilla con un coste de 30 segundos.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>¿Cómo funciona el reto diario?</h3>
+                    <p>Cada día hay un nonograma de 7×7, igual para todos. Tu progreso se guarda en tu navegador. Con "Jugar partida aleatoria" puedes practicar sin límite en tres tamaños.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>¿Cómo se calcula la puntuación?</h3>
+                    <p>Se mide tu tiempo en segundos, más 30 segundos por cada pista usada. Cuanto menor sea el total, mejor puesto en el ranking local de tu dispositivo.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "¿Por dónde empiezo?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Busca primero las líneas con pistas grandes. En una fila de 10 casillas con la pista \"8\", por ejemplo, las casillas centrales están rellenas con seguridad. Después ve cruzando filas y columnas."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "¿Hace falta adivinar?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Casi nunca. Los tableros se resuelven con deducción. Si te atascas, usa una pista: corrige o completa una casilla con un coste de 30 segundos."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "¿Cómo funciona el reto diario?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Cada día hay un nonograma de 7×7, igual para todos. Tu progreso se guarda en tu navegador. Con \"Jugar partida aleatoria\" puedes practicar sin límite en tres tamaños."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "¿Cómo se calcula la puntuación?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Se mide tu tiempo en segundos, más 30 segundos por cada pista usada. Cuanto menor sea el total, mejor puesto en el ranking local de tu dispositivo."
+                }
+            }
+        ]
+    }
+    </script>
+
+    <script src="ranking.js"></script>
+    <script>
+        const CLAVE_STORAGE = 'elmaslisto-nonograma-diario';
+        const FECHA_EPOCA = new Date(2024, 0, 1);
+        const PENALIZACION_PISTA = 30;
+        const TAM_DIARIO = 7;
+
+        const juegoActivoEl = document.getElementById('juego-activo');
+        const finJuegoEl = document.getElementById('fin-juego');
+        const infoModoEl = document.getElementById('info-modo');
+        const nivelesEl = document.getElementById('niveles');
+        const tableroEl = document.getElementById('tablero');
+        const cronometroEl = document.getElementById('cronometro');
+        const tiempoFinalEl = document.getElementById('tiempo-final');
+        const detalleFinalEl = document.getElementById('detalle-final');
+        const imagenFinalEl = document.getElementById('imagen-final');
+        const contadorDiarioEl = document.getElementById('contador-diario');
+        const reiniciarBtn = document.getElementById('reiniciar');
+        const reempezarBtn = document.getElementById('reempezar');
+        const pistaBtn = document.getElementById('btn-pista');
+        const cambiarModoEl = document.getElementById('cambiar-modo');
+        const herrRellenar = document.getElementById('herr-rellenar');
+        const herrMarcar = document.getElementById('herr-marcar');
+
+        let N = 7;
+        let patron = [];      // 1 = casilla del dibujo
+        let pistasFilas = [];
+        let pistasCols = [];
+        let estados = [];     // 0 vacía, 1 rellena, 2 marcada con ✕
+        let herramienta = 'rellenar';
+        let segundos = 0;
+        let pistasUsadas = 0;
+        let ganado = false;
+        let modoDiario = true;
+        let intervaloCrono = null;
+        let intervaloContador = null;
+        let celdasEl = [];
+        let pistasFilaEl = [];
+        let pistasColEl = [];
+
+        function mulberry32(a) {
+            return function () {
+                a |= 0; a = a + 0x6D2B79F5 | 0;
+                let t = Math.imul(a ^ a >>> 15, 1 | a);
+                t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+                return ((t ^ t >>> 14) >>> 0) / 4294967296;
+            };
+        }
+
+        function medianoche(fecha) { return new Date(fecha.getFullYear(), fecha.getMonth(), fecha.getDate()); }
+
+        function fechaISO(fecha) {
+            const y = fecha.getFullYear();
+            const m = String(fecha.getMonth() + 1).padStart(2, '0');
+            const d = String(fecha.getDate()).padStart(2, '0');
+            return `${y}-${m}-${d}`;
+        }
+
+        function fechaBonita(fecha) {
+            return new Intl.DateTimeFormat('es-ES', { day: 'numeric', month: 'long', year: 'numeric' }).format(fecha);
+        }
+
+        function diasDesdeEpoca() {
+            return Math.round((medianoche(new Date()) - medianoche(FECHA_EPOCA)) / 86400000);
+        }
+
+        function formatearTiempo(s) {
+            return `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
+        }
+
+        // Longitudes de los bloques consecutivos de unos; [0] si no hay ninguno.
+        function bloques(linea) {
+            const res = [];
+            let n = 0;
+            for (const v of linea) {
+                if (v) n++;
+                else if (n) { res.push(n); n = 0; }
+            }
+            if (n) res.push(n);
+            return res.length ? res : [0];
+        }
+
+        const iguales = (a, b) => a.length === b.length && a.every((v, i) => v === b[i]);
+        const filaDe = (m, f) => Array.from({ length: N }, (_, c) => m[f * N + c]);
+        const colDe = (m, c) => Array.from({ length: N }, (_, f) => m[f * N + c]);
+
+        // Dibujo aleatorio sin filas ni columnas vacías, con aspecto compacto (suavizado simple).
+        function generar(tam, semilla) {
+            N = tam;
+            const rand = mulberry32(semilla);
+            let p;
+            do {
+                p = Array.from({ length: N * N }, () => rand() < 0.55 ? 1 : 0);
+                // Suavizado: una casilla se parece a la mayoría de sus vecinas, para formar manchas
+                const q = p.slice();
+                for (let f = 0; f < N; f++) for (let c = 0; c < N; c++) {
+                    let suma = 0, cuenta = 0;
+                    for (let df = -1; df <= 1; df++) for (let dc = -1; dc <= 1; dc++) {
+                        const ff = f + df, cc = c + dc;
+                        if (ff >= 0 && ff < N && cc >= 0 && cc < N) { suma += p[ff * N + cc]; cuenta++; }
+                    }
+                    const media = suma / cuenta;
+                    q[f * N + c] = media > 0.6 ? 1 : media < 0.4 ? 0 : p[f * N + c];
+                }
+                p = q;
+            } while (!Array.from({ length: N }, (_, i) => filaDe(p, i).some(Boolean) && colDe(p, i).some(Boolean)).every(Boolean)
+                || p.reduce((a, b) => a + b, 0) < N * N * 0.4
+                || p.reduce((a, b) => a + b, 0) > N * N * 0.7);
+            return p;
+        }
+
+        function cargarPartida(tam, semilla) {
+            patron = generar(tam, semilla);
+            pistasFilas = Array.from({ length: N }, (_, f) => bloques(filaDe(patron, f)));
+            pistasCols = Array.from({ length: N }, (_, c) => bloques(colDe(patron, c)));
+            construirTablero();
+            empezarDeNuevo();
+        }
+
+        function empezarDeNuevo() {
+            estados = Array(N * N).fill(0);
+            segundos = 0;
+            pistasUsadas = 0;
+            ganado = false;
+            actualizar();
+            guardarProgreso();
+            iniciarCrono();
+        }
+
+        // Estructura fija del tablero: esquina + pistas de columna + (pista de fila + celdas) por fila.
+        function construirTablero() {
+            const maxFila = Math.max(...pistasFilas.map(p => p.length));
+            const anchoPista = maxFila * 0.75 + 0.3; // en "celdas"
+            tableroEl.style.gridTemplateColumns = `${anchoPista}fr repeat(${N}, 1fr)`;
+            tableroEl.dataset.ancho = anchoPista;
+            let html = '<div></div>';
+            for (let c = 0; c < N; c++) {
+                html += `<div class="pista-col" data-c="${c}">${pistasCols[c].map(n => `<span>${n}</span>`).join('')}</div>`;
+            }
+            for (let f = 0; f < N; f++) {
+                html += `<div class="pista-fila" data-f="${f}">${pistasFilas[f].map(n => `<span>${n}</span>`).join('')}</div>`;
+                for (let c = 0; c < N; c++) {
+                    const b = [];
+                    if (N >= 10 && (c + 1) % 5 === 0 && c < N - 1) b.push('borde-d');
+                    if (N >= 10 && (f + 1) % 5 === 0 && f < N - 1) b.push('borde-b');
+                    html += `<div class="celda ${b.join(' ')}" data-i="${f * N + c}" role="button" aria-label="Fila ${f + 1}, columna ${c + 1}"></div>`;
+                }
+            }
+            tableroEl.innerHTML = html;
+            celdasEl = Array.from(tableroEl.querySelectorAll('.celda'));
+            pistasFilaEl = Array.from(tableroEl.querySelectorAll('.pista-fila'));
+            pistasColEl = Array.from(tableroEl.querySelectorAll('.pista-col'));
+            ajustarFuente();
+        }
+
+        function ajustarFuente() {
+            const ancho = tableroEl.clientWidth;
+            const anchoPista = Number(tableroEl.dataset.ancho || 1);
+            if (!ancho) return;
+            const celda = ancho / (N + anchoPista);
+            tableroEl.style.fontSize = Math.max(9, Math.min(18, celda * 0.5)) + 'px';
+        }
+        window.addEventListener('resize', ajustarFuente);
+
+        function actualizar() {
+            celdasEl.forEach((el, i) => {
+                el.classList.toggle('lleno', estados[i] === 1);
+                el.classList.toggle('marca', estados[i] === 2);
+            });
+            const lleno = estados.map(e => e === 1 ? 1 : 0);
+            pistasFilaEl.forEach((el, f) => el.classList.toggle('hecha', iguales(bloques(filaDe(lleno, f)), pistasFilas[f])));
+            pistasColEl.forEach((el, c) => el.classList.toggle('hecha', iguales(bloques(colDe(lleno, c)), pistasCols[c])));
+            tableroEl.classList.toggle('ganado', ganado);
+            cronometroEl.textContent = formatearTiempo(segundos);
+            herrRellenar.classList.toggle('activo', herramienta === 'rellenar');
+            herrMarcar.classList.toggle('activo', herramienta === 'marcar');
+        }
+
+        // Gana quien cumple todas las pistas (aunque dibuje otra solución válida).
+        function comprobarVictoria() {
+            const lleno = estados.map(e => e === 1 ? 1 : 0);
+            for (let i = 0; i < N; i++) {
+                if (!iguales(bloques(filaDe(lleno, i)), pistasFilas[i])) return false;
+                if (!iguales(bloques(colDe(lleno, i)), pistasCols[i])) return false;
+            }
+            ganado = true;
+            pararCrono();
+            actualizar();
+            guardarProgreso();
+            setTimeout(terminarJuego, 900);
+            return true;
+        }
+
+        // --- Rellenar tocando o arrastrando ---
+        let pintando = null; // { valor }
+
+        function aplicar(i) {
+            if (!pintando) return;
+            // Si el puntero salta varias casillas de una vez, rellena todas las intermedias de la misma fila o columna
+            const ant = pintando.ultima;
+            let tramo = [i];
+            if (ant !== undefined && ant !== i) {
+                if (Math.floor(ant / N) === Math.floor(i / N)) {
+                    const paso = i > ant ? 1 : -1;
+                    tramo = [];
+                    for (let k = ant + paso; k !== i + paso; k += paso) tramo.push(k);
+                } else if (ant % N === i % N) {
+                    const paso = i > ant ? N : -N;
+                    tramo = [];
+                    for (let k = ant + paso; k !== i + paso; k += paso) tramo.push(k);
+                }
+            }
+            pintando.ultima = i;
+            tramo.forEach(k => { estados[k] = pintando.valor; });
+            actualizar();
+        }
+
+        tableroEl.addEventListener('pointerdown', (e) => {
+            if (ganado) return;
+            const el = e.target.closest('.celda');
+            if (!el) return;
+            e.preventDefault();
+            const i = Number(el.dataset.i);
+            const usaMarca = herramienta === 'marcar' || e.button === 2;
+            const objetivo = usaMarca ? 2 : 1;
+            pintando = { valor: estados[i] === objetivo ? 0 : objetivo };
+            aplicar(i);
+            try { tableroEl.setPointerCapture(e.pointerId); } catch (err) { /* no crítico */ }
+        });
+
+        tableroEl.addEventListener('pointermove', (e) => {
+            if (!pintando) return;
+            const el = document.elementFromPoint(e.clientX, e.clientY);
+            const celda = el && el.closest ? el.closest('.celda') : null;
+            if (celda) aplicar(Number(celda.dataset.i));
+        });
+
+        function soltar() {
+            if (!pintando) return;
+            pintando = null;
+            guardarProgreso();
+            comprobarVictoria();
+        }
+        tableroEl.addEventListener('pointerup', soltar);
+        tableroEl.addEventListener('pointercancel', soltar);
+        tableroEl.addEventListener('contextmenu', (e) => e.preventDefault());
+
+        herrRellenar.addEventListener('click', () => { herramienta = 'rellenar'; actualizar(); });
+        herrMarcar.addEventListener('click', () => { herramienta = 'marcar'; actualizar(); });
+        reempezarBtn.addEventListener('click', empezarDeNuevo);
+
+        // La pista corrige o completa una casilla según el dibujo de referencia.
+        pistaBtn.addEventListener('click', () => {
+            if (ganado) return;
+            const mal = [];
+            patron.forEach((v, i) => { if (v ? estados[i] !== 1 : estados[i] === 1) mal.push(i); });
+            if (!mal.length) return;
+            const i = mal[Math.floor(Math.random() * mal.length)];
+            estados[i] = patron[i] ? 1 : 0;
+            pistasUsadas++;
+            actualizar();
+            guardarProgreso();
+            comprobarVictoria();
+        });
+
+        nivelesEl.addEventListener('click', (e) => {
+            const b = e.target.closest('.nivel');
+            if (!b || modoDiario) return;
+            iniciarAleatorio(Number(b.dataset.n));
+        });
+
+        // --- Cronómetro ---
+        function iniciarCrono() {
+            pararCrono();
+            intervaloCrono = setInterval(() => {
+                if (ganado || document.hidden) return;
+                segundos++;
+                cronometroEl.textContent = formatearTiempo(segundos);
+                if (segundos % 5 === 0) guardarProgreso();
+            }, 1000);
+        }
+
+        function pararCrono() {
+            if (intervaloCrono) { clearInterval(intervaloCrono); intervaloCrono = null; }
+        }
+
+        // --- Progreso diario ---
+        function cargarProgreso() {
+            try {
+                const raw = localStorage.getItem(CLAVE_STORAGE);
+                if (!raw) return null;
+                const datos = JSON.parse(raw);
+                if (datos.fecha !== fechaISO(new Date())) return null;
+                return datos;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function guardarProgreso() {
+            if (!modoDiario) return;
+            try {
+                localStorage.setItem(CLAVE_STORAGE, JSON.stringify({
+                    fecha: fechaISO(new Date()),
+                    estados, segundos, pistasUsadas, ganado
+                }));
+            } catch (e) {
+                // localStorage no disponible (modo privado, etc.): seguimos sin persistir
+            }
+        }
+
+        function iniciarContadorDiario() {
+            pararContadorDiario();
+            const actualizarTexto = () => {
+                const ahora = new Date();
+                const manana = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate() + 1);
+                const restante = manana - ahora;
+                const h = String(Math.floor(restante / 3600000)).padStart(2, '0');
+                const m = String(Math.floor((restante % 3600000) / 60000)).padStart(2, '0');
+                const s = String(Math.floor((restante % 60000) / 1000)).padStart(2, '0');
+                contadorDiarioEl.textContent = `Vuelve mañana para un nuevo reto (${h}:${m}:${s})`;
+            };
+            actualizarTexto();
+            intervaloContador = setInterval(actualizarTexto, 1000);
+        }
+
+        function pararContadorDiario() {
+            if (intervaloContador) { clearInterval(intervaloContador); intervaloContador = null; }
+        }
+
+        // --- Fin de partida ---
+        function terminarJuego() {
+            juegoActivoEl.classList.add('oculto');
+            finJuegoEl.classList.remove('oculto');
+
+            // Dibujo tal como lo ha dejado el jugador
+            imagenFinalEl.style.gridTemplateColumns = `repeat(${N}, 1fr)`;
+            imagenFinalEl.innerHTML = estados.map(e => `<i${e === 1 ? ' class="on"' : ''}></i>`).join('');
+
+            const total = segundos + pistasUsadas * PENALIZACION_PISTA;
+            tiempoFinalEl.textContent = formatearTiempo(total);
+            detalleFinalEl.textContent = pistasUsadas
+                ? `${N}×${N}: ${formatearTiempo(segundos)} + ${pistasUsadas} ${pistasUsadas === 1 ? 'pista' : 'pistas'} (${pistasUsadas * PENALIZACION_PISTA} s de penalización).`
+                : `${N}×${N} resuelto sin usar pistas. ¡Muy bien!`;
+
+            if (modoDiario) {
+                reiniciarBtn.classList.add('oculto');
+                contadorDiarioEl.classList.remove('oculto');
+                iniciarContadorDiario();
+            } else {
+                reiniciarBtn.classList.remove('oculto');
+                contadorDiarioEl.classList.add('oculto');
+                pararContadorDiario();
+            }
+
+            Ranking.mostrar(document.getElementById('ranking'), 'nonograma-' + N, total, {
+                ascendente: true,
+                formatear: formatearTiempo,
+                claveGuardado: modoDiario ? fechaISO(new Date()) : undefined,
+            });
+        }
+
+        function mostrarJuego() {
+            juegoActivoEl.classList.remove('oculto');
+            finJuegoEl.classList.add('oculto');
+        }
+
+        function iniciarDiario() {
+            modoDiario = true;
+            pararContadorDiario();
+            contadorDiarioEl.classList.add('oculto');
+            reiniciarBtn.classList.remove('oculto');
+            nivelesEl.classList.add('oculto');
+            cambiarModoEl.textContent = 'Jugar partida aleatoria';
+            infoModoEl.textContent = `Reto diario · ${TAM_DIARIO}×${TAM_DIARIO} · ${fechaBonita(new Date())}`;
+            mostrarJuego();
+
+            const g = cargarProgreso();
+            cargarPartida(TAM_DIARIO, diasDesdeEpoca() + 3);
+            if (g && Array.isArray(g.estados) && g.estados.length === N * N) {
+                estados = g.estados;
+                segundos = g.segundos || 0;
+                pistasUsadas = g.pistasUsadas || 0;
+                ganado = !!g.ganado;
+                actualizar();
+                if (ganado) { pararCrono(); terminarJuego(); }
+            }
+        }
+
+        function iniciarAleatorio(tam) {
+            modoDiario = false;
+            pararContadorDiario();
+            contadorDiarioEl.classList.add('oculto');
+            reiniciarBtn.classList.remove('oculto');
+            nivelesEl.classList.remove('oculto');
+            tam = tam || 5;
+            nivelesEl.querySelectorAll('.nivel').forEach(b => b.classList.toggle('activo', Number(b.dataset.n) === tam));
+            cambiarModoEl.textContent = 'Volver al reto diario';
+            infoModoEl.textContent = 'Modo aleatorio (práctica libre)';
+            mostrarJuego();
+
+            cargarPartida(tam, Math.floor(Math.random() * 1e9));
+        }
+
+        reiniciarBtn.addEventListener('click', () => {
+            if (!modoDiario) iniciarAleatorio(N);
+        });
+
+        cambiarModoEl.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (modoDiario) iniciarAleatorio(5);
+            else iniciarDiario();
+        });
+
+        iniciarDiario();
+    </script>
+
+</body>
+</html>
