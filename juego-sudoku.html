@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sudoku Online Gratis en Español: Reto Diario y 3 Niveles | El Más Listo</title>
+    <meta name="description" content="Juega al sudoku online gratis: reto diario, partidas aleatorias en nivel fácil, medio y difícil, con notas, pistas y ranking de tiempos. Sin registro y en español.">
+    <link rel="canonical" href="https://elmaslisto.com/juego-sudoku">
+    <meta property="og:title" content="Sudoku Online Gratis: Reto Diario y 3 Niveles">
+    <meta property="og:description" content="Sudoku gratis con reto diario, tres niveles de dificultad, notas, pistas y ranking de tiempos.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://elmaslisto.com/juego-sudoku">
+    <link rel="icon" href="img/favicon.png">
+
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        body { background-color: #2980b9; }
+
+        .wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 460px;
+        }
+
+        .contenedor{width:100%;background:#fff;padding:20px;border-radius:15px;box-shadow:0 6px 12px rgba(0,0,0,.15);text-align:center;box-sizing:border-box;}
+
+        .header-juego{display:flex;justify-content:space-between;align-items:center;font-size:1.1em;color:#555;margin-bottom:2px;font-weight:700}
+        .header-juego h1{margin:0;font-size:1em;color:#2c3e50;}
+        #cronometro{color:#2980b9;font-size:.85em;font-variant-numeric:tabular-nums;}
+
+        #info-modo{margin:0 0 10px;font-size:.75em;color:#999;font-weight:400;text-align:left;}
+
+        .niveles{display:flex;justify-content:center;gap:6px;margin:0 0 12px;}
+        .nivel{background:#fff;border:1px solid #ccc;border-radius:20px;padding:4px 14px;cursor:pointer;color:#555;font-size:.8em;}
+        .nivel.activo{background:#2980b9;border-color:#2980b9;color:#fff;}
+        .nivel:hover:not(.activo){background:#f0f0f0;}
+
+        #tablero{display:grid;grid-template-columns:repeat(9,1fr);width:100%;max-width:380px;margin:0 auto 12px;border:3px solid #2c3e50;border-radius:6px;overflow:hidden;user-select:none;-webkit-user-select:none;background:#fff;}
+        .celda{aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;border:1px solid #cfd4d9;font-size:1.35em;font-weight:700;color:#2980b9;cursor:pointer;box-sizing:border-box;position:relative;padding:0;background:#fff;font-family:inherit;}
+        .celda.borde-d{border-right:2px solid #2c3e50;}
+        .celda.borde-b{border-bottom:2px solid #2c3e50;}
+        .celda.fija{color:#1c1e21;background:#f4f6f8;cursor:default;}
+        .celda.relacionada{background:#e8f1f9;}
+        .celda.fija.relacionada{background:#dde7ef;}
+        .celda.igual{background:#cfe3f4;}
+        .celda.seleccionada{background:#a9cff0;}
+        .celda.error{color:#e74c3c;background:#fdeaea;}
+        .celda.error.seleccionada{background:#f7c6c6;}
+        .notas{display:grid;grid-template-columns:repeat(3,1fr);width:100%;height:100%;font-size:.42em;font-weight:400;color:#7f8c8d;line-height:1;}
+        .notas span{display:flex;align-items:center;justify-content:center;}
+        #tablero.ganado .celda{cursor:default;}
+
+        .teclado{display:grid;grid-template-columns:repeat(9,1fr);gap:5px;width:100%;max-width:380px;margin:0 auto 10px;}
+        .tecla{padding:0;aspect-ratio:3/4;border:1px solid #cfd4d9;border-radius:8px;background:#fff;color:#2980b9;font-size:1.3em;font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:inherit;line-height:1.1;}
+        .tecla small{font-size:.45em;font-weight:400;color:#999;}
+        .tecla:hover:not(:disabled){background:#e8f1f9;}
+        .tecla:disabled{opacity:.3;cursor:default;}
+
+        .acciones{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;}
+        .btn-accion{background:#fff;border:1px solid #ccc;border-radius:20px;padding:5px 14px;cursor:pointer;color:#555;font-size:.8em;font-family:inherit;}
+        .btn-accion:hover{background:#f0f0f0;}
+        .btn-accion.activo{background:#f39c12;border-color:#f39c12;color:#fff;}
+        .aviso-pistas{font-size:.75em;color:#999;margin:10px 0 0;}
+
+        #fin-juego h1{font-size:1.6em;color:#2980b9;}
+        .puntuacion-grande{font-size:2.4em;font-weight:700;color:#f1c40f;margin:10px 0 4px;letter-spacing:4px;}
+        .detalle-final{font-size:.95em;color:#555;margin:0 0 16px;}
+        #reiniciar{padding:15px 25px;font-size:1.1em;background-color:#2ecc71;color:#fff;border:none;border-radius:8px;cursor:pointer;margin-top:10px;}
+        #contador-diario{font-size:.9em;color:#888;margin:10px 0 0;}
+        .oculto{display:none}
+
+        .mode-toggle{margin:15px 0 0;font-size:.85em;text-align:center;}
+        .mode-toggle a{color:rgba(255,255,255,0.9);text-decoration:underline;cursor:pointer;}
+        .mode-toggle a:hover{color:#fff;}
+
+        @media (min-width:768px){
+            .contenedor{padding:30px}
+            #tablero,.teclado{max-width:420px}
+        }
+        @media (max-width:400px){
+            .contenedor{padding:14px}
+            .celda{font-size:1.15em}
+        }
+    </style>
+</head>
+<body>
+
+    <div class="wrapper">
+        <!-- Pantalla de juego principal -->
+        <div id="juego-activo" class="contenedor">
+            <div class="header-juego">
+                <h1>Sudoku</h1>
+                <span id="cronometro">00:00</span>
+            </div>
+            <p id="info-modo"></p>
+            <div class="niveles oculto" id="niveles">
+                <button type="button" class="nivel" data-nivel="facil">Fácil</button>
+                <button type="button" class="nivel" data-nivel="medio">Medio</button>
+                <button type="button" class="nivel" data-nivel="dificil">Difícil</button>
+            </div>
+            <div id="tablero" role="grid" aria-label="Tablero de sudoku"></div>
+            <div class="teclado" id="teclado"></div>
+            <div class="acciones">
+                <button type="button" class="btn-accion" id="btn-borrar">⌫ Borrar</button>
+                <button type="button" class="btn-accion" id="btn-deshacer">↶ Deshacer</button>
+                <button type="button" class="btn-accion" id="btn-notas">✎ Notas: no</button>
+                <button type="button" class="btn-accion" id="btn-pista">💡 Pista</button>
+            </div>
+            <p class="aviso-pistas">Cada pista suma 30 segundos a tu tiempo final.</p>
+        </div>
+
+        <!-- Pantalla de fin de juego (inicialmente oculta) -->
+        <div id="fin-juego" class="contenedor oculto">
+            <h1>¡Sudoku resuelto! 🎉</h1>
+            <p class="puntuacion-grande" id="tiempo-final">00:00</p>
+            <p class="detalle-final" id="detalle-final"></p>
+            <div id="ranking" class="ranking-widget"></div>
+            <p id="contador-diario" class="oculto"></p>
+            <button id="reiniciar">Jugar otra partida</button>
+        </div>
+
+        <p class="mode-toggle"><a href="#" id="cambiar-modo">Jugar partida aleatoria</a></p>
+
+        <a href="index.html" class="home-link">Volver al menú</a>
+
+        <section class="guia">
+            <div class="guia-bloque">
+                <h2>¿En qué consiste el sudoku?</h2>
+                <p>El sudoku es un tablero de 9×9 casillas dividido en nueve cuadrados de 3×3. Algunas casillas ya traen un número; tu tarea es completar el resto con cifras del 1 al 9 de modo que <strong>no se repita ninguna cifra en la misma fila, la misma columna ni el mismo cuadrado de 3×3</strong>.</p>
+                <p>No hace falta saber matemáticas: no se suma ni se multiplica nada. Todo se resuelve con lógica, descartando qué números caben en cada casilla. Cada sudoku de esta página tiene una única solución válida.</p>
+                <p>Toca una casilla y pulsa un número (o usa el teclado del ordenador). Con el modo <strong>Notas</strong> puedes anotar en pequeño los candidatos de una casilla. Las cifras que chocan con otras de su fila, columna o cuadrado se marcan en rojo.</p>
+            </div>
+
+            <div class="guia-bloque">
+                <h2>¿Para qué edades está recomendado?</h2>
+                <p>El nivel <strong>fácil</strong> es un buen punto de partida a partir de <strong>9-10 años</strong>, cuando ya se maneja bien la idea de descartar posibilidades. Los niveles medio y difícil están pensados para adolescentes y adultos que quieran un reto de razonamiento.</p>
+                <p>Si te gusta la lógica, prueba también <a href="juego-reencuentro.html">Reencuentro</a> o el <a href="juego-wordle.html">Wordle en Español</a>.</p>
+            </div>
+
+            <div class="guia-bloque">
+                <h2>¿Por qué es bueno este juego?</h2>
+                <ul>
+                    <li><strong>Razonamiento lógico:</strong> obliga a deducir paso a paso, sin adivinar.</li>
+                    <li><strong>Concentración y paciencia:</strong> mantener varias condiciones en la cabeza a la vez entrena la atención sostenida.</li>
+                    <li><strong>Memoria de trabajo:</strong> las notas ayudan a recordar candidatos, y entrenarse sin ellas mejora la visualización.</li>
+                    <li><strong>Sin lenguaje:</strong> es un juego universal, apto para cualquier idioma.</li>
+                </ul>
+            </div>
+
+            <div class="guia-bloque">
+                <h2>Preguntas frecuentes</h2>
+                <div class="faq-item">
+                    <h3>¿Qué diferencia hay entre fácil, medio y difícil?</h3>
+                    <p>Cambia la cantidad de números iniciales: en fácil hay unos 40 números ya colocados, en medio unos 32 y en difícil unos 27. Con menos pistas iniciales hay que encadenar más deducciones.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>¿Hace falta adivinar en algún momento?</h3>
+                    <p>No. Cada sudoku tiene una única solución, así que siempre puede deducirse con lógica. Si te atascas, usa las notas para ver qué números caben en cada casilla, o pide una pista.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>¿Cómo funciona el reto diario?</h3>
+                    <p>Cada día hay un único sudoku de nivel medio, igual para todos. Tu progreso se guarda en tu navegador, así que puedes cerrar la página y continuar más tarde. Con "Jugar partida aleatoria" puedes practicar sin límite en el nivel que quieras.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>¿Cómo se calcula la puntuación?</h3>
+                    <p>Se mide tu tiempo en segundos, más 30 segundos de penalización por cada pista usada. Cuanto menor sea el total, mejor puesto en el ranking local de tu dispositivo.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "¿Qué diferencia hay entre fácil, medio y difícil?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Cambia la cantidad de números iniciales: en fácil hay unos 40 números ya colocados, en medio unos 32 y en difícil unos 27. Con menos pistas iniciales hay que encadenar más deducciones."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "¿Hace falta adivinar en algún momento?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "No. Cada sudoku tiene una única solución, así que siempre puede deducirse con lógica. Si te atascas, usa las notas para ver qué números caben en cada casilla, o pide una pista."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "¿Cómo funciona el reto diario?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Cada día hay un único sudoku de nivel medio, igual para todos. Tu progreso se guarda en tu navegador, así que puedes cerrar la página y continuar más tarde. Con \"Jugar partida aleatoria\" puedes practicar sin límite en el nivel que quieras."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "¿Cómo se calcula la puntuación?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Se mide tu tiempo en segundos, más 30 segundos de penalización por cada pista usada. Cuanto menor sea el total, mejor puesto en el ranking local de tu dispositivo."
+                }
+            }
+        ]
+    }
+    </script>
+
+    <script src="ranking.js"></script>
+    <script>
+        const CLAVE_STORAGE = 'elmaslisto-sudoku-diario';
+        const FECHA_EPOCA = new Date(2024, 0, 1);
+        const PENALIZACION_PISTA = 30;
+        const NIVELES = {
+            facil:   { nombre: 'Fácil',   pistas: 40 },
+            medio:   { nombre: 'Medio',   pistas: 32 },
+            dificil: { nombre: 'Difícil', pistas: 27 },
+        };
+
+        const juegoActivoEl = document.getElementById('juego-activo');
+        const finJuegoEl = document.getElementById('fin-juego');
+        const infoModoEl = document.getElementById('info-modo');
+        const nivelesEl = document.getElementById('niveles');
+        const tableroEl = document.getElementById('tablero');
+        const tecladoEl = document.getElementById('teclado');
+        const cronometroEl = document.getElementById('cronometro');
+        const tiempoFinalEl = document.getElementById('tiempo-final');
+        const detalleFinalEl = document.getElementById('detalle-final');
+        const contadorDiarioEl = document.getElementById('contador-diario');
+        const reiniciarBtn = document.getElementById('reiniciar');
+        const cambiarModoEl = document.getElementById('cambiar-modo');
+        const btnNotas = document.getElementById('btn-notas');
+
+        let solucion = [];   // 81 números
+        let puzzle = [];     // 81 números, 0 = vacía
+        let valores = [];    // estado actual, 0 = vacía
+        let notas = [];      // máscaras de bits (bit n = nota del número n)
+        let historial = [];  // para deshacer
+        let seleccion = -1;
+        let modoNotas = false;
+        let segundos = 0;
+        let pistasUsadas = 0;
+        let ganado = false;
+        let modoDiario = true;
+        let nivel = 'medio';
+        let intervaloCrono = null;
+        let intervaloContador = null;
+
+        // ---------- Utilidades ----------
+        function mulberry32(a) {
+            return function () {
+                a |= 0; a = a + 0x6D2B79F5 | 0;
+                let t = Math.imul(a ^ a >>> 15, 1 | a);
+                t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+                return ((t ^ t >>> 14) >>> 0) / 4294967296;
+            };
+        }
+
+        function barajar(arr, rand) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(rand() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function medianoche(fecha) { return new Date(fecha.getFullYear(), fecha.getMonth(), fecha.getDate()); }
+
+        function fechaISO(fecha) {
+            const y = fecha.getFullYear();
+            const m = String(fecha.getMonth() + 1).padStart(2, '0');
+            const d = String(fecha.getDate()).padStart(2, '0');
+            return `${y}-${m}-${d}`;
+        }
+
+        function fechaBonita(fecha) {
+            return new Intl.DateTimeFormat('es-ES', { day: 'numeric', month: 'long', year: 'numeric' }).format(fecha);
+        }
+
+        function diasDesdeEpoca() {
+            return Math.round((medianoche(new Date()) - medianoche(FECHA_EPOCA)) / 86400000);
+        }
+
+        function formatearTiempo(s) {
+            const m = Math.floor(s / 60);
+            return `${String(m).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
+        }
+
+        const fila = (i) => Math.floor(i / 9);
+        const col = (i) => i % 9;
+        const caja = (i) => Math.floor(fila(i) / 3) * 3 + Math.floor(col(i) / 3);
+
+        function sonVecinas(a, b) {
+            return a !== b && (fila(a) === fila(b) || col(a) === col(b) || caja(a) === caja(b));
+        }
+
+        // ---------- Generador ----------
+        // Resuelve por retroceso con máscaras de bits y elige siempre la casilla con menos candidatos.
+        // Devuelve cuántas soluciones encuentra (hasta "limite"); si aleatorio, rellena "grid" con una.
+        function resolver(grid, limite, rand) {
+            const filas = Array(9).fill(0), cols = Array(9).fill(0), cajas = Array(9).fill(0);
+            for (let i = 0; i < 81; i++) {
+                if (grid[i]) {
+                    const b = 1 << grid[i];
+                    filas[fila(i)] |= b; cols[col(i)] |= b; cajas[caja(i)] |= b;
+                }
+            }
+            let encontradas = 0;
+
+            function buscar() {
+                let mejor = -1, mejorMascara = 0, mejorCuenta = 10;
+                for (let i = 0; i < 81; i++) {
+                    if (grid[i]) continue;
+                    const libres = ~(filas[fila(i)] | cols[col(i)] | cajas[caja(i)]) & 0x3FE;
+                    let n = 0;
+                    for (let m = libres; m; m &= m - 1) n++;
+                    if (n < mejorCuenta) {
+                        mejor = i; mejorMascara = libres; mejorCuenta = n;
+                        if (n <= 1) break;
+                    }
+                }
+                if (mejor === -1) { encontradas++; return encontradas >= limite; }
+                if (mejorCuenta === 0) return false;
+
+                const candidatos = [];
+                for (let v = 1; v <= 9; v++) if (mejorMascara & (1 << v)) candidatos.push(v);
+                if (rand) barajar(candidatos, rand);
+
+                for (const v of candidatos) {
+                    const b = 1 << v;
+                    grid[mejor] = v;
+                    filas[fila(mejor)] |= b; cols[col(mejor)] |= b; cajas[caja(mejor)] |= b;
+                    const parar = buscar();
+                    if (parar) {
+                        // Con rand queremos conservar la solución completa en grid
+                        return true;
+                    }
+                    grid[mejor] = 0;
+                    filas[fila(mejor)] &= ~b; cols[col(mejor)] &= ~b; cajas[caja(mejor)] &= ~b;
+                }
+                return false;
+            }
+
+            buscar();
+            return encontradas;
+        }
+
+        function contarSoluciones(grid, limite) {
+            return resolver(grid.slice(), limite, null);
+        }
+
+        function generar(nivelId, semilla) {
+            const rand = mulberry32(semilla);
+            const completa = Array(81).fill(0);
+            resolver(completa, 1, rand);
+
+            const objetivo = NIVELES[nivelId].pistas;
+            const p = completa.slice();
+            let quedan = 81;
+            for (const i of barajar(Array.from({ length: 81 }, (_, k) => k), rand)) {
+                if (quedan <= objetivo) break;
+                const guardado = p[i];
+                p[i] = 0;
+                if (contarSoluciones(p, 2) !== 1) p[i] = guardado;
+                else quedan--;
+            }
+            return { solucion: completa, puzzle: p };
+        }
+
+        // ---------- Estado del juego ----------
+        function cargarPartida(nivelId, semilla) {
+            const g = generar(nivelId, semilla);
+            solucion = g.solucion;
+            puzzle = g.puzzle;
+            nivel = nivelId;
+            empezarDeNuevo();
+        }
+
+        function empezarDeNuevo() {
+            valores = puzzle.slice();
+            notas = Array(81).fill(0);
+            historial = [];
+            seleccion = -1;
+            modoNotas = false;
+            segundos = 0;
+            pistasUsadas = 0;
+            ganado = false;
+            render();
+            guardarProgreso();
+            iniciarCrono();
+        }
+
+        function conflictos() {
+            const malas = new Set();
+            for (let i = 0; i < 81; i++) {
+                if (!valores[i]) continue;
+                for (let j = i + 1; j < 81; j++) {
+                    if (valores[j] === valores[i] && sonVecinas(i, j)) { malas.add(i); malas.add(j); }
+                }
+            }
+            return malas;
+        }
+
+        function render() {
+            const malas = ganado ? new Set() : conflictos();
+            const valSel = seleccion >= 0 ? valores[seleccion] : 0;
+            tableroEl.classList.toggle('ganado', ganado);
+
+            tableroEl.innerHTML = valores.map((v, i) => {
+                const c = ['celda'];
+                if (col(i) % 3 === 2 && col(i) < 8) c.push('borde-d');
+                if (fila(i) % 3 === 2 && fila(i) < 8) c.push('borde-b');
+                if (puzzle[i]) c.push('fija');
+                if (!ganado && seleccion >= 0) {
+                    if (i === seleccion) c.push('seleccionada');
+                    else if (sonVecinas(i, seleccion)) c.push('relacionada');
+                    if (valSel && v === valSel && i !== seleccion) c.push('igual');
+                }
+                if (malas.has(i) && !puzzle[i]) c.push('error');
+                let contenido = '';
+                if (v) contenido = v;
+                else if (notas[i]) {
+                    contenido = '<div class="notas">' + Array.from({ length: 9 }, (_, k) =>
+                        `<span>${notas[i] & (1 << (k + 1)) ? k + 1 : ''}</span>`).join('') + '</div>';
+                }
+                return `<button type="button" class="${c.join(' ')}" data-i="${i}" role="gridcell" aria-label="Fila ${fila(i) + 1}, columna ${col(i) + 1}${v ? ', ' + v : ', vacía'}">${contenido}</button>`;
+            }).join('');
+
+            // Teclado: se desactiva un número cuando ya está colocado 9 veces
+            const cuentas = Array(10).fill(0);
+            valores.forEach(v => { if (v) cuentas[v]++; });
+            tecladoEl.innerHTML = Array.from({ length: 9 }, (_, k) => {
+                const n = k + 1;
+                return `<button type="button" class="tecla" data-n="${n}" ${cuentas[n] >= 9 || ganado ? 'disabled' : ''}>${n}<small>${9 - cuentas[n]}</small></button>`;
+            }).join('');
+
+            btnNotas.textContent = `✎ Notas: ${modoNotas ? 'sí' : 'no'}`;
+            btnNotas.classList.toggle('activo', modoNotas);
+            cronometroEl.textContent = formatearTiempo(segundos);
+        }
+
+        function apuntarHistorial(i) {
+            historial.push({ i, valor: valores[i], notas: notas[i], vecinas: null });
+        }
+
+        function comprobarVictoria() {
+            if (valores.every((v, i) => v === solucion[i])) {
+                ganado = true;
+                pararCrono();
+                render();
+                guardarProgreso();
+                setTimeout(terminarJuego, 800);
+                return true;
+            }
+            return false;
+        }
+
+        function ponerNumero(n) {
+            if (ganado || seleccion < 0 || puzzle[seleccion]) return;
+            const i = seleccion;
+            if (modoNotas) {
+                if (valores[i]) return;
+                apuntarHistorial(i);
+                notas[i] ^= (1 << n);
+            } else {
+                if (valores[i] === n) return;
+                const cambios = [];
+                const entrada = { i, valor: valores[i], notas: notas[i], vecinas: cambios };
+                historial.push(entrada);
+                valores[i] = n;
+                notas[i] = 0;
+                // Al colocar un número se limpian sus notas en la fila, columna y cuadrado
+                for (let j = 0; j < 81; j++) {
+                    if (sonVecinas(i, j) && (notas[j] & (1 << n))) {
+                        cambios.push({ j, notas: notas[j] });
+                        notas[j] &= ~(1 << n);
+                    }
+                }
+            }
+            render();
+            guardarProgreso();
+            if (!modoNotas) comprobarVictoria();
+        }
+
+        function borrar() {
+            if (ganado || seleccion < 0 || puzzle[seleccion]) return;
+            const i = seleccion;
+            if (!valores[i] && !notas[i]) return;
+            apuntarHistorial(i);
+            valores[i] = 0;
+            notas[i] = 0;
+            render();
+            guardarProgreso();
+        }
+
+        function deshacer() {
+            if (ganado || !historial.length) return;
+            const h = historial.pop();
+            valores[h.i] = h.valor;
+            notas[h.i] = h.notas;
+            if (h.vecinas) h.vecinas.forEach(c => { notas[c.j] = c.notas; });
+            seleccion = h.i;
+            render();
+            guardarProgreso();
+        }
+
+        function pista() {
+            if (ganado) return;
+            let objetivo = seleccion;
+            if (objetivo < 0 || puzzle[objetivo] || valores[objetivo] === solucion[objetivo]) {
+                const candidatas = valores.map((v, i) => v !== solucion[i] ? i : -1).filter(i => i >= 0);
+                if (!candidatas.length) return;
+                objetivo = candidatas[Math.floor(Math.random() * candidatas.length)];
+            }
+            seleccion = objetivo;
+            pistasUsadas++;
+            const antes = modoNotas;
+            modoNotas = false;
+            ponerNumero(solucion[objetivo]);
+            modoNotas = antes;
+            if (!ganado) render();
+        }
+
+        function mover(df, dc) {
+            if (ganado) return;
+            if (seleccion < 0) { seleccion = 40; }
+            else {
+                const f = Math.max(0, Math.min(8, fila(seleccion) + df));
+                const c = Math.max(0, Math.min(8, col(seleccion) + dc));
+                seleccion = f * 9 + c;
+            }
+            render();
+        }
+
+        // ---------- Eventos ----------
+        tableroEl.addEventListener('click', (e) => {
+            const el = e.target.closest('.celda');
+            if (!el || ganado) return;
+            seleccion = Number(el.dataset.i);
+            render();
+        });
+
+        tecladoEl.addEventListener('click', (e) => {
+            const el = e.target.closest('.tecla');
+            if (el) ponerNumero(Number(el.dataset.n));
+        });
+
+        document.getElementById('btn-borrar').addEventListener('click', borrar);
+        document.getElementById('btn-deshacer').addEventListener('click', deshacer);
+        document.getElementById('btn-pista').addEventListener('click', pista);
+        btnNotas.addEventListener('click', () => { modoNotas = !modoNotas; render(); });
+
+        document.addEventListener('keydown', (e) => {
+            if (juegoActivoEl.classList.contains('oculto') || e.ctrlKey || e.metaKey || e.altKey) return;
+            if (e.target.closest && e.target.closest('input, textarea')) return;
+            if (e.key >= '1' && e.key <= '9') { ponerNumero(Number(e.key)); e.preventDefault(); }
+            else if (e.key === 'Backspace' || e.key === 'Delete' || e.key === '0') { borrar(); e.preventDefault(); }
+            else if (e.key === 'ArrowUp') { mover(-1, 0); e.preventDefault(); }
+            else if (e.key === 'ArrowDown') { mover(1, 0); e.preventDefault(); }
+            else if (e.key === 'ArrowLeft') { mover(0, -1); e.preventDefault(); }
+            else if (e.key === 'ArrowRight') { mover(0, 1); e.preventDefault(); }
+            else if (e.key === 'n' || e.key === 'N') { modoNotas = !modoNotas; render(); }
+            else if (e.key === 'z' || e.key === 'Z') { deshacer(); }
+        });
+
+        nivelesEl.addEventListener('click', (e) => {
+            const b = e.target.closest('.nivel');
+            if (!b || modoDiario) return;
+            iniciarAleatorio(b.dataset.nivel);
+        });
+
+        // ---------- Cronómetro ----------
+        function iniciarCrono() {
+            pararCrono();
+            intervaloCrono = setInterval(() => {
+                if (ganado || document.hidden) return;
+                segundos++;
+                cronometroEl.textContent = formatearTiempo(segundos);
+                if (segundos % 5 === 0) guardarProgreso();
+            }, 1000);
+        }
+
+        function pararCrono() {
+            if (intervaloCrono) { clearInterval(intervaloCrono); intervaloCrono = null; }
+        }
+
+        // ---------- Progreso diario ----------
+        function cargarProgreso() {
+            try {
+                const raw = localStorage.getItem(CLAVE_STORAGE);
+                if (!raw) return null;
+                const datos = JSON.parse(raw);
+                if (datos.fecha !== fechaISO(new Date())) return null;
+                return datos;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function guardarProgreso() {
+            if (!modoDiario) return;
+            try {
+                localStorage.setItem(CLAVE_STORAGE, JSON.stringify({
+                    fecha: fechaISO(new Date()),
+                    valores, notas, segundos, pistasUsadas, ganado
+                }));
+            } catch (e) {
+                // localStorage no disponible (modo privado, etc.): seguimos sin persistir
+            }
+        }
+
+        function iniciarContadorDiario() {
+            pararContadorDiario();
+            const actualizar = () => {
+                const ahora = new Date();
+                const manana = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate() + 1);
+                const restante = manana - ahora;
+                const h = String(Math.floor(restante / 3600000)).padStart(2, '0');
+                const m = String(Math.floor((restante % 3600000) / 60000)).padStart(2, '0');
+                const s = String(Math.floor((restante % 60000) / 1000)).padStart(2, '0');
+                contadorDiarioEl.textContent = `Vuelve mañana para un nuevo reto (${h}:${m}:${s})`;
+            };
+            actualizar();
+            intervaloContador = setInterval(actualizar, 1000);
+        }
+
+        function pararContadorDiario() {
+            if (intervaloContador) { clearInterval(intervaloContador); intervaloContador = null; }
+        }
+
+        // ---------- Fin de partida ----------
+        function terminarJuego() {
+            juegoActivoEl.classList.add('oculto');
+            finJuegoEl.classList.remove('oculto');
+
+            const total = segundos + pistasUsadas * PENALIZACION_PISTA;
+            tiempoFinalEl.textContent = formatearTiempo(total);
+            detalleFinalEl.textContent = pistasUsadas
+                ? `Nivel ${NIVELES[nivel].nombre.toLowerCase()}: ${formatearTiempo(segundos)} + ${pistasUsadas} ${pistasUsadas === 1 ? 'pista' : 'pistas'} (${pistasUsadas * PENALIZACION_PISTA} s de penalización).`
+                : `Nivel ${NIVELES[nivel].nombre.toLowerCase()}, sin usar pistas. ¡Muy bien!`;
+
+            if (modoDiario) {
+                reiniciarBtn.classList.add('oculto');
+                contadorDiarioEl.classList.remove('oculto');
+                iniciarContadorDiario();
+            } else {
+                reiniciarBtn.classList.remove('oculto');
+                contadorDiarioEl.classList.add('oculto');
+                pararContadorDiario();
+            }
+
+            Ranking.mostrar(document.getElementById('ranking'), 'sudoku-' + nivel, total, {
+                ascendente: true,
+                formatear: formatearTiempo,
+                claveGuardado: modoDiario ? fechaISO(new Date()) : undefined,
+            });
+        }
+
+        function mostrarJuego() {
+            juegoActivoEl.classList.remove('oculto');
+            finJuegoEl.classList.add('oculto');
+        }
+
+        function iniciarDiario() {
+            modoDiario = true;
+            pararContadorDiario();
+            contadorDiarioEl.classList.add('oculto');
+            reiniciarBtn.classList.remove('oculto');
+            nivelesEl.classList.add('oculto');
+            cambiarModoEl.textContent = 'Jugar partida aleatoria';
+            infoModoEl.textContent = `Reto diario · Nivel medio · ${fechaBonita(new Date())}`;
+            mostrarJuego();
+
+            const g = cargarProgreso();
+            cargarPartida('medio', diasDesdeEpoca() + 7);
+            if (g && Array.isArray(g.valores) && g.valores.length === 81
+                && g.valores.every((v, i) => !puzzle[i] || v === puzzle[i])) {
+                valores = g.valores;
+                notas = Array.isArray(g.notas) && g.notas.length === 81 ? g.notas : Array(81).fill(0);
+                segundos = g.segundos || 0;
+                pistasUsadas = g.pistasUsadas || 0;
+                ganado = !!g.ganado;
+                render();
+                if (ganado) { pararCrono(); terminarJuego(); }
+            }
+        }
+
+        function iniciarAleatorio(nivelId) {
+            modoDiario = false;
+            pararContadorDiario();
+            contadorDiarioEl.classList.add('oculto');
+            reiniciarBtn.classList.remove('oculto');
+            nivelesEl.classList.remove('oculto');
+            nivelId = nivelId || 'facil';
+            nivelesEl.querySelectorAll('.nivel').forEach(b => b.classList.toggle('activo', b.dataset.nivel === nivelId));
+            cambiarModoEl.textContent = 'Volver al reto diario';
+            infoModoEl.textContent = 'Modo aleatorio (práctica libre)';
+            mostrarJuego();
+
+            cargarPartida(nivelId, Math.floor(Math.random() * 1e9));
+        }
+
+        reiniciarBtn.addEventListener('click', () => {
+            if (!modoDiario) iniciarAleatorio(nivel);
+        });
+
+        cambiarModoEl.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (modoDiario) iniciarAleatorio('facil');
+            else iniciarDiario();
+        });
+
+        iniciarDiario();
+    </script>
+
+</body>
+</html>
