@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Torres de Hanói Online Gratis: de 3 a 7 Discos | El Más Listo</title>
+    <meta name="description" content="Juega gratis a las Torres de Hanói: mueve los discos de una torre a otra sin poner uno grande sobre uno pequeño. De 3 a 7 discos, con estrellas según tus movimientos y ranking.">
+    <link rel="canonical" href="https://elmaslisto.com/juego-torres-hanoi">
+    <meta property="og:title" content="Torres de Hanói Online Gratis: de 3 a 7 Discos">
+    <meta property="og:description" content="Mueve los discos a la torre de la derecha sin poner uno grande sobre uno pequeño. Cinco niveles, estrellas y ranking.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://elmaslisto.com/juego-torres-hanoi">
+    <link rel="icon" href="img/favicon.png">
+
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        body { background-color: #c0392b; }
+
+        .wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 460px;
+        }
+
+        .contenedor{width:100%;background:#fff;padding:20px;border-radius:15px;box-shadow:0 6px 12px rgba(0,0,0,.15);text-align:center;box-sizing:border-box;}
+
+        .header-juego{display:flex;justify-content:space-between;align-items:center;font-size:1.1em;color:#555;margin-bottom:2px;font-weight:700}
+        .header-juego h1{margin:0;font-size:1em;color:#2c3e50;}
+        #contador-movs{color:#c0392b;font-size:.85em;}
+
+        .instrucciones{font-size:.8em;color:#777;margin:6px 0 12px;}
+
+        .niveles{display:flex;justify-content:center;gap:6px;margin:0 0 12px;flex-wrap:wrap;}
+        .nivel{background:#fff;border:1px solid #ccc;border-radius:20px;padding:4px 12px;cursor:pointer;color:#555;font-size:.8em;font-family:inherit;}
+        .nivel.activo{background:#c0392b;border-color:#c0392b;color:#fff;}
+        .nivel:hover:not(.activo){background:#f0f0f0;}
+
+        #tablero{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:100%;margin:0 auto 12px;}
+        .torre{position:relative;display:flex;flex-direction:column-reverse;align-items:center;justify-content:flex-start;height:calc(var(--n) * 28px + 34px);padding-bottom:8px;border:2px solid transparent;border-radius:10px;background:#f4f6f8;cursor:pointer;box-sizing:border-box;font-family:inherit;}
+        .torre::before{content:'';position:absolute;bottom:8px;left:50%;width:8px;height:calc(var(--n) * 28px + 14px);margin-left:-4px;background:#bdc3c7;border-radius:4px 4px 0 0;z-index:0;}
+        .torre::after{content:'';position:absolute;bottom:0;left:6%;width:88%;height:8px;background:#7f8c8d;border-radius:4px;}
+        .torre:hover{background:#eceff2;}
+        .torre.origen{border-color:#f39c12;background:#fff7e6;}
+        .torre.destino-ok:hover{border-color:#2ecc71;}
+        .torre.rechazo{animation:sacudir .3s;border-color:#e74c3c;}
+        .disco{position:relative;z-index:1;height:24px;margin-top:4px;border-radius:12px;box-shadow:0 2px 3px rgba(0,0,0,.25);color:#fff;font-size:.75em;font-weight:700;display:flex;align-items:center;justify-content:center;pointer-events:none;}
+        .torre-num{position:absolute;top:4px;left:8px;font-size:.7em;color:#aaa;font-weight:700;}
+        #tablero.ganado .torre{cursor:default;}
+        @keyframes sacudir{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+
+        .acciones{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;}
+        .btn-accion{background:#fff;border:1px solid #ccc;border-radius:20px;padding:5px 14px;cursor:pointer;color:#555;font-size:.8em;font-family:inherit;}
+        .btn-accion:hover{background:#f0f0f0;}
+        .objetivo-estrellas{font-size:.75em;color:#999;margin:10px 0 0;}
+
+        #fin-juego h1{font-size:1.6em;color:#c0392b;}
+        .puntuacion-grande{font-size:2.4em;font-weight:700;color:#f1c40f;margin:10px 0 4px;letter-spacing:4px;}
+        .detalle-final{font-size:.95em;color:#555;margin:0 0 16px;}
+        #reiniciar{padding:15px 25px;font-size:1.1em;background-color:#2ecc71;color:#fff;border:none;border-radius:8px;cursor:pointer;margin-top:10px;}
+        .oculto{display:none}
+
+        @media (min-width:768px){
+            .contenedor{padding:30px}
+        }
+    </style>
+</head>
+<body>
+
+    <div class="wrapper">
+        <!-- Pantalla de juego principal -->
+        <div id="juego-activo" class="contenedor">
+            <div class="header-juego">
+                <h1>Torres de Hanói</h1>
+                <span id="contador-movs">Movimientos: 0</span>
+            </div>
+            <p class="instrucciones">Lleva todos los discos a la torre 3. Toca una torre para coger su disco de arriba y otra para soltarlo. Nunca un disco grande sobre uno pequeño.</p>
+            <div class="niveles" id="niveles">
+                <button type="button" class="nivel" data-n="3">3 discos</button>
+                <button type="button" class="nivel" data-n="4">4 discos</button>
+                <button type="button" class="nivel" data-n="5">5 discos</button>
+                <button type="button" class="nivel" data-n="6">6 discos</button>
+                <button type="button" class="nivel" data-n="7">7 discos</button>
+            </div>
+            <div id="tablero" role="group" aria-label="Tres torres"></div>
+            <div class="acciones">
+                <button type="button" class="btn-accion" id="btn-deshacer">↶ Deshacer</button>
+                <button type="button" class="btn-accion" id="reempezar">↺ Empezar de nuevo</button>
+            </div>
+            <p class="objetivo-estrellas" id="objetivo-estrellas"></p>
+        </div>
+
+        <!-- Pantalla de fin de juego (inicialmente oculta) -->
+        <div id="fin-juego" class="contenedor oculto">
+            <h1>¡Torre completada! 🗼</h1>
+            <p class="puntuacion-grande" id="estrellas-finales">★★★</p>
+            <p class="detalle-final" id="detalle-final"></p>
+            <div id="ranking" class="ranking-widget"></div>
+            <button id="reiniciar">Jugar otra vez</button>
+        </div>
+
+        <a href="index.html" class="home-link">Volver al menú</a>
+
+        <section class="guia">
+            <div class="guia-bloque">
+                <h2>¿En qué consiste las Torres de Hanói?</h2>
+                <p>Hay tres torres y una pila de discos de distintos tamaños en la primera, ordenados de mayor a menor (el más grande abajo). El objetivo es <strong>trasladar toda la pila a la tercera torre</strong> respetando dos reglas: solo se mueve un disco cada vez, y <strong>nunca se puede poner un disco sobre otro más pequeño</strong>.</p>
+                <p>Para jugar, toca una torre (se coge su disco de arriba) y luego toca la torre de destino. También puedes usar las teclas 1, 2 y 3 del ordenador.</p>
+                <p>Con 3 discos el mínimo son 7 movimientos. Cada disco extra duplica el trabajo y añade uno: 15 con 4 discos, 31 con 5, 63 con 6 y 127 con 7. Es decir, el mínimo para <em>n</em> discos es 2ⁿ − 1.</p>
+            </div>
+
+            <div class="guia-bloque">
+                <h2>¿Para qué edades está recomendado?</h2>
+                <p>Con <strong>3 discos</strong> pueden jugar niños desde unos <strong>6-7 años</strong>. Con 4 y 5 discos es un buen reto a partir de los 9-10 años, y con 6 o 7 discos supone un desafío de planificación para adolescentes y adultos.</p>
+                <p>Si te gustan los juegos de lógica, prueba también el <a href="juego-apaga-luces.html">Apaga las Luces</a> o el <a href="juego-sudoku.html">Sudoku</a>.</p>
+            </div>
+
+            <div class="guia-bloque">
+                <h2>¿Por qué es bueno este juego?</h2>
+                <ul>
+                    <li><strong>Planificación:</strong> hay que pensar varios movimientos por adelantado.</li>
+                    <li><strong>Pensamiento recursivo:</strong> para mover n discos hay que saber mover n − 1; es la base de muchos algoritmos.</li>
+                    <li><strong>Control de impulsos:</strong> un movimiento apresurado puede obligar a deshacer varios.</li>
+                    <li><strong>Sin presión de tiempo:</strong> solo cuentan los movimientos, no el reloj.</li>
+                </ul>
+            </div>
+
+            <div class="guia-bloque">
+                <h2>Preguntas frecuentes</h2>
+                <div class="faq-item">
+                    <h3>¿Cuál es la estrategia para resolverlo?</h3>
+                    <p>Para mover una pila de n discos de la torre A a la C: primero mueve los n − 1 discos de arriba a la torre B, después el disco más grande a la C, y por último los n − 1 de la B a la C. Con 3 discos, el disco más pequeño se mueve siempre en el mismo sentido, y alterna con un movimiento de otro disco.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>¿Cuántos movimientos hacen falta como mínimo?</h3>
+                    <p>El mínimo es 2ⁿ − 1, siendo n el número de discos: 7 con 3 discos, 15 con 4, 31 con 5, 63 con 6 y 127 con 7. Debajo del tablero verás los límites para conseguir las estrellas.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>¿Cómo se consiguen las estrellas?</h3>
+                    <p>Tres estrellas si lo resuelves con el mínimo posible; dos si te pasas menos de un 25 %; una estrella si lo completas con más movimientos.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>¿Por qué se llama Torres de Hanói?</h3>
+                    <p>Lo inventó el matemático francés Édouard Lucas en 1883 y lo vendió como juguete con una leyenda sobre monjes que trasladan 64 discos de oro en un templo de Hanói. Con el mínimo de 2⁶⁴ − 1 movimientos, tardarían muchísimos miles de millones de años.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "¿Cuál es la estrategia para resolver las Torres de Hanói?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Para mover una pila de n discos de la torre A a la C: primero mueve los n − 1 discos de arriba a la torre B, después el disco más grande a la C, y por último los n − 1 de la B a la C. Con 3 discos, el disco más pequeño se mueve siempre en el mismo sentido, y alterna con un movimiento de otro disco."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "¿Cuántos movimientos hacen falta como mínimo en las Torres de Hanói?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "El mínimo es 2ⁿ − 1, siendo n el número de discos: 7 con 3 discos, 15 con 4, 31 con 5, 63 con 6 y 127 con 7."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "¿Cómo se consiguen las estrellas?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Tres estrellas si lo resuelves con el mínimo posible; dos si te pasas menos de un 25 %; una estrella si lo completas con más movimientos."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "¿Por qué se llama Torres de Hanói?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Lo inventó el matemático francés Édouard Lucas en 1883 y lo vendió como juguete con una leyenda sobre monjes que trasladan 64 discos de oro en un templo de Hanói. Con el mínimo de 2⁶⁴ − 1 movimientos, tardarían muchísimos miles de millones de años."
+                }
+            }
+        ]
+    }
+    </script>
+
+    <script src="ranking.js"></script>
+    <script>
+        const CLAVE_NIVEL = 'elmaslisto-hanoi-nivel';
+
+        const juegoActivoEl = document.getElementById('juego-activo');
+        const finJuegoEl = document.getElementById('fin-juego');
+        const nivelesEl = document.getElementById('niveles');
+        const tableroEl = document.getElementById('tablero');
+        const contadorMovsEl = document.getElementById('contador-movs');
+        const objetivoEl = document.getElementById('objetivo-estrellas');
+        const estrellasFinalesEl = document.getElementById('estrellas-finales');
+        const detalleFinalEl = document.getElementById('detalle-final');
+        const reiniciarBtn = document.getElementById('reiniciar');
+        const reempezarBtn = document.getElementById('reempezar');
+        const deshacerBtn = document.getElementById('btn-deshacer');
+
+        let N = 3;
+        let torres = [[], [], []]; // cada torre: discos de abajo a arriba (número mayor = disco más grande)
+        let movimientos = 0;
+        let historial = [];        // [{de, a}]
+        let origen = -1;
+        let ganado = false;
+
+        const minimo = () => Math.pow(2, N) - 1;
+
+        function estrellasPara(movs) {
+            const min = minimo();
+            if (movs <= min) return 3;
+            if (movs <= Math.ceil(min * 1.25)) return 2;
+            return 1;
+        }
+
+        function textoEstrellas(n) { return '★'.repeat(n) + '☆'.repeat(3 - n); }
+
+        function colorDisco(d) {
+            const matiz = Math.round(((d - 1) / Math.max(1, N)) * 300);
+            return `hsl(${matiz}, 70%, 50%)`;
+        }
+
+        function render() {
+            tableroEl.style.setProperty('--n', N);
+            tableroEl.classList.toggle('ganado', ganado);
+            tableroEl.innerHTML = torres.map((t, i) => {
+                const discos = t.map(d => {
+                    const ancho = 28 + (d / N) * 66;
+                    return `<div class="disco" style="width:${ancho}%;background:${colorDisco(d)}">${d}</div>`;
+                }).join('');
+                const clases = ['torre'];
+                if (origen === i) clases.push('origen');
+                return `<button type="button" class="${clases.join(' ')}" data-t="${i}" aria-label="Torre ${i + 1}, ${t.length} discos"><span class="torre-num">${i + 1}</span>${discos}</button>`;
+            }).join('');
+            contadorMovsEl.textContent = `Movimientos: ${movimientos}`;
+            deshacerBtn.disabled = !historial.length || ganado;
+            deshacerBtn.style.opacity = deshacerBtn.disabled ? .4 : 1;
+            const min = minimo();
+            objetivoEl.textContent = `★★★ con ${min} movimientos · ★★ con ${Math.ceil(min * 1.25)} o menos`;
+            nivelesEl.querySelectorAll('.nivel').forEach(b => b.classList.toggle('activo', Number(b.dataset.n) === N));
+        }
+
+        function empezar(n) {
+            N = n;
+            torres = [Array.from({ length: N }, (_, i) => N - i), [], []];
+            movimientos = 0;
+            historial = [];
+            origen = -1;
+            ganado = false;
+            juegoActivoEl.classList.remove('oculto');
+            finJuegoEl.classList.add('oculto');
+            try { localStorage.setItem(CLAVE_NIVEL, String(N)); } catch (e) { /* sin persistencia */ }
+            render();
+        }
+
+        function rechazar(i) {
+            const el = tableroEl.querySelector(`[data-t="${i}"]`);
+            if (!el) return;
+            el.classList.add('rechazo');
+            setTimeout(() => el.classList.remove('rechazo'), 350);
+        }
+
+        function mover(de, a) {
+            const disco = torres[de].pop();
+            torres[a].push(disco);
+            historial.push({ de, a });
+            movimientos++;
+            origen = -1;
+            if (torres[2].length === N) {
+                ganado = true;
+                render();
+                setTimeout(terminarJuego, 700);
+            } else {
+                render();
+            }
+        }
+
+        function tocarTorre(i) {
+            if (ganado) return;
+            if (origen === -1) {
+                if (!torres[i].length) { rechazar(i); return; }
+                origen = i;
+                render();
+                return;
+            }
+            if (origen === i) { origen = -1; render(); return; }
+            const mover_ = torres[origen][torres[origen].length - 1];
+            const sobre = torres[i][torres[i].length - 1];
+            if (sobre !== undefined && sobre < mover_) {
+                rechazar(i);
+                return;
+            }
+            mover(origen, i);
+        }
+
+        function deshacer() {
+            if (ganado || !historial.length) return;
+            const { de, a } = historial.pop();
+            torres[de].push(torres[a].pop());
+            movimientos++; // deshacer también cuenta como movimiento
+            origen = -1;
+            render();
+        }
+
+        tableroEl.addEventListener('click', (e) => {
+            const el = e.target.closest('.torre');
+            if (el) tocarTorre(Number(el.dataset.t));
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (juegoActivoEl.classList.contains('oculto') || e.ctrlKey || e.metaKey || e.altKey) return;
+            if (e.key >= '1' && e.key <= '3') tocarTorre(Number(e.key) - 1);
+            else if (e.key === 'z' || e.key === 'Z') deshacer();
+            else if (e.key === 'Escape' && origen !== -1) { origen = -1; render(); }
+        });
+
+        deshacerBtn.addEventListener('click', deshacer);
+        reempezarBtn.addEventListener('click', () => empezar(N));
+        reiniciarBtn.addEventListener('click', () => empezar(N));
+        nivelesEl.addEventListener('click', (e) => {
+            const b = e.target.closest('.nivel');
+            if (b) empezar(Number(b.dataset.n));
+        });
+
+        function terminarJuego() {
+            if (!ganado) return; // la partida se reinició durante el retardo de victoria
+            juegoActivoEl.classList.add('oculto');
+            finJuegoEl.classList.remove('oculto');
+
+            estrellasFinalesEl.textContent = textoEstrellas(estrellasPara(movimientos));
+            detalleFinalEl.textContent = movimientos === minimo()
+                ? `${N} discos en ${movimientos} movimientos: ¡el mínimo posible! Perfecto.`
+                : `${N} discos en ${movimientos} movimientos (el mínimo posible es ${minimo()}).`;
+
+            Ranking.mostrar(document.getElementById('ranking'), 'hanoi-' + N, movimientos, {
+                ascendente: true,
+                formatear: p => `${p} movimientos`,
+            });
+        }
+
+        let nivelInicial = 3;
+        try {
+            const guardado = Number(localStorage.getItem(CLAVE_NIVEL));
+            if (guardado >= 3 && guardado <= 7) nivelInicial = guardado;
+        } catch (e) { /* sin persistencia */ }
+        empezar(nivelInicial);
+    </script>
+
+</body>
+</html>
