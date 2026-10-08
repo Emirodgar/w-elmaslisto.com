@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verdadero o Falso: Cálculo Mental Rápido Contrarreloj | El Más Listo</title>
+    <meta name="description" content="¿Está bien resuelta la operación? Decide en un segundo si es verdadera o falsa. Juego de cálculo mental contrarreloj gratis en español, con dificultad creciente y ranking.">
+    <link rel="canonical" href="https://elmaslisto.com/juego-verdadero-falso">
+    <meta property="og:title" content="Verdadero o Falso: Cálculo Mental Rápido Contrarreloj">
+    <meta property="og:description" content="Operaciones ya resueltas: ¿verdaderas o falsas? 60 segundos, dificultad creciente y ranking.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://elmaslisto.com/juego-verdadero-falso">
+    <link rel="icon" href="img/favicon.png">
+
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        body { background-color: #c0392b; }
+
+        .wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 460px;
+        }
+
+        .contenedor{width:100%;background:#fff;padding:20px;border-radius:15px;box-shadow:0 6px 12px rgba(0,0,0,.15);text-align:center;box-sizing:border-box;}
+
+        .header-juego{display:flex;justify-content:space-between;align-items:center;font-size:1.1em;color:#555;margin-bottom:10px;font-weight:700}
+        .header-juego h1{margin:0;font-size:1em;color:#2c3e50;}
+        #tiempo{color:#c0392b;}
+        #tiempo.poco{animation:parpadeo .6s infinite;}
+        @keyframes parpadeo{50%{opacity:.4}}
+
+        .barra{height:8px;background:#f1f1f1;border-radius:4px;overflow:hidden;margin:0 0 14px;}
+        #barra-tiempo{height:100%;width:100%;background:#c0392b;transition:width .1s linear;}
+
+        #operacion{font-size:2.6em;font-weight:700;color:#2c3e50;margin:22px 0 8px;min-height:1.3em;letter-spacing:1px;}
+        #operacion.bien{color:#27ae60;}
+        #operacion.mal{color:#c0392b;}
+        #aviso{min-height:1.4em;font-size:.85em;color:#c0392b;font-weight:700;margin:0 0 14px;}
+        #puntos{font-size:.95em;color:#777;margin:0 0 14px;}
+
+        .botones{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+        .btn-resp{padding:20px 10px;font-size:1.3em;font-weight:700;border:none;border-radius:12px;cursor:pointer;color:#fff;font-family:inherit;box-shadow:0 3px 0 rgba(0,0,0,.2);touch-action:manipulation;}
+        .btn-resp:active{transform:translateY(2px);box-shadow:0 1px 0 rgba(0,0,0,.2);}
+        #btn-falso{background:#e74c3c;}
+        #btn-verdadero{background:#27ae60;}
+        .atajos{font-size:.75em;color:#999;margin:12px 0 0;}
+        #empezar{padding:15px 25px;font-size:1.1em;background-color:#2ecc71;color:#fff;border:none;border-radius:8px;cursor:pointer;margin:6px 0 0;}
+
+        #fin-juego h1{font-size:1.6em;color:#c0392b;}
+        .puntuacion-grande{font-size:2.4em;font-weight:700;color:#f1c40f;margin:10px 0 4px;}
+        .detalle-final{font-size:.95em;color:#555;margin:0 0 16px;}
+        #reiniciar{padding:15px 25px;font-size:1.1em;background-color:#2ecc71;color:#fff;border:none;border-radius:8px;cursor:pointer;margin-top:10px;}
+        .oculto{display:none}
+
+        @media (min-width:768px){
+            .contenedor{padding:30px}
+        }
+    </style>
+</head>
+<body>
+
+    <div class="wrapper">
+        <!-- Pantalla de juego principal -->
+        <div id="juego-activo" class="contenedor">
+            <div class="header-juego">
+                <h1>Verdadero o Falso</h1>
+                <span id="tiempo">60 s</span>
+            </div>
+            <div class="barra"><div id="barra-tiempo"></div></div>
+            <div id="operacion" aria-live="polite">¿Listo?</div>
+            <p id="aviso"></p>
+            <p id="puntos">Aciertos: 0</p>
+            <div class="botones oculto" id="botones">
+                <button type="button" class="btn-resp" id="btn-falso">Falso ✗</button>
+                <button type="button" class="btn-resp" id="btn-verdadero">Verdadero ✓</button>
+            </div>
+            <button id="empezar">Empezar</button>
+            <p class="atajos">Con teclado: ← o F para falso · → o V para verdadero</p>
+        </div>
+
+        <!-- Pantalla de fin de juego (inicialmente oculta) -->
+        <div id="fin-juego" class="contenedor oculto">
+            <h1>¡Tiempo!</h1>
+            <p class="puntuacion-grande" id="puntuacion-final">0</p>
+            <p class="detalle-final" id="detalle-final"></p>
+            <div id="ranking" class="ranking-widget"></div>
+            <button id="reiniciar">Jugar otra partida</button>
+        </div>
+
+        <a href="index.html" class="home-link">Volver al menú</a>
+
+        <section class="guia">
+            <div class="guia-bloque">
+                <h2>¿En qué consiste Verdadero o Falso?</h2>
+                <p>En pantalla aparece una operación ya resuelta, por ejemplo <strong>7 × 8 = 54</strong>. Tu trabajo es decidir lo más rápido posible si el resultado es correcto o no. Tienes <strong>60 segundos</strong> para conseguir tantos aciertos como puedas.</p>
+                <p>Las operaciones falsas son traicioneras: el resultado se parece mucho al verdadero, así que no basta con echar un vistazo. Cada fallo te resta 3 segundos. Cuantos más aciertos acumulas, más difíciles se vuelven las cuentas.</p>
+            </div>
+
+            <div class="guia-bloque">
+                <h2>¿Para qué edades está recomendado?</h2>
+                <p>Desde los <strong>8 años</strong>, con sumas, restas y tablas de multiplicar a un ritmo asequible. A medida que avanzas, las cuentas suben de nivel y resultan un buen reto también para adultos.</p>
+                <p>Para practicar más cálculo, prueba <a href="juego-tablas-multiplicar.html">Tablas de Multiplicar</a> o <a href="juego-mates-cadena.html">Mates en cadena</a>.</p>
+            </div>
+
+            <div class="guia-bloque">
+                <h2>¿Por qué es bueno este juego?</h2>
+                <ul>
+                    <li><strong>Cálculo mental rápido:</strong> entrena a estimar y comprobar resultados sin papel ni calculadora.</li>
+                    <li><strong>Sentido numérico:</strong> aprendes a detectar que un resultado "no cuadra", una habilidad muy útil en el día a día.</li>
+                    <li><strong>Velocidad de decisión:</strong> hay que responder con rapidez sin dejarse engañar por resultados parecidos.</li>
+                    <li><strong>Dificultad progresiva:</strong> empieza fácil y sube sola, así que siempre es un reto a tu medida.</li>
+                </ul>
+            </div>
+
+            <div class="guia-bloque">
+                <h2>Preguntas frecuentes</h2>
+                <div class="faq-item">
+                    <h3>¿Qué pasa si me equivoco?</h3>
+                    <p>Pierdes 3 segundos de tiempo y el juego sigue. No hay límite de fallos, pero cada uno te cuesta tiempo para acumular aciertos.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>¿Cómo sube la dificultad?</h3>
+                    <p>Cada cinco aciertos las operaciones se hacen más complejas: primero sumas y restas pequeñas, luego números más grandes, tablas de multiplicar y, al final, cuentas combinadas.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>¿Cómo detecto las operaciones falsas?</h3>
+                    <p>Fíjate primero en la última cifra y en el orden de magnitud del resultado. Muchas falsas fallan en la cifra de las unidades o se pasan por unos pocos puntos.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>¿Se puede jugar con teclado?</h3>
+                    <p>Sí. Usa las flechas izquierda y derecha, o las teclas F y V, para responder más rápido en el ordenador.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "¿Qué pasa si me equivoco?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Pierdes 3 segundos de tiempo y el juego sigue. No hay límite de fallos, pero cada uno te cuesta tiempo para acumular aciertos."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "¿Cómo sube la dificultad?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Cada cinco aciertos las operaciones se hacen más complejas: primero sumas y restas pequeñas, luego números más grandes, tablas de multiplicar y, al final, cuentas combinadas."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "¿Cómo detecto las operaciones falsas?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Fíjate primero en la última cifra y en el orden de magnitud del resultado. Muchas falsas fallan en la cifra de las unidades o se pasan por unos pocos puntos."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "¿Se puede jugar con teclado?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Sí. Usa las flechas izquierda y derecha, o las teclas F y V, para responder más rápido en el ordenador."
+                }
+            }
+        ]
+    }
+    </script>
+
+    <script src="ranking.js"></script>
+    <script>
+        const DURACION_MS = 60000;
+        const PENALIZACION_MS = 3000;
+        const ACIERTOS_POR_NIVEL = 5;
+
+        const juegoActivoEl = document.getElementById('juego-activo');
+        const finJuegoEl = document.getElementById('fin-juego');
+        const operacionEl = document.getElementById('operacion');
+        const avisoEl = document.getElementById('aviso');
+        const puntosEl = document.getElementById('puntos');
+        const tiempoEl = document.getElementById('tiempo');
+        const barraEl = document.getElementById('barra-tiempo');
+        const botonesEl = document.getElementById('botones');
+        const empezarBtn = document.getElementById('empezar');
+        const puntuacionFinalEl = document.getElementById('puntuacion-final');
+        const detalleFinalEl = document.getElementById('detalle-final');
+        const reiniciarBtn = document.getElementById('reiniciar');
+
+        let jugando = false;
+        let finMs = 0;
+        let aciertos = 0, fallos = 0;
+        let actual = null;     // { texto, verdadera }
+        let intervalo = null;
+        let bloqueado = false; // breve pausa visual tras responder
+
+        const aleatorio = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+
+        // Cada generador devuelve { texto, resultado, pistas }; "pistas" son desvíos típicos para fabricar falsas creíbles.
+        const generadores = {
+            suma(max) { const a = aleatorio(2, max), b = aleatorio(2, max); return { a, b, op: '+', r: a + b, cerca: [] }; },
+            resta(max) { const a = aleatorio(5, max), b = aleatorio(1, a - 1); return { a, b, op: '−', r: a - b, cerca: [] }; },
+            producto(maxA, maxB) { const a = aleatorio(2, maxA), b = aleatorio(2, maxB); return { a, b, op: '×', r: a * b, cerca: [a, b] }; },
+        };
+
+        // Nivel 0 a 4+: sube cada ACIERTOS_POR_NIVEL aciertos
+        function generarOperacion(nivel) {
+            const n = Math.min(nivel, 5);
+            let o;
+            const r = Math.random();
+            if (n === 0) o = r < .5 ? generadores.suma(20) : generadores.resta(20);
+            else if (n === 1) o = r < .5 ? generadores.suma(60) : generadores.resta(60);
+            else if (n === 2) o = r < .4 ? generadores.producto(9, 9) : (r < .7 ? generadores.suma(99) : generadores.resta(99));
+            else if (n === 3) o = r < .6 ? generadores.producto(12, 12) : (r < .8 ? generadores.suma(150) : generadores.resta(150));
+            else if (n === 4) o = r < .7 ? generadores.producto(12, 19) : (r < .85 ? generadores.suma(300) : generadores.resta(300));
+            else o = r < .8 ? generadores.producto(19, 19) : generadores.suma(500);
+
+            const verdadera = Math.random() < 0.5;
+            let mostrado = o.r;
+            if (!verdadera) {
+                const desvios = [1, -1, 2, -2, 10, -10, ...o.cerca, ...o.cerca.map(x => -x)];
+                do {
+                    mostrado = o.r + desvios[Math.floor(Math.random() * desvios.length)];
+                } while (mostrado === o.r || mostrado < 0);
+            }
+            return { texto: `${o.a} ${o.op} ${o.b} = ${mostrado}`, verdadera };
+        }
+
+        function nuevaOperacion() {
+            actual = generarOperacion(Math.floor(aciertos / ACIERTOS_POR_NIVEL));
+            operacionEl.className = '';
+            operacionEl.textContent = actual.texto;
+            bloqueado = false;
+        }
+
+        function restante() { return Math.max(0, finMs - Date.now()); }
+
+        function pintarTiempo() {
+            const ms = restante();
+            tiempoEl.textContent = `${Math.ceil(ms / 1000)} s`;
+            tiempoEl.classList.toggle('poco', ms <= 10000);
+            barraEl.style.width = `${Math.min(100, (ms / DURACION_MS) * 100)}%`;
+            if (ms <= 0) terminar();
+        }
+
+        function responder(dijoVerdadera) {
+            if (!jugando || bloqueado) return;
+            bloqueado = true;
+            const bien = dijoVerdadera === actual.verdadera;
+            if (bien) {
+                aciertos++;
+                avisoEl.textContent = '';
+                operacionEl.className = 'bien';
+            } else {
+                fallos++;
+                finMs -= PENALIZACION_MS;
+                avisoEl.textContent = `Era ${actual.verdadera ? 'verdadera' : 'falsa'} · −3 s`;
+                operacionEl.className = 'mal';
+            }
+            puntosEl.textContent = `Aciertos: ${aciertos}`;
+            pintarTiempo();
+            if (!jugando) return;
+            setTimeout(() => { if (jugando) nuevaOperacion(); }, bien ? 120 : 450);
+        }
+
+        document.getElementById('btn-verdadero').addEventListener('click', () => responder(true));
+        document.getElementById('btn-falso').addEventListener('click', () => responder(false));
+        document.addEventListener('keydown', (e) => {
+            if (!jugando) return; // en la pantalla final hay que poder escribir el nombre
+            const k = e.key.toLowerCase();
+            if (k === 'arrowright' || k === 'v') { e.preventDefault(); responder(true); }
+            else if (k === 'arrowleft' || k === 'f') { e.preventDefault(); responder(false); }
+        });
+
+        function terminar() {
+            if (!jugando) return;
+            jugando = false;
+            clearInterval(intervalo);
+            juegoActivoEl.classList.add('oculto');
+            finJuegoEl.classList.remove('oculto');
+            puntuacionFinalEl.textContent = `${aciertos} aciertos`;
+            detalleFinalEl.textContent = `${aciertos} correctas y ${fallos} ${fallos === 1 ? 'fallo' : 'fallos'} en 60 segundos.`;
+            Ranking.mostrar(document.getElementById('ranking'), 'verdadero-falso', aciertos, {
+                formatear: p => `${p} aciertos`,
+            });
+        }
+
+        function empezarPartida() {
+            aciertos = 0; fallos = 0;
+            jugando = true;
+            finMs = Date.now() + DURACION_MS;
+            juegoActivoEl.classList.remove('oculto');
+            finJuegoEl.classList.add('oculto');
+            botonesEl.classList.remove('oculto');
+            empezarBtn.classList.add('oculto');
+            avisoEl.textContent = '';
+            puntosEl.textContent = 'Aciertos: 0';
+            nuevaOperacion();
+            pintarTiempo();
+            clearInterval(intervalo);
+            intervalo = setInterval(pintarTiempo, 100);
+        }
+
+        empezarBtn.addEventListener('click', empezarPartida);
+        reiniciarBtn.addEventListener('click', empezarPartida);
+    </script>
+
+</body>
+</html>

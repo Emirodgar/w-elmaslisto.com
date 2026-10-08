@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test de Reflejos: Mide tu Tiempo de Reacción Online | El Más Listo</title>
+    <meta name="description" content="Pulsa en cuanto la pantalla se ponga verde y mide tu tiempo de reacción en milisegundos. Test de reflejos gratis en español, 5 intentos y ranking.">
+    <link rel="canonical" href="https://elmaslisto.com/juego-reflejos">
+    <meta property="og:title" content="Test de Reflejos: Mide tu Tiempo de Reacción Online">
+    <meta property="og:description" content="Pulsa cuando la pantalla se ponga verde. 5 intentos, tu media en milisegundos y ranking.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://elmaslisto.com/juego-reflejos">
+    <link rel="icon" href="img/favicon.png">
+
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        body { background-color: #7d3c98; }
+
+        .wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 460px;
+        }
+
+        .contenedor{width:100%;background:#fff;padding:20px;border-radius:15px;box-shadow:0 6px 12px rgba(0,0,0,.15);text-align:center;box-sizing:border-box;}
+
+        .header-juego{display:flex;justify-content:space-between;align-items:center;font-size:1.1em;color:#555;margin-bottom:10px;font-weight:700}
+        .header-juego h1{margin:0;font-size:1em;color:#2c3e50;}
+        #ronda{color:#7d3c98;font-size:.85em;}
+
+        #zona{display:flex;flex-direction:column;align-items:center;justify-content:center;height:280px;border-radius:14px;background:#3498db;color:#fff;cursor:pointer;user-select:none;-webkit-user-select:none;touch-action:manipulation;padding:16px;box-sizing:border-box;transition:background-color .1s;outline:none;}
+        #zona:focus-visible{box-shadow:0 0 0 4px rgba(125,60,152,.5);}
+        #zona.espera{background:#e74c3c;}
+        #zona.ya{background:#2ecc71;}
+        #zona.pronto{background:#f39c12;}
+        #zona-titulo{font-size:1.7em;font-weight:700;margin:0 0 6px;}
+        #zona-texto{font-size:.9em;margin:0;opacity:.95;}
+
+        #tiempos{display:flex;justify-content:center;gap:6px;flex-wrap:wrap;margin:12px 0 0;min-height:1.6em;}
+        .chip-tiempo{background:#f4ecf7;color:#7d3c98;border-radius:14px;padding:2px 10px;font-size:.8em;font-weight:700;}
+
+        #fin-juego h1{font-size:1.6em;color:#7d3c98;}
+        .puntuacion-grande{font-size:2.4em;font-weight:700;color:#f1c40f;margin:10px 0 4px;}
+        .detalle-final{font-size:.95em;color:#555;margin:0 0 16px;}
+        #reiniciar{padding:15px 25px;font-size:1.1em;background-color:#2ecc71;color:#fff;border:none;border-radius:8px;cursor:pointer;margin-top:10px;}
+        .oculto{display:none}
+
+        @media (min-width:768px){
+            .contenedor{padding:30px}
+        }
+    </style>
+</head>
+<body>
+
+    <div class="wrapper">
+        <!-- Pantalla de juego principal -->
+        <div id="juego-activo" class="contenedor">
+            <div class="header-juego">
+                <h1>Test de Reflejos</h1>
+                <span id="ronda">Intento 1 de 5</span>
+            </div>
+            <div id="zona" role="button" tabindex="0" aria-live="polite">
+                <p id="zona-titulo">Pulsa para empezar</p>
+                <p id="zona-texto">Cuando la pantalla se ponga verde, púlsala lo más rápido que puedas.</p>
+            </div>
+            <div id="tiempos"></div>
+        </div>
+
+        <!-- Pantalla de fin de juego (inicialmente oculta) -->
+        <div id="fin-juego" class="contenedor oculto">
+            <h1>Resultado</h1>
+            <p class="puntuacion-grande" id="media-final">0 ms</p>
+            <p class="detalle-final" id="detalle-final"></p>
+            <div id="ranking" class="ranking-widget"></div>
+            <button id="reiniciar">Probar otra vez</button>
+        </div>
+
+        <a href="index.html" class="home-link">Volver al menú</a>
+
+        <section class="guia">
+            <div class="guia-bloque">
+                <h2>¿En qué consiste el Test de Reflejos?</h2>
+                <p>La pantalla empieza en rojo. Después de un tiempo al azar, entre 1,5 y 5 segundos, se pone <strong>verde</strong>. En ese instante tienes que pulsar lo más rápido posible. El juego mide cuántos milisegundos has tardado.</p>
+                <p>Si pulsas antes de que cambie a verde, el intento no cuenta y se repite. Al completar 5 intentos se calcula tu media y puedes guardarla en el ranking.</p>
+            </div>
+
+            <div class="guia-bloque">
+                <h2>¿Para qué edades está recomendado?</h2>
+                <p>Es apto desde los <strong>5 años</strong>, porque solo hay que pulsar cuando algo cambia de color. Funciona igual de bien con adultos: es divertido comparar tiempos en familia.</p>
+                <p>Si quieres entrenar la atención de otra manera, prueba <a href="juego-colores.html">Acierta el Color</a> o <a href="juego-diferente.html">Busca el Color Diferente</a>.</p>
+            </div>
+
+            <div class="guia-bloque">
+                <h2>¿Por qué es bueno este juego?</h2>
+                <ul>
+                    <li><strong>Tiempo de reacción:</strong> mide lo que tarda tu cerebro en percibir un estímulo y mandar la orden a la mano.</li>
+                    <li><strong>Control de impulsos:</strong> hay que esperar sin adelantarse, lo que también entrena el autocontrol.</li>
+                    <li><strong>Atención sostenida:</strong> hay que mantenerse alerta durante una espera de duración desconocida.</li>
+                    <li><strong>Retos entre amigos:</strong> son partidas de medio minuto, perfectas para comparar resultados.</li>
+                </ul>
+            </div>
+
+            <div class="guia-bloque">
+                <h2>Preguntas frecuentes</h2>
+                <div class="faq-item">
+                    <h3>¿Cuál es un buen tiempo de reacción?</h3>
+                    <p>Una persona media reacciona a un estímulo visual en unos 250 milisegundos. Por debajo de 200 ms es un tiempo muy bueno, y por encima de 350 ms indica que quizá estás cansado o distraído.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>¿Por qué mi tiempo cambia de un intento a otro?</h3>
+                    <p>Es normal: influyen la concentración, el cansancio y hasta lo que tarda en responder tu dispositivo. Por eso el juego usa la media de cinco intentos.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>¿Afecta el dispositivo al resultado?</h3>
+                    <p>Sí, un poco. Las pantallas y los ratones tienen un pequeño retraso propio. Para comparar tus mejoras, juega siempre en el mismo dispositivo.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>¿Se pueden mejorar los reflejos?</h3>
+                    <p>Algo sí. Estar descansado, concentrado y con la mano preparada ayuda a recortar unos milisegundos, aunque el límite lo marca la biología de cada persona.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "¿Cuál es un buen tiempo de reacción?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Una persona media reacciona a un estímulo visual en unos 250 milisegundos. Por debajo de 200 ms es un tiempo muy bueno, y por encima de 350 ms indica que quizá estás cansado o distraído."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "¿Por qué mi tiempo cambia de un intento a otro?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Es normal: influyen la concentración, el cansancio y hasta lo que tarda en responder tu dispositivo. Por eso el juego usa la media de cinco intentos."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "¿Afecta el dispositivo al resultado?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Sí, un poco. Las pantallas y los ratones tienen un pequeño retraso propio. Para comparar tus mejoras, juega siempre en el mismo dispositivo."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "¿Se pueden mejorar los reflejos?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Algo sí. Estar descansado, concentrado y con la mano preparada ayuda a recortar unos milisegundos, aunque el límite lo marca la biología de cada persona."
+                }
+            }
+        ]
+    }
+    </script>
+
+    <script src="ranking.js"></script>
+    <script>
+        const RONDAS = 5;
+        const ESPERA_MIN = 1500, ESPERA_MAX = 5000; // ms
+
+        const juegoActivoEl = document.getElementById('juego-activo');
+        const finJuegoEl = document.getElementById('fin-juego');
+        const zonaEl = document.getElementById('zona');
+        const tituloEl = document.getElementById('zona-titulo');
+        const textoEl = document.getElementById('zona-texto');
+        const rondaEl = document.getElementById('ronda');
+        const tiemposEl = document.getElementById('tiempos');
+        const mediaFinalEl = document.getElementById('media-final');
+        const detalleFinalEl = document.getElementById('detalle-final');
+        const reiniciarBtn = document.getElementById('reiniciar');
+
+        let estado = 'inicio';   // inicio | espera | ya | resultado | pronto
+        let tiempos = [];
+        let temporizador = null;
+        let tInicio = 0;
+
+        function pintar(clase, titulo, texto) {
+            zonaEl.className = clase;
+            tituloEl.textContent = titulo;
+            textoEl.textContent = texto;
+        }
+
+        function pintarTiempos() {
+            tiemposEl.innerHTML = tiempos.map(t => `<span class="chip-tiempo">${t} ms</span>`).join('');
+            rondaEl.textContent = `Intento ${Math.min(tiempos.length + 1, RONDAS)} de ${RONDAS}`;
+        }
+
+        function iniciarEspera() {
+            estado = 'espera';
+            pintar('espera', 'Espera…', 'Pulsa cuando se ponga verde.');
+            pintarTiempos();
+            const retardo = ESPERA_MIN + Math.random() * (ESPERA_MAX - ESPERA_MIN);
+            temporizador = setTimeout(() => {
+                estado = 'ya';
+                pintar('ya', '¡YA!', '');
+                tInicio = performance.now();
+            }, retardo);
+        }
+
+        function accion() {
+            if (estado === 'inicio' || estado === 'resultado' || estado === 'pronto') {
+                iniciarEspera();
+            } else if (estado === 'espera') {
+                clearTimeout(temporizador);
+                estado = 'pronto';
+                pintar('pronto', '¡Demasiado pronto!', 'Este intento no cuenta. Pulsa para volver a intentarlo.');
+            } else if (estado === 'ya') {
+                const ms = Math.round(performance.now() - tInicio);
+                tiempos.push(ms);
+                pintarTiempos();
+                if (tiempos.length >= RONDAS) {
+                    estado = 'fin';
+                    terminar();
+                } else {
+                    estado = 'resultado';
+                    pintar('', `${ms} ms`, 'Pulsa para el siguiente intento.');
+                }
+            }
+        }
+
+        // pointerdown reacciona antes que click, lo que da una medida más fiel
+        zonaEl.addEventListener('pointerdown', (e) => { e.preventDefault(); accion(); });
+        zonaEl.addEventListener('keydown', (e) => {
+            if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); accion(); }
+        });
+
+        function valoracion(media) {
+            if (media < 200) return 'Reflejos de piloto. ⚡';
+            if (media < 260) return 'Muy buen tiempo, por encima de la media.';
+            if (media < 340) return 'Un tiempo normal. Con descanso y práctica se puede bajar.';
+            return 'Algo lento: prueba cuando estés más descansado.';
+        }
+
+        function terminar() {
+            const media = Math.round(tiempos.reduce((a, b) => a + b, 0) / tiempos.length);
+            const mejor = Math.min(...tiempos);
+            juegoActivoEl.classList.add('oculto');
+            finJuegoEl.classList.remove('oculto');
+            mediaFinalEl.textContent = `${media} ms`;
+            detalleFinalEl.textContent = `Media de ${RONDAS} intentos. Tu mejor tiempo: ${mejor} ms. ${valoracion(media)}`;
+            Ranking.mostrar(document.getElementById('ranking'), 'reflejos', media, {
+                ascendente: true,
+                formatear: p => `${p} ms`,
+            });
+        }
+
+        function empezarPartida() {
+            clearTimeout(temporizador);
+            tiempos = [];
+            estado = 'inicio';
+            juegoActivoEl.classList.remove('oculto');
+            finJuegoEl.classList.add('oculto');
+            pintar('', 'Pulsa para empezar', 'Cuando la pantalla se ponga verde, púlsala lo más rápido que puedas.');
+            pintarTiempos();
+        }
+
+        reiniciarBtn.addEventListener('click', empezarPartida);
+        empezarPartida();
+    </script>
+
+</body>
+</html>
