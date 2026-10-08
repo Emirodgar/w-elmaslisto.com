@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suma o Resta: Juego de Lógica con Números y Reto Diario | El Más Listo</title>
+    <meta name="description" content="Tacha los números justos para que cada fila y cada columna sume el objetivo. Juego de lógica y cálculo gratis en español con reto diario, tres tamaños y ranking.">
+    <link rel="canonical" href="https://elmaslisto.com/juego-suma-resta">
+    <meta property="og:title" content="Suma o Resta: Juego de Lógica con Números y Reto Diario">
+    <meta property="og:description" content="Tacha números para que cada fila y columna sume el objetivo. Reto diario, tres tamaños y ranking.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://elmaslisto.com/juego-suma-resta">
+    <link rel="icon" href="img/favicon.png">
+
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        body { background-color: #16a085; }
+
+        .wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 460px;
+        }
+
+        .contenedor{width:100%;background:#fff;padding:20px;border-radius:15px;box-shadow:0 6px 12px rgba(0,0,0,.15);text-align:center;box-sizing:border-box;}
+
+        .header-juego{display:flex;justify-content:space-between;align-items:center;font-size:1.1em;color:#555;margin-bottom:2px;font-weight:700}
+        .header-juego h1{margin:0;font-size:1em;color:#2c3e50;}
+        #tiempo{color:#16a085;font-size:.85em;}
+
+        #info-modo{margin:0 0 10px;font-size:.75em;color:#999;font-weight:400;text-align:left;}
+        .instrucciones{font-size:.8em;color:#777;margin:0 0 12px;}
+
+        .niveles{display:flex;justify-content:center;gap:6px;margin:0 0 12px;}
+        .nivel{background:#fff;border:1px solid #ccc;border-radius:20px;padding:4px 14px;cursor:pointer;color:#555;font-size:.8em;font-family:inherit;}
+        .nivel.activo{background:#16a085;border-color:#16a085;color:#fff;}
+        .nivel:hover:not(.activo){background:#f0f0f0;}
+
+        #tablero{display:grid;gap:6px;width:100%;max-width:360px;margin:0 auto 14px;padding:10px;background:#ecf0f1;border-radius:12px;box-sizing:border-box;user-select:none;-webkit-user-select:none;}
+        .celda{aspect-ratio:1/1;border:none;border-radius:10px;background:#fff;cursor:pointer;padding:0;font-family:inherit;font-size:1.3em;font-weight:700;color:#2c3e50;box-shadow:0 2px 0 rgba(0,0,0,.12);transition:background-color .15s, transform .1s, color .15s;}
+        .celda:hover{background:#f7fbfa;}
+        .celda:active{transform:scale(.94);}
+        .celda.tachada{background:transparent;box-shadow:none;color:#b2bec3;text-decoration:line-through;text-decoration-thickness:2px;}
+        .celda.pista{outline:3px solid #f1c40f;outline-offset:-1px;cursor:default;}
+        .objetivo{display:flex;align-items:center;justify-content:center;font-size:1.1em;font-weight:700;color:#7f8c8d;border-radius:10px;aspect-ratio:1/1;background:#d5e8e4;transition:background-color .15s, color .15s;}
+        .objetivo.completo{background:#2ecc71;color:#fff;}
+        .objetivo.excedido{background:#f5c6c1;color:#c0392b;}
+        #tablero.ganado .celda{cursor:default;}
+        #tablero.n6 .celda, #tablero.n6 .objetivo{font-size:1.05em;}
+
+        .acciones{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;}
+        .btn-accion{background:#fff;border:1px solid #ccc;border-radius:20px;padding:5px 14px;cursor:pointer;color:#555;font-size:.8em;font-family:inherit;}
+        .btn-accion:hover{background:#f0f0f0;}
+        .nota{font-size:.75em;color:#999;margin:10px 0 0;}
+
+        #fin-juego h1{font-size:1.6em;color:#16a085;}
+        .puntuacion-grande{font-size:2.4em;font-weight:700;color:#f1c40f;margin:10px 0 4px;letter-spacing:2px;}
+        .detalle-final{font-size:.95em;color:#555;margin:0 0 16px;}
+        #reiniciar{padding:15px 25px;font-size:1.1em;background-color:#2ecc71;color:#fff;border:none;border-radius:8px;cursor:pointer;margin-top:10px;}
+        #contador-diario{font-size:.9em;color:#888;margin:10px 0 0;}
+        .oculto{display:none}
+
+        .mode-toggle{margin:15px 0 0;font-size:.85em;text-align:center;}
+        .mode-toggle a{color:rgba(255,255,255,0.9);text-decoration:underline;cursor:pointer;}
+        .mode-toggle a:hover{color:#fff;}
+
+        @media (min-width:768px){
+            .contenedor{padding:30px}
+            #tablero{max-width:400px}
+        }
+    </style>
+</head>
+<body>
+
+    <div class="wrapper">
+        <!-- Pantalla de juego principal -->
+        <div id="juego-activo" class="contenedor">
+            <div class="header-juego">
+                <h1>Suma o Resta</h1>
+                <span id="tiempo">Tiempo: 0:00</span>
+            </div>
+            <p id="info-modo"></p>
+            <p class="instrucciones">Toca los números que sobran para tacharlos. Los que queden en cada fila y columna deben sumar el número del borde.</p>
+            <div class="niveles oculto" id="niveles">
+                <button type="button" class="nivel" data-n="4">Fácil 4×4</button>
+                <button type="button" class="nivel" data-n="5">Medio 5×5</button>
+                <button type="button" class="nivel" data-n="6">Difícil 6×6</button>
+            </div>
+            <div id="tablero" role="grid" aria-label="Tablero de números"></div>
+            <div class="acciones">
+                <button type="button" class="btn-accion" id="reempezar">↺ Empezar de nuevo</button>
+                <button type="button" class="btn-accion" id="btn-pista">💡 Pista (+15 s)</button>
+            </div>
+            <p class="nota">Verde: la línea ya suma lo que toca · Rosa: te has pasado</p>
+        </div>
+
+        <!-- Pantalla de fin de juego (inicialmente oculta) -->
+        <div id="fin-juego" class="contenedor oculto">
+            <h1>¡Resuelto! ✅</h1>
+            <p class="puntuacion-grande" id="tiempo-final">0:00</p>
+            <p class="detalle-final" id="detalle-final"></p>
+            <div id="ranking" class="ranking-widget"></div>
+            <p id="contador-diario" class="oculto"></p>
+            <button id="reiniciar">Jugar otra partida</button>
+        </div>
+
+        <p class="mode-toggle"><a href="#" id="cambiar-modo">Jugar partida aleatoria</a></p>
+
+        <a href="index.html" class="home-link">Volver al menú</a>
+
+        <section class="guia">
+            <div class="guia-bloque">
+                <h2>¿En qué consiste Suma o Resta?</h2>
+                <p>Es un tablero de números con un total en el borde de cada fila y de cada columna. Tu objetivo es <strong>tachar los números necesarios</strong> para que los que queden en cada línea sumen exactamente ese total.</p>
+                <p>Empieza por las líneas más claras: si un total es muy pequeño, solo caben números pequeños; si es igual a la suma de todo lo que hay, no se tacha nada. Los totales se ponen verdes cuando aciertan y rojos cuando te pasas, así que siempre sabes cómo vas.</p>
+                <p>Cuanto menos tardes, mejor puesto en el ranking. Cada pista suma 15 segundos a tu tiempo.</p>
+            </div>
+
+            <div class="guia-bloque">
+                <h2>¿Para qué edades está recomendado?</h2>
+                <p>El tablero fácil de 4×4 funciona bien desde los <strong>8 años</strong>, siempre que se sepa sumar con soltura. Los tamaños 5×5 y 6×6 son un buen reto de razonamiento para adolescentes y adultos.</p>
+                <p>Si te gustan los juegos de lógica, prueba también el <a href="juego-sudoku.html">Sudoku</a> o el <a href="juego-nonograma.html">Nonograma</a>.</p>
+            </div>
+
+            <div class="guia-bloque">
+                <h2>¿Por qué es bueno este juego?</h2>
+                <ul>
+                    <li><strong>Cálculo mental:</strong> sumas y comparas totales continuamente.</li>
+                    <li><strong>Razonamiento por eliminación:</strong> cada decisión en una fila condiciona las columnas que la cruzan.</li>
+                    <li><strong>Atención a varias reglas a la vez:</strong> hay que cumplir filas y columnas al mismo tiempo.</li>
+                    <li><strong>Partidas cortas:</strong> un tablero se resuelve en pocos minutos, ideal para un descanso.</li>
+                </ul>
+            </div>
+
+            <div class="guia-bloque">
+                <h2>Preguntas frecuentes</h2>
+                <div class="faq-item">
+                    <h3>¿Siempre tiene solución?</h3>
+                    <p>Sí. Cada tablero se crea a partir de una solución real: primero se decide qué números se quedan y después se calculan los totales.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>¿Puede haber más de una solución?</h3>
+                    <p>A veces sí. El juego da por válida cualquier combinación en la que todas las filas y columnas sumen su total.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>¿Qué hace la pista?</h3>
+                    <p>Corrige una casilla que está mal puesta, la marca en amarillo y la bloquea. Cada pista añade 15 segundos a tu tiempo.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>¿Puedo jugar más de una vez al día?</h3>
+                    <p>El reto diario es un único tablero por día, igual para todos. Con "Jugar partida aleatoria" puedes practicar sin límite en tres tamaños.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "¿Siempre tiene solución?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Sí. Cada tablero se crea a partir de una solución real: primero se decide qué números se quedan y después se calculan los totales."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "¿Puede haber más de una solución?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "A veces sí. El juego da por válida cualquier combinación en la que todas las filas y columnas sumen su total."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "¿Qué hace la pista?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Corrige una casilla que está mal puesta, la marca en amarillo y la bloquea. Cada pista añade 15 segundos a tu tiempo."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "¿Puedo jugar más de una vez al día?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "El reto diario es un único tablero por día, igual para todos. Con \"Jugar partida aleatoria\" puedes practicar sin límite en tres tamaños."
+                }
+            }
+        ]
+    }
+    </script>
+
+    <script src="ranking.js"></script>
+    <script>
+        const CLAVE_STORAGE = 'elmaslisto-suma-resta-diario';
+        const FECHA_EPOCA = new Date(2024, 0, 1);
+        const PENALIZACION_PISTA = 15; // segundos
+
+        const juegoActivoEl = document.getElementById('juego-activo');
+        const finJuegoEl = document.getElementById('fin-juego');
+        const infoModoEl = document.getElementById('info-modo');
+        const nivelesEl = document.getElementById('niveles');
+        const tableroEl = document.getElementById('tablero');
+        const tiempoEl = document.getElementById('tiempo');
+        const tiempoFinalEl = document.getElementById('tiempo-final');
+        const detalleFinalEl = document.getElementById('detalle-final');
+        const contadorDiarioEl = document.getElementById('contador-diario');
+        const reiniciarBtn = document.getElementById('reiniciar');
+        const reempezarBtn = document.getElementById('reempezar');
+        const pistaBtn = document.getElementById('btn-pista');
+        const cambiarModoEl = document.getElementById('cambiar-modo');
+
+        let N = 5;
+        let nums = [];        // números de cada casilla (1-9)
+        let solucion = [];    // 1 = la casilla se queda, 0 = se tacha
+        let objFilas = [], objCols = [];
+        let tachadas = [];    // estado actual: 1 = tachada
+        let bloqueadas = [];  // casillas fijadas por una pista
+        let pistas = 0;
+        let ganado = false;
+        let modoDiario = true;
+        let intervaloContador = null;
+
+        // Cronómetro: segundos acumulados + tramo en curso (arranca con la primera pulsación)
+        let baseSeg = 0;
+        let inicioMs = null;
+        let intervaloTiempo = null;
+
+        function mulberry32(a) {
+            return function () {
+                a |= 0; a = a + 0x6D2B79F5 | 0;
+                let t = Math.imul(a ^ a >>> 15, 1 | a);
+                t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+                return ((t ^ t >>> 14) >>> 0) / 4294967296;
+            };
+        }
+
+        function medianoche(fecha) { return new Date(fecha.getFullYear(), fecha.getMonth(), fecha.getDate()); }
+
+        function fechaISO(fecha) {
+            const y = fecha.getFullYear();
+            const m = String(fecha.getMonth() + 1).padStart(2, '0');
+            const d = String(fecha.getDate()).padStart(2, '0');
+            return `${y}-${m}-${d}`;
+        }
+
+        function fechaBonita(fecha) {
+            return new Intl.DateTimeFormat('es-ES', { day: 'numeric', month: 'long', year: 'numeric' }).format(fecha);
+        }
+
+        function diasDesdeEpoca() {
+            return Math.round((medianoche(new Date()) - medianoche(FECHA_EPOCA)) / 86400000);
+        }
+
+        function formatearTiempo(seg) {
+            const m = Math.floor(seg / 60);
+            const s = seg % 60;
+            return `${m}:${String(s).padStart(2, '0')}`;
+        }
+
+        function segundos() {
+            return baseSeg + (inicioMs ? Math.floor((Date.now() - inicioMs) / 1000) : 0);
+        }
+
+        function pintarTiempo() { tiempoEl.textContent = `Tiempo: ${formatearTiempo(segundos())}`; }
+
+        function arrancarReloj() {
+            if (inicioMs || ganado) return;
+            inicioMs = Date.now();
+            intervaloTiempo = setInterval(pintarTiempo, 500);
+        }
+
+        function pararReloj() {
+            baseSeg = segundos();
+            inicioMs = null;
+            if (intervaloTiempo) { clearInterval(intervaloTiempo); intervaloTiempo = null; }
+            pintarTiempo();
+        }
+
+        // Cada fila y cada columna debe tener al menos una casilla que se queda y una que se tacha.
+        function generar(tam, semilla) {
+            N = tam;
+            const rand = mulberry32(semilla);
+            let valido;
+            do {
+                nums = Array.from({ length: N * N }, () => 1 + Math.floor(rand() * 9));
+                solucion = Array.from({ length: N * N }, () => rand() < 0.55 ? 1 : 0);
+                valido = true;
+                for (let k = 0; k < N && valido; k++) {
+                    let f = 0, c = 0;
+                    for (let j = 0; j < N; j++) { f += solucion[k * N + j]; c += solucion[j * N + k]; }
+                    if (f === 0 || f === N || c === 0 || c === N) valido = false;
+                }
+            } while (!valido);
+            objFilas = Array(N).fill(0);
+            objCols = Array(N).fill(0);
+            for (let i = 0; i < N * N; i++) {
+                if (solucion[i]) { objFilas[Math.floor(i / N)] += nums[i]; objCols[i % N] += nums[i]; }
+            }
+        }
+
+        function sumaActual() {
+            const f = Array(N).fill(0), c = Array(N).fill(0);
+            for (let i = 0; i < N * N; i++) {
+                if (!tachadas[i]) { f[Math.floor(i / N)] += nums[i]; c[i % N] += nums[i]; }
+            }
+            return { f, c };
+        }
+
+        function estaResuelto() {
+            const s = sumaActual();
+            return s.f.every((v, i) => v === objFilas[i]) && s.c.every((v, i) => v === objCols[i]);
+        }
+
+        function claseObjetivo(actual, objetivo) {
+            if (actual === objetivo) return ' completo';
+            if (actual < objetivo) return '';
+            return ' excedido';
+        }
+
+        function render() {
+            const s = sumaActual();
+            tableroEl.style.gridTemplateColumns = `repeat(${N + 1}, 1fr)`;
+            tableroEl.className = (ganado ? 'ganado ' : '') + 'n' + N;
+            let html = '';
+            for (let f = 0; f < N; f++) {
+                for (let c = 0; c < N; c++) {
+                    const i = f * N + c;
+                    html += `<button type="button" class="celda${tachadas[i] ? ' tachada' : ''}${bloqueadas[i] ? ' pista' : ''}" data-i="${i}" role="gridcell" aria-label="Fila ${f + 1}, columna ${c + 1}, número ${nums[i]}${tachadas[i] ? ', tachado' : ''}">${nums[i]}</button>`;
+                }
+                html += `<div class="objetivo${claseObjetivo(s.f[f], objFilas[f])}" aria-label="Total de la fila ${f + 1}: ${objFilas[f]}">${objFilas[f]}</div>`;
+            }
+            for (let c = 0; c < N; c++) {
+                html += `<div class="objetivo${claseObjetivo(s.c[c], objCols[c])}" aria-label="Total de la columna ${c + 1}: ${objCols[c]}">${objCols[c]}</div>`;
+            }
+            tableroEl.innerHTML = html;
+        }
+
+        function cargarTablero(tam, semilla) {
+            generar(tam, semilla);
+            empezarDeNuevo();
+        }
+
+        function empezarDeNuevo() {
+            tachadas = Array(N * N).fill(0);
+            bloqueadas = Array(N * N).fill(0);
+            pistas = 0;
+            ganado = false;
+            pararReloj();
+            baseSeg = 0;
+            pintarTiempo();
+            render();
+            guardarProgreso();
+        }
+
+        function comprobarVictoria() {
+            if (!estaResuelto()) return false;
+            ganado = true;
+            pararReloj();
+            render();
+            guardarProgreso();
+            setTimeout(terminarJuego, 700);
+            return true;
+        }
+
+        function tocar(i) {
+            if (ganado || bloqueadas[i]) return;
+            arrancarReloj();
+            tachadas[i] ^= 1;
+            render();
+            if (!comprobarVictoria()) guardarProgreso();
+        }
+
+        // La pista corrige una casilla mal puesta y la bloquea.
+        function pedirPista() {
+            if (ganado) return;
+            const malas = [];
+            for (let i = 0; i < N * N; i++) {
+                if (!bloqueadas[i] && tachadas[i] !== (solucion[i] ? 0 : 1)) malas.push(i);
+            }
+            if (!malas.length) return; // el tablero ya cumple los totales con otra solución
+            arrancarReloj();
+            const i = malas[Math.floor(Math.random() * malas.length)];
+            tachadas[i] = solucion[i] ? 0 : 1;
+            bloqueadas[i] = 1;
+            baseSeg += PENALIZACION_PISTA;
+            pistas++;
+            render();
+            pintarTiempo();
+            if (!comprobarVictoria()) guardarProgreso();
+        }
+
+        tableroEl.addEventListener('click', (e) => {
+            const el = e.target.closest('.celda');
+            if (el) tocar(Number(el.dataset.i));
+        });
+
+        reempezarBtn.addEventListener('click', empezarDeNuevo);
+        pistaBtn.addEventListener('click', pedirPista);
+
+        nivelesEl.addEventListener('click', (e) => {
+            const b = e.target.closest('.nivel');
+            if (!b || modoDiario) return;
+            iniciarAleatorio(Number(b.dataset.n));
+        });
+
+        // --- Progreso diario ---
+        function cargarProgreso() {
+            try {
+                const raw = localStorage.getItem(CLAVE_STORAGE);
+                if (!raw) return null;
+                const datos = JSON.parse(raw);
+                if (datos.fecha !== fechaISO(new Date())) return null;
+                return datos;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function guardarProgreso() {
+            if (!modoDiario) return;
+            try {
+                localStorage.setItem(CLAVE_STORAGE, JSON.stringify({
+                    fecha: fechaISO(new Date()),
+                    tachadas, bloqueadas, pistas, ganado, segundos: segundos()
+                }));
+            } catch (e) {
+                // localStorage no disponible (modo privado, etc.): seguimos sin persistir
+            }
+        }
+
+        function iniciarContadorDiario() {
+            pararContadorDiario();
+            const actualizar = () => {
+                const ahora = new Date();
+                const manana = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate() + 1);
+                const restante = manana - ahora;
+                const h = String(Math.floor(restante / 3600000)).padStart(2, '0');
+                const m = String(Math.floor((restante % 3600000) / 60000)).padStart(2, '0');
+                const s = String(Math.floor((restante % 60000) / 1000)).padStart(2, '0');
+                contadorDiarioEl.textContent = `Vuelve mañana para un nuevo reto (${h}:${m}:${s})`;
+            };
+            actualizar();
+            intervaloContador = setInterval(actualizar, 1000);
+        }
+
+        function pararContadorDiario() {
+            if (intervaloContador) { clearInterval(intervaloContador); intervaloContador = null; }
+        }
+
+        function terminarJuego() {
+            juegoActivoEl.classList.add('oculto');
+            finJuegoEl.classList.remove('oculto');
+
+            const total = segundos();
+            tiempoFinalEl.textContent = formatearTiempo(total);
+            detalleFinalEl.textContent = `Tablero de ${N}×${N} resuelto en ${formatearTiempo(total)}` +
+                (pistas ? `, incluyendo ${pistas} ${pistas === 1 ? 'pista' : 'pistas'} (+${pistas * PENALIZACION_PISTA} s).` : '.');
+
+            if (modoDiario) {
+                reiniciarBtn.classList.add('oculto');
+                contadorDiarioEl.classList.remove('oculto');
+                iniciarContadorDiario();
+            } else {
+                reiniciarBtn.classList.remove('oculto');
+                contadorDiarioEl.classList.add('oculto');
+                pararContadorDiario();
+            }
+
+            Ranking.mostrar(document.getElementById('ranking'), 'suma-resta-' + N, total, {
+                ascendente: true,
+                formatear: formatearTiempo,
+                claveGuardado: modoDiario ? fechaISO(new Date()) : undefined,
+            });
+        }
+
+        function mostrarJuego() {
+            juegoActivoEl.classList.remove('oculto');
+            finJuegoEl.classList.add('oculto');
+        }
+
+        function iniciarDiario() {
+            modoDiario = true;
+            pararContadorDiario();
+            contadorDiarioEl.classList.add('oculto');
+            reiniciarBtn.classList.remove('oculto');
+            nivelesEl.classList.add('oculto');
+            cambiarModoEl.textContent = 'Jugar partida aleatoria';
+            infoModoEl.textContent = `Reto diario · 5×5 · ${fechaBonita(new Date())}`;
+            mostrarJuego();
+
+            const g = cargarProgreso();
+            cargarTablero(5, diasDesdeEpoca() + 23);
+            if (g && Array.isArray(g.tachadas) && g.tachadas.length === N * N) {
+                tachadas = g.tachadas;
+                bloqueadas = Array.isArray(g.bloqueadas) && g.bloqueadas.length === N * N ? g.bloqueadas : Array(N * N).fill(0);
+                pistas = g.pistas || 0;
+                ganado = !!g.ganado;
+                baseSeg = g.segundos || 0;
+                pintarTiempo();
+                render();
+                if (ganado) terminarJuego();
+            }
+        }
+
+        function iniciarAleatorio(tam) {
+            modoDiario = false;
+            pararContadorDiario();
+            contadorDiarioEl.classList.add('oculto');
+            reiniciarBtn.classList.remove('oculto');
+            nivelesEl.classList.remove('oculto');
+            tam = tam || 4;
+            nivelesEl.querySelectorAll('.nivel').forEach(b => b.classList.toggle('activo', Number(b.dataset.n) === tam));
+            cambiarModoEl.textContent = 'Volver al reto diario';
+            infoModoEl.textContent = 'Modo aleatorio (práctica libre)';
+            mostrarJuego();
+
+            cargarTablero(tam, Math.floor(Math.random() * 1e9));
+        }
+
+        reiniciarBtn.addEventListener('click', () => {
+            if (!modoDiario) iniciarAleatorio(N);
+        });
+
+        cambiarModoEl.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (modoDiario) iniciarAleatorio(4);
+            else iniciarDiario();
+        });
+
+        iniciarDiario();
+    </script>
+
+</body>
+</html>

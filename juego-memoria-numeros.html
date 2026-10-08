@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memoria de Números: Test de Memoria Visual Online Gratis | El Más Listo</title>
+    <meta name="description" content="Memoriza la posición de los números y púlsalos en orden cuando desaparezcan. Test de memoria visual gratis en español: cada nivel añade un número más. Con ranking.">
+    <link rel="canonical" href="https://elmaslisto.com/juego-memoria-numeros">
+    <meta property="og:title" content="Memoria de Números: Test de Memoria Visual Online">
+    <meta property="og:description" content="Memoriza dónde están los números y púlsalos en orden cuando desaparezcan. ¿Cuántos eres capaz de recordar?">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://elmaslisto.com/juego-memoria-numeros">
+    <link rel="icon" href="img/favicon.png">
+
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        body { background-color: #2980b9; }
+
+        .wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 460px;
+        }
+
+        .contenedor{width:100%;background:#fff;padding:20px;border-radius:15px;box-shadow:0 6px 12px rgba(0,0,0,.15);text-align:center;box-sizing:border-box;}
+
+        .header-juego{display:flex;justify-content:space-between;align-items:center;font-size:1.1em;color:#555;margin-bottom:6px;font-weight:700}
+        .header-juego h1{margin:0;font-size:1em;color:#2c3e50;}
+        #vidas{font-size:.95em;letter-spacing:2px;}
+        #nivel-txt{color:#2980b9;font-size:.85em;margin-bottom:8px;font-weight:700;}
+        #mensaje{min-height:2.6em;font-size:.85em;color:#777;margin:0 0 12px;}
+
+        #tablero{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;width:100%;max-width:340px;margin:0 auto 14px;padding:10px;background:#ecf0f1;border-radius:12px;box-sizing:border-box;user-select:none;-webkit-user-select:none;}
+        .celda{aspect-ratio:1/1;border:none;border-radius:10px;background:transparent;padding:0;font-family:inherit;font-size:1.4em;font-weight:700;color:#fff;cursor:default;}
+        .celda.num{background:#2980b9;cursor:pointer;box-shadow:0 2px 0 rgba(0,0,0,.2);transition:transform .1s, background-color .15s;}
+        .celda.num:active{transform:scale(.93);}
+        .celda.oculta{color:transparent;background:#fff;box-shadow:0 2px 0 rgba(0,0,0,.2);}
+        .celda.error{background:#e74c3c;color:#fff;}
+        .celda.hecha{visibility:hidden;}
+
+        .btn-accion{background:#2ecc71;color:#fff;border:none;border-radius:8px;padding:12px 24px;cursor:pointer;font-size:1em;font-family:inherit;}
+        .btn-accion:hover{background:#27ae60;}
+
+        #fin-juego h1{font-size:1.6em;color:#2980b9;}
+        .puntuacion-grande{font-size:2.4em;font-weight:700;color:#f1c40f;margin:10px 0 4px;}
+        .detalle-final{font-size:.95em;color:#555;margin:0 0 16px;}
+        #reiniciar{padding:15px 25px;font-size:1.1em;background-color:#2ecc71;color:#fff;border:none;border-radius:8px;cursor:pointer;margin-top:10px;}
+        .oculto{display:none}
+
+        @media (min-width:768px){
+            .contenedor{padding:30px}
+            #tablero{max-width:380px}
+        }
+    </style>
+</head>
+<body>
+
+    <div class="wrapper">
+        <!-- Pantalla de juego principal -->
+        <div id="juego-activo" class="contenedor">
+            <div class="header-juego">
+                <h1>Memoria de Números</h1>
+                <span id="vidas" aria-label="Vidas">❤️❤️❤️</span>
+            </div>
+            <div id="nivel-txt">Nivel: 3 números</div>
+            <p id="mensaje">Se mostrarán unos números en el tablero. Memoriza dónde están y púlsalos en orden, del 1 al último.</p>
+            <div id="tablero" role="grid" aria-label="Tablero de memoria"></div>
+            <button type="button" class="btn-accion" id="empezar">Empezar</button>
+        </div>
+
+        <!-- Pantalla de fin de juego (inicialmente oculta) -->
+        <div id="fin-juego" class="contenedor oculto">
+            <h1 id="titulo-final">Fin de la partida</h1>
+            <p class="puntuacion-grande" id="puntuacion-final">0</p>
+            <p class="detalle-final" id="detalle-final"></p>
+            <div id="ranking" class="ranking-widget"></div>
+            <button id="reiniciar">Jugar otra partida</button>
+        </div>
+
+        <a href="index.html" class="home-link">Volver al menú</a>
+
+        <section class="guia">
+            <div class="guia-bloque">
+                <h2>¿En qué consiste Memoria de Números?</h2>
+                <p>En el tablero aparecen varios números repartidos al azar. Cuando pulses el <strong>1</strong>, el resto se ocultará y tendrás que recordar dónde estaba cada uno para pulsarlos <strong>en orden</strong>: 2, 3, 4… hasta el último.</p>
+                <p>Si aciertas, el siguiente nivel añade un número más. Si te equivocas, pierdes una vida y se muestra la solución antes de repetir el nivel con otra colocación. Tienes 3 vidas. Tu puntuación es el mayor número de cifras que has conseguido recordar.</p>
+            </div>
+
+            <div class="guia-bloque">
+                <h2>¿Para qué edades está recomendado?</h2>
+                <p>Es apto desde los <strong>6 años</strong>, porque solo hay que conocer los números. Los niveles altos, con diez o más cifras, son un reto serio también para adultos.</p>
+                <p>Para entrenar la memoria de otra forma, prueba <a href="juego-simon.html">Simón dice</a> o <a href="juego-encuentra-par.html">Encuentra el par</a>.</p>
+            </div>
+
+            <div class="guia-bloque">
+                <h2>¿Por qué es bueno este juego?</h2>
+                <ul>
+                    <li><strong>Memoria visual y espacial:</strong> hay que fijar la posición de cada número a la vez.</li>
+                    <li><strong>Memoria de trabajo:</strong> se mantiene en la cabeza una secuencia de datos mientras se actúa.</li>
+                    <li><strong>Concentración:</strong> el tiempo para memorizar es corto, así que toca estar atento desde el primer segundo.</li>
+                    <li><strong>Estrategia:</strong> muchos jugadores memorizan por recorridos o formas en lugar de recordar casilla a casilla.</li>
+                </ul>
+            </div>
+
+            <div class="guia-bloque">
+                <h2>Preguntas frecuentes</h2>
+                <div class="faq-item">
+                    <h3>¿Cuánto tiempo tengo para memorizar?</h3>
+                    <p>El tiempo corre a tu favor: los números se quedan visibles hasta que pulsas el 1, así que decides tú cuándo empezar a recordar.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>¿Qué pasa si me equivoco?</h3>
+                    <p>Pierdes una vida, se muestran todos los números unos instantes y se repite el nivel con una colocación nueva. Con tres fallos termina la partida.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>¿Cuántos números puede recordar una persona?</h3>
+                    <p>La mayoría de adultos se queda entre 6 y 9. Con práctica y buenas técnicas de agrupación se puede llegar bastante más lejos.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>¿Cómo puedo mejorar?</h3>
+                    <p>Prueba a memorizar el recorrido como si dibujaras una línea que une los números en orden, o a agruparlos en bloques de 3 o 4.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "¿Cuánto tiempo tengo para memorizar?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "El tiempo corre a tu favor: los números se quedan visibles hasta que pulsas el 1, así que decides tú cuándo empezar a recordar."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "¿Qué pasa si me equivoco?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Pierdes una vida, se muestran todos los números unos instantes y se repite el nivel con una colocación nueva. Con tres fallos termina la partida."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "¿Cuántos números puede recordar una persona?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "La mayoría de adultos se queda entre 6 y 9. Con práctica y buenas técnicas de agrupación se puede llegar bastante más lejos."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "¿Cómo puedo mejorar?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Prueba a memorizar el recorrido como si dibujaras una línea que une los números en orden, o a agruparlos en bloques de 3 o 4."
+                }
+            }
+        ]
+    }
+    </script>
+
+    <script src="ranking.js"></script>
+    <script>
+        const COLUMNAS = 5, FILAS = 6;
+        const NIVEL_INICIAL = 3;
+        const NIVEL_MAXIMO = 20;
+        const VIDAS_INICIALES = 3;
+
+        const juegoActivoEl = document.getElementById('juego-activo');
+        const finJuegoEl = document.getElementById('fin-juego');
+        const tableroEl = document.getElementById('tablero');
+        const vidasEl = document.getElementById('vidas');
+        const nivelTxtEl = document.getElementById('nivel-txt');
+        const mensajeEl = document.getElementById('mensaje');
+        const empezarBtn = document.getElementById('empezar');
+        const tituloFinalEl = document.getElementById('titulo-final');
+        const puntuacionFinalEl = document.getElementById('puntuacion-final');
+        const detalleFinalEl = document.getElementById('detalle-final');
+        const reiniciarBtn = document.getElementById('reiniciar');
+
+        let nivel = NIVEL_INICIAL;   // cuántos números hay en pantalla
+        let vidas = VIDAS_INICIALES;
+        let mejor = 0;               // mayor nivel superado
+        let posiciones = {};         // número -> índice de casilla
+        let siguiente = 1;           // próximo número a pulsar
+        let fase = 'inicio';         // inicio | memorizar | recordar | revelar | fin
+
+        function barajar(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function pintarVidas() { vidasEl.textContent = '❤️'.repeat(vidas) + '🖤'.repeat(VIDAS_INICIALES - vidas); }
+
+        function pintarNivel() { nivelTxtEl.textContent = `Nivel: ${nivel} números`; }
+
+        // Dibuja el tablero. "ocultos" tapa los números; "error" marca la casilla fallada.
+        function render(opciones) {
+            opciones = opciones || {};
+            const porCasilla = {};
+            Object.keys(posiciones).forEach(n => { porCasilla[posiciones[n]] = Number(n); });
+            let html = '';
+            for (let i = 0; i < COLUMNAS * FILAS; i++) {
+                const n = porCasilla[i];
+                if (n === undefined) {
+                    html += '<button type="button" class="celda" tabindex="-1" aria-hidden="true"></button>';
+                } else if (n < siguiente && fase === 'recordar') {
+                    html += '<button type="button" class="celda num hecha" tabindex="-1" aria-hidden="true"></button>';
+                } else {
+                    const clases = 'celda num' + (opciones.ocultos ? ' oculta' : '') + (opciones.error === i ? ' error' : '');
+                    html += `<button type="button" class="${clases}" data-n="${n}" aria-label="Casilla ${i + 1}">${n}</button>`;
+                }
+            }
+            tableroEl.innerHTML = html;
+        }
+
+        function nuevaRonda() {
+            const casillas = barajar(Array.from({ length: COLUMNAS * FILAS }, (_, i) => i));
+            posiciones = {};
+            for (let n = 1; n <= nivel; n++) posiciones[n] = casillas[n - 1];
+            siguiente = 1;
+            fase = 'memorizar';
+            pintarNivel();
+            pintarVidas();
+            mensajeEl.textContent = 'Memoriza las posiciones. Cuando estés listo, pulsa el 1.';
+            empezarBtn.classList.add('oculto');
+            render({});
+        }
+
+        function acertarNivel() {
+            mejor = nivel;
+            if (nivel >= NIVEL_MAXIMO) { terminar(true); return; }
+            nivel++;
+            fase = 'revelar';
+            mensajeEl.textContent = `¡Perfecto! Siguiente nivel: ${nivel} números.`;
+            setTimeout(nuevaRonda, 900);
+        }
+
+        function fallar(casilla) {
+            vidas--;
+            pintarVidas();
+            fase = 'revelar';
+            mensajeEl.textContent = 'Fallaste. Esta era la posición de los números…';
+            siguiente = 1; // para que se vean todos al revelar
+            render({ error: casilla });
+            setTimeout(() => {
+                if (vidas <= 0) terminar(false);
+                else nuevaRonda();
+            }, 1800);
+        }
+
+        tableroEl.addEventListener('click', (e) => {
+            const el = e.target.closest('.celda.num');
+            if (!el || !el.dataset.n) return;
+            const n = Number(el.dataset.n);
+            const casilla = posiciones[n];
+
+            if (fase === 'memorizar') {
+                if (n !== 1) return; // hay que empezar por el 1
+                fase = 'recordar';
+                siguiente = 2;
+                mensajeEl.textContent = 'Ahora pulsa los números en orden.';
+                render({ ocultos: true });
+                return;
+            }
+
+            if (fase === 'recordar') {
+                if (n === siguiente) {
+                    siguiente++;
+                    if (siguiente > nivel) { render({ ocultos: true }); acertarNivel(); }
+                    else render({ ocultos: true });
+                } else {
+                    fallar(casilla);
+                }
+            }
+        });
+
+        function terminar(completo) {
+            fase = 'fin';
+            juegoActivoEl.classList.add('oculto');
+            finJuegoEl.classList.remove('oculto');
+            tituloFinalEl.textContent = completo ? '¡Memoria de élite! 🧠' : 'Fin de la partida';
+            puntuacionFinalEl.textContent = mejor > 0 ? `${mejor} números` : '0 números';
+            detalleFinalEl.textContent = mejor > 0
+                ? `Tu mejor nivel ha sido recordar ${mejor} números en orden.`
+                : 'No has superado ningún nivel. ¡Inténtalo otra vez!';
+            Ranking.mostrar(document.getElementById('ranking'), 'memoria-numeros', mejor, {
+                formatear: p => `${p} números`,
+            });
+        }
+
+        function empezarPartida() {
+            nivel = NIVEL_INICIAL;
+            vidas = VIDAS_INICIALES;
+            mejor = 0;
+            juegoActivoEl.classList.remove('oculto');
+            finJuegoEl.classList.add('oculto');
+            nuevaRonda();
+        }
+
+        empezarBtn.addEventListener('click', empezarPartida);
+        reiniciarBtn.addEventListener('click', empezarPartida);
+
+        // Estado inicial: tablero vacío esperando "Empezar"
+        pintarVidas();
+        pintarNivel();
+        render({});
+    </script>
+
+</body>
+</html>
