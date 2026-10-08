@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuenta Rápida: Juego de Percepción y Agilidad Visual | El Más Listo</title>
+    <meta name="description" content="Aparecen unos objetos durante un instante: ¿cuántos había? Juego gratis en español para entrenar la percepción numérica y la agilidad visual, con dificultad creciente y ranking.">
+    <link rel="canonical" href="https://elmaslisto.com/juego-cuenta-rapida">
+    <meta property="og:title" content="Cuenta Rápida: Juego de Percepción y Agilidad Visual">
+    <meta property="og:description" content="Unos objetos aparecen un instante. ¿Cuántos eran? Dificultad creciente, tres vidas y ranking.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://elmaslisto.com/juego-cuenta-rapida">
+    <link rel="icon" href="img/favicon.png">
+
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        body { background-color: #6c5ce7; }
+
+        .wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 460px;
+        }
+
+        .contenedor{width:100%;background:#fff;padding:20px;border-radius:15px;box-shadow:0 6px 12px rgba(0,0,0,.15);text-align:center;box-sizing:border-box;}
+
+        .header-juego{display:flex;justify-content:space-between;align-items:center;font-size:1.1em;color:#555;margin-bottom:6px;font-weight:700}
+        .header-juego h1{margin:0;font-size:1em;color:#2c3e50;}
+        #vidas{font-size:.95em;letter-spacing:2px;}
+        #puntos{color:#6c5ce7;font-size:.85em;margin-bottom:8px;font-weight:700;}
+        #mensaje{min-height:2.6em;font-size:.85em;color:#777;margin:0 0 10px;}
+        #mensaje.bien{color:#27ae60;font-weight:700;}
+        #mensaje.mal{color:#c0392b;font-weight:700;}
+
+        #escena{position:relative;width:100%;aspect-ratio:5/4;background:#f4f1ff;border-radius:12px;margin:0 auto 14px;overflow:hidden;user-select:none;-webkit-user-select:none;}
+        .objeto{position:absolute;line-height:1;display:flex;align-items:center;justify-content:center;transform:translate(-50%,-50%);}
+        #centro{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:3em;font-weight:700;color:#b9b0f0;}
+
+        .opciones{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+        .btn-opcion{padding:16px 0;font-size:1.5em;font-weight:700;border:none;border-radius:12px;cursor:pointer;color:#fff;background:#6c5ce7;font-family:inherit;box-shadow:0 3px 0 rgba(0,0,0,.2);touch-action:manipulation;}
+        .btn-opcion:disabled{background:#c9c3f2;cursor:default;box-shadow:none;}
+        .btn-opcion:not(:disabled):active{transform:translateY(2px);box-shadow:0 1px 0 rgba(0,0,0,.2);}
+        .btn-opcion.correcta{background:#27ae60;}
+        .btn-opcion.incorrecta{background:#e74c3c;}
+        #empezar{padding:15px 25px;font-size:1.1em;background-color:#2ecc71;color:#fff;border:none;border-radius:8px;cursor:pointer;margin:6px 0 0;}
+
+        #fin-juego h1{font-size:1.6em;color:#6c5ce7;}
+        .puntuacion-grande{font-size:2.4em;font-weight:700;color:#f1c40f;margin:10px 0 4px;}
+        .detalle-final{font-size:.95em;color:#555;margin:0 0 16px;}
+        #reiniciar{padding:15px 25px;font-size:1.1em;background-color:#2ecc71;color:#fff;border:none;border-radius:8px;cursor:pointer;margin-top:10px;}
+        .oculto{display:none}
+
+        @media (min-width:768px){
+            .contenedor{padding:30px}
+        }
+    </style>
+</head>
+<body>
+
+    <div class="wrapper">
+        <!-- Pantalla de juego principal -->
+        <div id="juego-activo" class="contenedor">
+            <div class="header-juego">
+                <h1>Cuenta Rápida</h1>
+                <span id="vidas" aria-label="Vidas">❤️❤️❤️</span>
+            </div>
+            <div id="puntos">Aciertos: 0</div>
+            <p id="mensaje">Unos objetos aparecerán solo un instante. Cuéntalos de un vistazo y elige cuántos había.</p>
+            <div id="escena" aria-live="polite"><div id="centro">?</div></div>
+            <div class="opciones oculto" id="opciones"></div>
+            <button id="empezar">Empezar</button>
+        </div>
+
+        <!-- Pantalla de fin de juego (inicialmente oculta) -->
+        <div id="fin-juego" class="contenedor oculto">
+            <h1>Fin de la partida</h1>
+            <p class="puntuacion-grande" id="puntuacion-final">0</p>
+            <p class="detalle-final" id="detalle-final"></p>
+            <div id="ranking" class="ranking-widget"></div>
+            <button id="reiniciar">Jugar otra partida</button>
+        </div>
+
+        <a href="index.html" class="home-link">Volver al menú</a>
+
+        <section class="guia">
+            <div class="guia-bloque">
+                <h2>¿En qué consiste Cuenta Rápida?</h2>
+                <p>En cada ronda aparecen varios objetos repartidos por la pantalla durante <strong>poco más de un segundo</strong>. Después desaparecen y tienes que elegir entre cuatro opciones cuántos había.</p>
+                <p>No hay tiempo para contarlos uno a uno: hay que captarlos de un vistazo. Cada tres aciertos suben la cantidad de objetos y se acorta el tiempo que están a la vista. Tienes 3 vidas y tu puntuación es el número de rondas acertadas.</p>
+            </div>
+
+            <div class="guia-bloque">
+                <h2>¿Para qué edades está recomendado?</h2>
+                <p>Es apto desde los <strong>5 años</strong>, porque los primeros niveles tienen pocos objetos y es un buen ejercicio para aprender a contar con seguridad. Los niveles altos, con muchos objetos y poco tiempo, son un reto también para adultos.</p>
+                <p>Si te gusta entrenar la agilidad mental, prueba <a href="juego-reflejos.html">el Test de Reflejos</a> o <a href="juego-verdadero-falso.html">Verdadero o Falso</a>.</p>
+            </div>
+
+            <div class="guia-bloque">
+                <h2>¿Por qué es bueno este juego?</h2>
+                <ul>
+                    <li><strong>Percepción numérica:</strong> entrena la capacidad de estimar cantidades sin contar, llamada <em>subitizing</em> cuando son pocos objetos.</li>
+                    <li><strong>Atención visual:</strong> hay que abarcar toda la escena de un golpe de vista.</li>
+                    <li><strong>Estimación:</strong> con muchos objetos aprendes a agruparlos mentalmente en bloques.</li>
+                    <li><strong>Memoria de trabajo:</strong> el número hay que retenerlo un instante mientras eliges la respuesta.</li>
+                </ul>
+            </div>
+
+            <div class="guia-bloque">
+                <h2>Preguntas frecuentes</h2>
+                <div class="faq-item">
+                    <h3>¿Cuántos objetos se pueden contar de un vistazo?</h3>
+                    <p>La mayoría de personas reconoce al instante hasta 4 o 5 objetos sin contarlos. A partir de ahí hay que agruparlos o estimar, y es donde aparece el reto.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>¿Qué pasa si me equivoco?</h3>
+                    <p>Pierdes una vida y se muestra cuántos objetos había. Con tres fallos termina la partida.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>¿Cómo sube la dificultad?</h3>
+                    <p>Cada tres aciertos aparecen más objetos y se reduce el tiempo en pantalla, hasta un mínimo de medio segundo.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>¿Cómo puedo contar mejor y más rápido?</h3>
+                    <p>Intenta agrupar los objetos en grupos de dos o tres en lugar de ir de uno en uno. Y no te quedes mirando un único punto: abre la mirada para ver toda la escena.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "¿Cuántos objetos se pueden contar de un vistazo?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "La mayoría de personas reconoce al instante hasta 4 o 5 objetos sin contarlos. A partir de ahí hay que agruparlos o estimar, y es donde aparece el reto."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "¿Qué pasa si me equivoco?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Pierdes una vida y se muestra cuántos objetos había. Con tres fallos termina la partida."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "¿Cómo sube la dificultad?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Cada tres aciertos aparecen más objetos y se reduce el tiempo en pantalla, hasta un mínimo de medio segundo."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "¿Cómo puedo contar mejor y más rápido?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Intenta agrupar los objetos en grupos de dos o tres en lugar de ir de uno en uno. Y no te quedes mirando un único punto: abre la mirada para ver toda la escena."
+                }
+            }
+        ]
+    }
+    </script>
+
+    <script src="ranking.js"></script>
+    <script>
+        const VIDAS_INICIALES = 3;
+        const ACIERTOS_POR_NIVEL = 3;
+        const NIVEL_MAXIMO = 12;
+        const EMOJIS = ['⭐', '🍎', '🐟', '🔵', '🍪', '🦋', '🐞', '🌼', '🎈'];
+
+        const juegoActivoEl = document.getElementById('juego-activo');
+        const finJuegoEl = document.getElementById('fin-juego');
+        const escenaEl = document.getElementById('escena');
+        const centroEl = document.getElementById('centro');
+        const opcionesEl = document.getElementById('opciones');
+        const vidasEl = document.getElementById('vidas');
+        const puntosEl = document.getElementById('puntos');
+        const mensajeEl = document.getElementById('mensaje');
+        const empezarBtn = document.getElementById('empezar');
+        const puntuacionFinalEl = document.getElementById('puntuacion-final');
+        const detalleFinalEl = document.getElementById('detalle-final');
+        const reiniciarBtn = document.getElementById('reiniciar');
+
+        let vidas = VIDAS_INICIALES;
+        let aciertos = 0;
+        let objetivo = 0;      // cuántos objetos hay en la ronda
+        let jugando = false;
+        let esperandoRespuesta = false;
+        let temporizador = null;
+
+        const aleatorio = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+
+        function barajar(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function nivelActual() { return Math.min(Math.floor(aciertos / ACIERTOS_POR_NIVEL), NIVEL_MAXIMO); }
+
+        function cantidadParaNivel(nivel) { return aleatorio(3 + nivel, 6 + nivel * 2); }
+
+        function tiempoVisible(nivel) { return Math.max(500, 1300 - nivel * 70); }
+
+        function pintarVidas() { vidasEl.textContent = '❤️'.repeat(vidas) + '🖤'.repeat(VIDAS_INICIALES - vidas); }
+
+        // Reparte "n" puntos en un rectángulo (en %) intentando que no se solapen.
+        function posiciones(n) {
+            const margenX = 8, margenY = 10;
+            const puntos = [];
+            let distMin = 17;
+            while (puntos.length < n) {
+                let colocado = false;
+                for (let intento = 0; intento < 80 && !colocado; intento++) {
+                    const x = margenX + Math.random() * (100 - 2 * margenX);
+                    const y = margenY + Math.random() * (100 - 2 * margenY);
+                    // el área es 5:4, así que se corrige la distancia vertical
+                    if (puntos.every(p => Math.hypot(p.x - x, (p.y - y) * 0.8) >= distMin)) {
+                        puntos.push({ x, y });
+                        colocado = true;
+                    }
+                }
+                if (!colocado) distMin *= 0.9; // si no cabe, se relaja un poco
+            }
+            return puntos;
+        }
+
+        function mostrarObjetos(n) {
+            const emoji = EMOJIS[aleatorio(0, EMOJIS.length - 1)];
+            const tam = Math.max(16, Math.round(escenaEl.clientWidth * (n > 20 ? 0.075 : 0.1)));
+            centroEl.textContent = '';
+            escenaEl.querySelectorAll('.objeto').forEach(e => e.remove());
+            posiciones(n).forEach(p => {
+                const el = document.createElement('div');
+                el.className = 'objeto';
+                el.style.left = p.x + '%';
+                el.style.top = p.y + '%';
+                el.style.fontSize = tam + 'px';
+                el.textContent = emoji;
+                escenaEl.appendChild(el);
+            });
+        }
+
+        function ocultarObjetos(texto) {
+            escenaEl.querySelectorAll('.objeto').forEach(e => e.remove());
+            centroEl.textContent = texto;
+        }
+
+        // Cuatro opciones distintas cerca de la correcta, ordenadas de menor a mayor.
+        function crearOpciones(n) {
+            const candidatas = [];
+            for (let d = -3; d <= 3; d++) if (d !== 0 && n + d >= 1) candidatas.push(n + d);
+            const elegidas = barajar(candidatas).slice(0, 3);
+            elegidas.push(n);
+            return elegidas.sort((a, b) => a - b);
+        }
+
+        function pintarOpciones(opciones, habilitadas) {
+            opcionesEl.classList.remove('oculto');
+            opcionesEl.innerHTML = opciones.map(v =>
+                `<button type="button" class="btn-opcion" data-v="${v}" ${habilitadas ? '' : 'disabled'}>${v}</button>`
+            ).join('');
+        }
+
+        function mensaje(texto, clase) {
+            mensajeEl.textContent = texto;
+            mensajeEl.className = clase || '';
+        }
+
+        function nuevaRonda() {
+            if (!jugando) return;
+            const nivel = nivelActual();
+            objetivo = cantidadParaNivel(nivel);
+            esperandoRespuesta = false;
+            puntosEl.textContent = `Aciertos: ${aciertos}`;
+            mensaje('Mira bien…');
+            ocultarObjetos('');
+            pintarOpciones(crearOpciones(objetivo), false);
+            temporizador = setTimeout(() => {
+                if (!jugando) return;
+                mostrarObjetos(objetivo);
+                temporizador = setTimeout(() => {
+                    if (!jugando) return;
+                    ocultarObjetos('?');
+                    esperandoRespuesta = true;
+                    opcionesEl.querySelectorAll('.btn-opcion').forEach(b => { b.disabled = false; });
+                    mensaje('¿Cuántos había?');
+                }, tiempoVisible(nivel));
+            }, 700);
+        }
+
+        opcionesEl.addEventListener('click', (e) => {
+            const btn = e.target.closest('.btn-opcion');
+            if (!btn || !esperandoRespuesta || !jugando) return;
+            esperandoRespuesta = false;
+            const elegido = Number(btn.dataset.v);
+            const bien = elegido === objetivo;
+            opcionesEl.querySelectorAll('.btn-opcion').forEach(b => {
+                b.disabled = true;
+                if (Number(b.dataset.v) === objetivo) b.classList.add('correcta');
+            });
+            if (bien) {
+                aciertos++;
+                puntosEl.textContent = `Aciertos: ${aciertos}`;
+                mensaje('¡Correcto!', 'bien');
+                temporizador = setTimeout(nuevaRonda, 700);
+            } else {
+                btn.classList.add('incorrecta');
+                vidas--;
+                pintarVidas();
+                mensaje(`Eran ${objetivo}.`, 'mal');
+                temporizador = setTimeout(() => { vidas > 0 ? nuevaRonda() : terminar(); }, 1300);
+            }
+        });
+
+        function terminar() {
+            jugando = false;
+            clearTimeout(temporizador);
+            juegoActivoEl.classList.add('oculto');
+            finJuegoEl.classList.remove('oculto');
+            puntuacionFinalEl.textContent = `${aciertos} ${aciertos === 1 ? 'acierto' : 'aciertos'}`;
+            detalleFinalEl.textContent = aciertos > 0
+                ? `Has llegado al nivel ${Math.min(Math.floor(aciertos / ACIERTOS_POR_NIVEL), NIVEL_MAXIMO) + 1}.`
+                : 'No has acertado ninguna ronda. ¡Inténtalo otra vez!';
+            Ranking.mostrar(document.getElementById('ranking'), 'cuenta-rapida', aciertos, {
+                formatear: p => `${p} aciertos`,
+            });
+        }
+
+        function empezarPartida() {
+            clearTimeout(temporizador);
+            vidas = VIDAS_INICIALES;
+            aciertos = 0;
+            jugando = true;
+            juegoActivoEl.classList.remove('oculto');
+            finJuegoEl.classList.add('oculto');
+            empezarBtn.classList.add('oculto');
+            pintarVidas();
+            nuevaRonda();
+        }
+
+        empezarBtn.addEventListener('click', empezarPartida);
+        reiniciarBtn.addEventListener('click', empezarPartida);
+        pintarVidas();
+    </script>
+
+</body>
+</html>
