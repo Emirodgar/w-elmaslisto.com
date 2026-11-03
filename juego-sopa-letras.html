@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sopa de Letras Online Gratis: Juego de Buscar Palabras | El Más Listo</title>
+    <meta name="description" content="Sopa de letras gratis en español con tres niveles y temas variados. Marca las palabras a tu ritmo y pulsa Validar cuando tengas dudas para comprobar si son correctas.">
+    <link rel="canonical" href="https://elmaslisto.com/juego-sopa-letras">
+    <meta property="og:title" content="Sopa de Letras Online Gratis: Juego de Buscar Palabras">
+    <meta property="og:description" content="Busca las palabras ocultas, márcalas y valida cuando tengas dudas. Tres niveles, pistas y ranking.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://elmaslisto.com/juego-sopa-letras">
+    <link rel="icon" href="img/favicon.png">
+
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        body { background-color: #00a884; }
+
+        .wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 520px;
+        }
+
+        .contenedor{width:100%;background:#fff;padding:18px;border-radius:15px;box-shadow:0 6px 12px rgba(0,0,0,.15);text-align:center;box-sizing:border-box;}
+
+        .header-juego{display:flex;justify-content:space-between;align-items:center;font-size:1.1em;color:#555;margin-bottom:6px;font-weight:700}
+        .header-juego h1{margin:0;font-size:1em;color:#2c3e50;}
+        #tiempo{font-variant-numeric:tabular-nums;color:#00a884;}
+        #tema{font-size:.9em;color:#555;margin:0 0 4px;}
+        #tema strong{color:#00a884;}
+        #contador{font-size:.85em;color:#777;margin:0 0 6px;}
+        #mensaje{min-height:2.6em;font-size:.85em;color:#777;margin:0 0 8px;display:flex;align-items:center;justify-content:center;}
+        #mensaje.bien{color:#27ae60;font-weight:700;}
+        #mensaje.mal{color:#c0392b;font-weight:700;}
+
+        /* Selector de nivel */
+        .niveles{display:grid;gap:10px;margin:14px 0 6px;}
+        .btn-nivel{padding:14px;font-size:1.05em;font-weight:700;border:none;border-radius:12px;cursor:pointer;color:#fff;background:#00a884;font-family:inherit;box-shadow:0 3px 0 rgba(0,0,0,.2);text-align:left;touch-action:manipulation;}
+        .btn-nivel small{display:block;font-weight:400;opacity:.9;margin-top:2px;}
+        .btn-nivel:active{transform:translateY(2px);box-shadow:0 1px 0 rgba(0,0,0,.2);}
+
+        /* Tablero */
+        #tablero{
+            display:grid;
+            grid-template-columns:repeat(var(--n),1fr);
+            gap:2px;
+            width:100%;
+            margin:0 auto 12px;
+            container-type:inline-size;
+            touch-action:none;
+            user-select:none;-webkit-user-select:none;
+            background:#e6f7f2;
+            padding:4px;
+            border-radius:10px;
+            box-sizing:border-box;
+        }
+        .celda{
+            aspect-ratio:1;
+            display:flex;align-items:center;justify-content:center;
+            font-weight:700;color:#2c3e50;
+            font-size:calc(100cqw / var(--n) * .5);
+            background:#fff;
+            border-radius:6px;
+            cursor:pointer;
+        }
+        .celda.pend{color:#222;}
+        .celda.sel{background:#ffe58f;}
+        .celda.ancla{background:#ffd666;outline:2px solid #fa8c16;}
+        .celda.ok{background:#52c41a;color:#fff;}
+        .celda.mal{background:#e74c3c;color:#fff;}
+        .celda.pista{animation:pulso .6s ease-in-out 4;background:#91d5ff;}
+        @keyframes pulso{50%{transform:scale(1.18);}}
+
+        /* Lista de palabras */
+        #lista{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:0 0 12px;padding:0;list-style:none;}
+        #lista li{padding:4px 10px;border-radius:14px;background:#e6f7f2;color:#2c3e50;font-size:.8em;font-weight:700;letter-spacing:.5px;}
+        #lista li.hecha{background:#52c41a;color:#fff;text-decoration:line-through;}
+
+        .acciones{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;}
+        .btn{padding:12px 16px;font-size:1em;font-weight:700;border:none;border-radius:10px;cursor:pointer;color:#fff;font-family:inherit;box-shadow:0 3px 0 rgba(0,0,0,.2);touch-action:manipulation;}
+        .btn:active{transform:translateY(2px);box-shadow:0 1px 0 rgba(0,0,0,.2);}
+        .btn:disabled{opacity:.5;cursor:default;}
+        #validar{background:#2ecc71;flex:1 1 100%;font-size:1.1em;padding:14px;}
+        #deshacer{background:#8e9aaf;}
+        #pista{background:#fa8c16;}
+        #nueva{background:#6c5ce7;}
+
+        #fin-juego h1{font-size:1.6em;color:#00a884;}
+        .puntuacion-grande{font-size:2.4em;font-weight:700;color:#f1c40f;margin:10px 0 4px;}
+        .detalle-final{font-size:.95em;color:#555;margin:0 0 16px;}
+        #reiniciar{padding:15px 25px;font-size:1.1em;background-color:#2ecc71;color:#fff;border:none;border-radius:8px;cursor:pointer;margin-top:10px;}
+        .oculto{display:none !important}
+
+        @media (min-width:768px){
+            .contenedor{padding:26px}
+        }
+    </style>
+</head>
+<body>
+
+    <div class="wrapper">
+        <!-- Elección de nivel -->
+        <div id="menu-niveles" class="contenedor">
+            <div class="header-juego"><h1>Sopa de Letras</h1></div>
+            <p id="intro" style="font-size:.9em;color:#777;margin:4px 0 0;">Elige un nivel. Marca las palabras con el dedo o el ratón y pulsa <strong>Validar</strong> cuando quieras saber si vas bien.</p>
+            <div class="niveles">
+                <button type="button" class="btn-nivel" data-nivel="facil">Fácil<small>Cuadrícula 8×8 · 6 palabras · sin palabras del revés</small></button>
+                <button type="button" class="btn-nivel" data-nivel="normal">Normal<small>Cuadrícula 10×10 · 8 palabras · en cualquier dirección</small></button>
+                <button type="button" class="btn-nivel" data-nivel="dificil">Difícil<small>Cuadrícula 12×12 · 10 palabras · palabras largas</small></button>
+            </div>
+        </div>
+
+        <!-- Pantalla de juego -->
+        <div id="juego-activo" class="contenedor oculto">
+            <div class="header-juego">
+                <h1>Sopa de Letras</h1>
+                <span id="tiempo">0:00</span>
+            </div>
+            <p id="tema"></p>
+            <p id="contador"></p>
+            <div id="mensaje" aria-live="polite"></div>
+            <div id="tablero" role="grid" aria-label="Tablero de la sopa de letras"></div>
+            <ul id="lista"></ul>
+            <div class="acciones">
+                <button type="button" id="validar" class="btn">✔ Validar lo que he marcado</button>
+                <button type="button" id="deshacer" class="btn">↩ Deshacer</button>
+                <button type="button" id="pista" class="btn">💡 Pista (+15 s)</button>
+                <button type="button" id="nueva" class="btn">↻ Otra sopa</button>
+            </div>
+        </div>
+
+        <!-- Pantalla de fin de juego -->
+        <div id="fin-juego" class="contenedor oculto">
+            <h1>¡Sopa completada!</h1>
+            <p class="puntuacion-grande" id="puntuacion-final">0:00</p>
+            <p class="detalle-final" id="detalle-final"></p>
+            <div id="ranking" class="ranking-widget"></div>
+            <button id="reiniciar">Jugar otra sopa</button>
+        </div>
+
+        <a href="/" class="home-link">Volver al menú</a>
+
+        <section class="guia">
+            <div class="guia-bloque">
+                <h2>¿En qué consiste la sopa de letras?</h2>
+                <p>Es el clásico pasatiempo: una cuadrícula llena de letras esconde una lista de palabras. Tienes que encontrarlas y marcarlas. Pueden estar en <strong>horizontal, vertical o diagonal</strong> y, en los niveles Normal y Difícil, también escritas del revés.</p>
+                <p>Para marcar una palabra, <strong>arrastra</strong> desde su primera hasta su última letra, o toca la primera letra y luego la última. Tus marcas no se confirman solas: así puedes jugar como en el papel y, si te surge una duda, pulsar <strong>Validar</strong>. Las palabras correctas se quedan en verde y las incorrectas se borran.</p>
+            </div>
+
+            <div class="guia-bloque">
+                <h2>¿Para qué edades está recomendada?</h2>
+                <p>El nivel Fácil es apto desde los <strong>6 o 7 años</strong>, cuando ya se lee con soltura: las palabras son cortas y solo van de izquierda a derecha, de arriba abajo o en diagonal descendente. Los niveles Normal y Difícil son un buen entretenimiento para adultos y mayores.</p>
+                <p>Si te gustan los juegos de palabras, prueba <a href="juego-wordle.html">Wordle en español</a> o <a href="juego-siete-letras.html">7 Letras</a>.</p>
+            </div>
+
+            <div class="guia-bloque">
+                <h2>¿Por qué es bueno este juego?</h2>
+                <ul>
+                    <li><strong>Atención visual:</strong> hay que rastrear la cuadrícula en varias direcciones.</li>
+                    <li><strong>Vocabulario y ortografía:</strong> cada tema repasa palabras y su escritura exacta.</li>
+                    <li><strong>Concentración:</strong> exige mantener el foco hasta encontrar la última palabra.</li>
+                    <li><strong>Relajación:</strong> es un reto tranquilo, sin vidas ni prisas.</li>
+                </ul>
+            </div>
+
+            <div class="guia-bloque">
+                <h2>Preguntas frecuentes</h2>
+                <div class="faq-item">
+                    <h3>¿Cómo sé si lo que he marcado es correcto?</h3>
+                    <p>Pulsa el botón Validar. Las palabras bien marcadas se confirman en verde y se tachan de la lista; las que no son ninguna palabra de la lista se borran del tablero para que puedas intentarlo de nuevo.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>¿Puedo equivocarme al validar?</h3>
+                    <p>No pasa nada: validar no resta tiempo ni vidas. Es una ayuda para cuando tengas dudas.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>¿Qué hace el botón de pista?</h3>
+                    <p>Resalta la primera letra de una palabra que aún no has encontrado. Cada pista suma 15 segundos a tu tiempo final.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>¿Cómo se marca una palabra con el móvil?</h3>
+                    <p>Arrastra el dedo desde la primera letra hasta la última, o toca la primera letra y después la última. Puedes deshacer la última marca con el botón Deshacer.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "¿Cómo sé si lo que he marcado es correcto?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Pulsa el botón Validar. Las palabras bien marcadas se confirman en verde y se tachan de la lista; las que no son ninguna palabra de la lista se borran del tablero para que puedas intentarlo de nuevo."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "¿Puedo equivocarme al validar?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "No pasa nada: validar no resta tiempo ni vidas. Es una ayuda para cuando tengas dudas."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "¿Qué hace el botón de pista?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Resalta la primera letra de una palabra que aún no has encontrado. Cada pista suma 15 segundos a tu tiempo final."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "¿Cómo se marca una palabra con el móvil?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Arrastra el dedo desde la primera letra hasta la última, o toca la primera letra y después la última. Puedes deshacer la última marca con el botón Deshacer."
+                }
+            }
+        ]
+    }
+    </script>
+
+    <script src="ranking.js"></script>
+    <script>
+        const PENALIZACION_PISTA = 15; // segundos
+
+        const NIVELES = {
+            facil:   { n: 8,  palabras: 6,  min: 3, max: 6, inversas: false, nombre: 'Fácil' },
+            normal:  { n: 10, palabras: 8,  min: 4, max: 8, inversas: true,  nombre: 'Normal' },
+            dificil: { n: 12, palabras: 10, min: 5, max: 9, inversas: true,  nombre: 'Difícil' },
+        };
+
+        const TEMAS = {
+            'Animales': ['PERRO','GATO','CABALLO','VACA','OVEJA','CERDO','LEON','TIGRE','CEBRA','JIRAFA','ELEFANTE','CONEJO','RATON','PATO','GALLINA','DELFIN','BALLENA','TORTUGA','LOBO','MONO','COCODRILO','LEOPARDO','HIPOPOTAMO','GORILA'],
+            'Frutas': ['MANZANA','PERA','PLATANO','NARANJA','LIMON','FRESA','UVA','MELON','SANDIA','CEREZA','CIRUELA','KIWI','MANGO','PAPAYA','HIGO','COCO','MORA','GRANADA','MANDARINA','POMELO','MELOCOTON','ALBARICOQUE'],
+            'Países': ['FRANCIA','ITALIA','PORTUGAL','ALEMANIA','MEXICO','PERU','CHILE','CUBA','BRASIL','JAPON','CHINA','INDIA','EGIPTO','GRECIA','SUIZA','CANADA','COLOMBIA','ARGENTINA','NORUEGA','IRLANDA','URUGUAY','ECUADOR'],
+            'El cuerpo humano': ['CABEZA','BRAZO','PIERNA','MANO','DEDO','RODILLA','CODO','HOMBRO','CUELLO','ESPALDA','BOCA','NARIZ','OREJA','PECHO','CINTURA','TOBILLO','PIE','CEJA','LENGUA','MUELA','BARRIGA'],
+            'La casa': ['COCINA','SALON','BANO','DORMITORIO','PUERTA','VENTANA','TEJADO','SOFA','MESA','SILLA','CAMA','ARMARIO','LAMPARA','ESPEJO','ALFOMBRA','ESCALERA','TERRAZA','GARAJE','PASILLO','CORTINA'],
+            'Deportes': ['FUTBOL','TENIS','BALONCESTO','NATACION','CICLISMO','ATLETISMO','BOXEO','GOLF','RUGBY','VOLEIBOL','BALONMANO','SURF','ESQUI','JUDO','PADEL','HOCKEY','GIMNASIA','REMO','VELA'],
+            'Naturaleza': ['RIO','MAR','LAGO','BOSQUE','PLAYA','DESIERTO','VALLE','ISLA','VOLCAN','CASCADA','SELVA','PRADO','COLINA','CUEVA','NUBE','MONTE','ARROYO','CAMPO','ROCA','ARENA'],
+            'Profesiones': ['MEDICO','MAESTRO','COCINERO','BOMBERO','POLICIA','PILOTO','PINTOR','ARQUITECTO','ABOGADO','JUEZ','CARTERO','ACTOR','CANTANTE','DENTISTA','ALBANIL','PANADERO','FOTOGRAFO','ENFERMERO'],
+        };
+
+        const DIRECCIONES = [
+            [0, 1], [1, 0], [1, 1], [-1, 1],   // →  ↓  ↘  ↗  (sentido normal)
+            [0, -1], [-1, 0], [-1, -1], [1, -1] // ←  ↑  ↖  ↙  (del revés)
+        ];
+        const ALFABETO = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+        const menuEl = document.getElementById('menu-niveles');
+        const juegoActivoEl = document.getElementById('juego-activo');
+        const finJuegoEl = document.getElementById('fin-juego');
+        const tableroEl = document.getElementById('tablero');
+        const listaEl = document.getElementById('lista');
+        const temaEl = document.getElementById('tema');
+        const contadorEl = document.getElementById('contador');
+        const mensajeEl = document.getElementById('mensaje');
+        const tiempoEl = document.getElementById('tiempo');
+        const validarBtn = document.getElementById('validar');
+        const deshacerBtn = document.getElementById('deshacer');
+        const pistaBtn = document.getElementById('pista');
+        const nuevaBtn = document.getElementById('nueva');
+
+        let nivelId = 'normal';
+        let nivel = NIVELES.normal;
+        let rejilla = [];          // rejilla[r][c] = letra
+        let palabras = [];         // palabras de la sopa
+        let encontradas = new Set();
+        let marcas = [];           // { celdas:[[r,c]..], estado:'pend'|'ok'|'mal', color }
+        let pistasUsadas = 0;
+        let ancla = null;          // primera letra tocada en modo "toque + toque"
+        let arrastre = null;       // { inicio:[r,c], fin:[r,c] }
+        let inicioMs = 0;
+        let intervalo = null;
+        let jugando = false;
+        let celdasPista = [];
+
+        const aleatorio = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+
+        function barajar(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function formatearTiempo(seg) {
+            const m = Math.floor(seg / 60), s = seg % 60;
+            return `${m}:${String(s).padStart(2, '0')}`;
+        }
+
+        // ---------- Generación de la sopa ----------
+        function colocar(rej, palabra, dirs) {
+            const n = rej.length;
+            const intentos = barajar([...Array(n * n * dirs.length).keys()]).slice(0, 400);
+            for (const k of intentos) {
+                const d = dirs[k % dirs.length];
+                const pos = Math.floor(k / dirs.length);
+                const r0 = Math.floor(pos / n), c0 = pos % n;
+                const rf = r0 + d[0] * (palabra.length - 1), cf = c0 + d[1] * (palabra.length - 1);
+                if (rf < 0 || rf >= n || cf < 0 || cf >= n) continue;
+                let cabe = true;
+                for (let i = 0; i < palabra.length && cabe; i++) {
+                    const letra = rej[r0 + d[0] * i][c0 + d[1] * i];
+                    if (letra !== '' && letra !== palabra[i]) cabe = false;
+                }
+                if (!cabe) continue;
+                for (let i = 0; i < palabra.length; i++) rej[r0 + d[0] * i][c0 + d[1] * i] = palabra[i];
+                return true;
+            }
+            return false;
+        }
+
+        function generarSopa() {
+            const nombres = Object.keys(TEMAS);
+            const dirs = nivel.inversas ? DIRECCIONES : DIRECCIONES.slice(0, 3);
+            for (let intento = 0; intento < 50; intento++) {
+                const tema = nombres[aleatorio(0, nombres.length - 1)];
+                const candidatas = TEMAS[tema].filter(p => p.length >= nivel.min && p.length <= nivel.max);
+                if (candidatas.length < nivel.palabras) continue;
+                const elegidas = barajar(candidatas.slice()).slice(0, nivel.palabras);
+                const rej = Array.from({ length: nivel.n }, () => Array(nivel.n).fill(''));
+                // Las largas primero: es lo que más cuesta colocar
+                elegidas.sort((a, b) => b.length - a.length);
+                if (!elegidas.every(p => colocar(rej, p, dirs))) continue;
+                for (let r = 0; r < nivel.n; r++)
+                    for (let c = 0; c < nivel.n; c++)
+                        if (rej[r][c] === '') rej[r][c] = ALFABETO[aleatorio(0, ALFABETO.length - 1)];
+                return { tema, rej, elegidas: elegidas.sort() };
+            }
+            throw new Error('No se pudo generar la sopa');
+        }
+
+        // ---------- Pintado ----------
+        function construirTablero() {
+            tableroEl.style.setProperty('--n', nivel.n);
+            tableroEl.innerHTML = '';
+            for (let r = 0; r < nivel.n; r++) {
+                for (let c = 0; c < nivel.n; c++) {
+                    const el = document.createElement('div');
+                    el.className = 'celda';
+                    el.dataset.r = r;
+                    el.dataset.c = c;
+                    el.textContent = rejilla[r][c];
+                    tableroEl.appendChild(el);
+                }
+            }
+        }
+
+        const celdaEl = (r, c) => tableroEl.children[r * nivel.n + c];
+
+        function pintar() {
+            for (const el of tableroEl.children) {
+                el.className = 'celda';
+                el.style.background = '';
+            }
+            const vistaPrevia = arrastre ? lineaDesde(arrastre.inicio, arrastre.fin) : [];
+            for (const m of marcas) {
+                for (const [r, c] of m.celdas) {
+                    const el = celdaEl(r, c);
+                    if (m.estado === 'ok') el.classList.add('ok');
+                    else if (m.estado === 'mal') el.classList.add('mal');
+                    else if (!el.classList.contains('ok')) { el.classList.add('pend'); el.style.background = m.color; }
+                }
+            }
+            for (const el of tableroEl.querySelectorAll('.ok, .mal')) el.style.background = '';
+            for (const [r, c] of vistaPrevia) celdaEl(r, c).classList.add('sel');
+            if (ancla && !arrastre) celdaEl(ancla[0], ancla[1]).classList.add('ancla');
+            for (const [r, c] of celdasPista) celdaEl(r, c).classList.add('pista');
+
+            listaEl.innerHTML = palabras.map(p =>
+                `<li class="${encontradas.has(p) ? 'hecha' : ''}">${p}</li>`
+            ).join('');
+            const pend = marcas.filter(m => m.estado === 'pend').length;
+            contadorEl.textContent = `Encontradas: ${encontradas.size} de ${palabras.length}` + (pend ? ` · Sin validar: ${pend}` : '');
+            deshacerBtn.disabled = pend === 0;
+            validarBtn.disabled = pend === 0;
+        }
+
+        function mensaje(texto, clase) {
+            mensajeEl.textContent = texto;
+            mensajeEl.className = clase || '';
+        }
+
+        // ---------- Selección ----------
+        // Ajusta el punto final a la línea recta (8 direcciones) más cercana desde el inicio.
+        function lineaDesde(a, b) {
+            const dr = b[0] - a[0], dc = b[1] - a[1];
+            if (dr === 0 && dc === 0) return [a];
+            const k = Math.round(Math.atan2(dr, dc) / (Math.PI / 4));
+            const d0 = Math.round(Math.sin(k * Math.PI / 4)), d1 = Math.round(Math.cos(k * Math.PI / 4));
+            let largo = Math.round((dr * d0 + dc * d1) / (d0 * d0 + d1 * d1));
+            const celdas = [];
+            for (let i = 0; i <= largo; i++) {
+                const r = a[0] + d0 * i, c = a[1] + d1 * i;
+                if (r < 0 || r >= nivel.n || c < 0 || c >= nivel.n) break;
+                celdas.push([r, c]);
+            }
+            return celdas;
+        }
+
+        function celdaEnPunto(e) {
+            const rect = tableroEl.getBoundingClientRect();
+            const lado = rect.width / nivel.n;
+            const c = Math.min(nivel.n - 1, Math.max(0, Math.floor((e.clientX - rect.left) / lado)));
+            const r = Math.min(nivel.n - 1, Math.max(0, Math.floor((e.clientY - rect.top) / lado)));
+            return [r, c];
+        }
+
+        function colorMarca() {
+            const n = marcas.length;
+            return `hsl(${(n * 67 + 200) % 360}, 80%, 85%)`;
+        }
+
+        function anadirMarca(celdas) {
+            if (celdas.length < 2) return;
+            const clave = celdas.map(x => x.join(',')).join(';');
+            const repetida = marcas.some(m => m.celdas.map(x => x.join(',')).join(';') === clave);
+            if (repetida) return;
+            marcas.push({ celdas, estado: 'pend', color: colorMarca() });
+            mensaje('Marcada. Cuando tengas dudas, pulsa «Validar».');
+        }
+
+        tableroEl.addEventListener('pointerdown', (e) => {
+            if (!jugando) return;
+            e.preventDefault();
+            tableroEl.setPointerCapture(e.pointerId);
+            limpiarPista();
+            const p = celdaEnPunto(e);
+            arrastre = { inicio: p, fin: p };
+            pintar();
+        });
+
+        tableroEl.addEventListener('pointermove', (e) => {
+            if (!arrastre) return;
+            arrastre.fin = celdaEnPunto(e);
+            pintar();
+        });
+
+        function soltar(e) {
+            if (!arrastre) return;
+            const { inicio, fin } = arrastre;
+            arrastre = null;
+            if (inicio[0] === fin[0] && inicio[1] === fin[1]) {
+                // Un toque: primera o segunda letra
+                if (!ancla) ancla = inicio;
+                else if (ancla[0] === inicio[0] && ancla[1] === inicio[1]) ancla = null;
+                else { anadirMarca(lineaDesde(ancla, inicio)); ancla = null; }
+            } else {
+                anadirMarca(lineaDesde(inicio, fin));
+                ancla = null;
+            }
+            pintar();
+        }
+        tableroEl.addEventListener('pointerup', soltar);
+        tableroEl.addEventListener('pointercancel', () => { arrastre = null; pintar(); });
+
+        // ---------- Acciones ----------
+        function textoMarca(m) { return m.celdas.map(([r, c]) => rejilla[r][c]).join(''); }
+
+        function validar() {
+            if (!jugando) return;
+            limpiarPista();
+            ancla = null;
+            const pendientes = marcas.filter(m => m.estado === 'pend');
+            if (!pendientes.length) { mensaje('Marca primero alguna palabra en el tablero.'); return; }
+            let buenas = 0, malas = 0;
+            for (const m of pendientes) {
+                const t = textoMarca(m), inv = [...t].reverse().join('');
+                const palabra = palabras.find(p => !encontradas.has(p) && (p === t || p === inv));
+                if (palabra) { m.estado = 'ok'; encontradas.add(palabra); buenas++; }
+                else { m.estado = 'mal'; malas++; }
+            }
+            if (malas) {
+                mensaje(
+                    (buenas ? `${buenas} correcta${buenas > 1 ? 's' : ''} ✔ · ` : '') +
+                    `${malas} incorrecta${malas > 1 ? 's' : ''} ✘ (se borra${malas > 1 ? 'n' : ''})`,
+                    'mal'
+                );
+            } else {
+                mensaje(buenas > 1 ? `¡Las ${buenas} son correctas!` : '¡Correcta!', 'bien');
+            }
+            pintar();
+            if (malas) {
+                setTimeout(() => { marcas = marcas.filter(m => m.estado !== 'mal'); pintar(); }, 1100);
+            }
+            if (encontradas.size === palabras.length) setTimeout(terminar, malas ? 1200 : 700);
+        }
+
+        function deshacer() {
+            if (!jugando) return;
+            for (let i = marcas.length - 1; i >= 0; i--) {
+                if (marcas[i].estado === 'pend') { marcas.splice(i, 1); break; }
+            }
+            ancla = null;
+            mensaje('');
+            pintar();
+        }
+
+        function limpiarPista() {
+            if (celdasPista.length) { celdasPista = []; }
+        }
+
+        function pista() {
+            if (!jugando) return;
+            const restantes = palabras.filter(p => !encontradas.has(p));
+            if (!restantes.length) return;
+            const palabra = restantes[aleatorio(0, restantes.length - 1)];
+            // Busca dónde está colocada (la primera coincidencia en cualquier dirección)
+            outer:
+            for (let r = 0; r < nivel.n; r++) for (let c = 0; c < nivel.n; c++) {
+                for (const d of DIRECCIONES) {
+                    let ok = true;
+                    for (let i = 0; i < palabra.length && ok; i++) {
+                        const rr = r + d[0] * i, cc = c + d[1] * i;
+                        ok = rr >= 0 && rr < nivel.n && cc >= 0 && cc < nivel.n && rejilla[rr][cc] === palabra[i];
+                    }
+                    if (ok) { celdasPista = [[r, c]]; break outer; }
+                }
+            }
+            pistasUsadas++;
+            mensaje(`Pista: «${palabra}» empieza en la letra resaltada.`);
+            pintar();
+            setTimeout(() => { celdasPista = []; if (jugando) pintar(); }, 2600);
+        }
+
+        function segundos() { return Math.floor((Date.now() - inicioMs) / 1000); }
+
+        function terminar() {
+            jugando = false;
+            clearInterval(intervalo);
+            const total = segundos() + pistasUsadas * PENALIZACION_PISTA;
+            juegoActivoEl.classList.add('oculto');
+            finJuegoEl.classList.remove('oculto');
+            document.getElementById('puntuacion-final').textContent = formatearTiempo(total);
+            document.getElementById('detalle-final').textContent =
+                `Nivel ${nivel.nombre}` + (pistasUsadas ? ` · ${pistasUsadas} pista${pistasUsadas > 1 ? 's' : ''} (+${pistasUsadas * PENALIZACION_PISTA} s)` : ' · sin pistas');
+            Ranking.mostrar(document.getElementById('ranking'), 'sopa-letras-' + nivelId, total, {
+                ascendente: true,
+                formatear: formatearTiempo,
+            });
+        }
+
+        function empezar(id) {
+            nivelId = id;
+            nivel = NIVELES[id];
+            const sopa = generarSopa();
+            rejilla = sopa.rej;
+            palabras = sopa.elegidas;
+            encontradas = new Set();
+            marcas = [];
+            pistasUsadas = 0;
+            ancla = null;
+            arrastre = null;
+            celdasPista = [];
+            temaEl.innerHTML = `Tema: <strong>${sopa.tema}</strong> · Nivel ${nivel.nombre}`;
+            mensaje('Arrastra sobre las letras para marcar una palabra.');
+            menuEl.classList.add('oculto');
+            finJuegoEl.classList.add('oculto');
+            juegoActivoEl.classList.remove('oculto');
+            construirTablero();
+            pintar();
+            jugando = true;
+            inicioMs = Date.now();
+            clearInterval(intervalo);
+            tiempoEl.textContent = '0:00';
+            intervalo = setInterval(() => {
+                tiempoEl.textContent = formatearTiempo(segundos() + pistasUsadas * PENALIZACION_PISTA);
+            }, 500);
+        }
+
+        document.querySelectorAll('.btn-nivel').forEach(b =>
+            b.addEventListener('click', () => empezar(b.dataset.nivel)));
+        validarBtn.addEventListener('click', validar);
+        deshacerBtn.addEventListener('click', deshacer);
+        pistaBtn.addEventListener('click', pista);
+        nuevaBtn.addEventListener('click', () => empezar(nivelId));
+        document.getElementById('reiniciar').addEventListener('click', () => {
+            finJuegoEl.classList.add('oculto');
+            menuEl.classList.remove('oculto');
+        });
+    </script>
+
+</body>
+</html>
